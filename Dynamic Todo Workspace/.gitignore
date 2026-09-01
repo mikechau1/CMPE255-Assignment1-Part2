@@ -1,0 +1,23 @@
+node_modules/
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# local database
+prisma/dev.db
+prisma/dev.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# test artifacts
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+coverage/
+
+.DS_Store
+*.log
+.vercel

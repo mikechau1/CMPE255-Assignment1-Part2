@@ -1,0 +1,103 @@
+// Dynamic Todo — data model
+//
+// SQLite has no enums and no array columns, so:
+//   priority   -> Int  (0 none, 1 low, 2 medium, 3 urgent)
+//   recurrence -> JSON string, parsed/validated by lib/domain/recurrence.ts
+//
+// Two structural choices worth knowing before you read this:
+//   * Subtasks are a self-relation on Task, so a subtask is a full task and
+//     inherits every feature (due date, priority, notes) for free.
+//   * `position` is a Float fractional index. Reordering writes ONE row instead
+//     of renumbering the whole list; see lib/domain/position.ts.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   @default("violet")
+  emoji     String?
+  /// Exactly one project is the Inbox; it is the default home for new tasks
+  /// and cannot be deleted.
+  isInbox   Boolean  @default(false)
+  position  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks Task[]
+
+  @@index([position])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  color     String   @default("slate")
+  createdAt DateTime @default(now())
+
+  tasks TaskTag[]
+}
+
+model Task {
+  id    String  @id @default(cuid())
+  title String
+  notes String?
+
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  /// Stored in UTC. When hasTime is false this is an all-day task pinned to
+  /// local midnight, and the UI must never render a clock time for it.
+  dueDate DateTime?
+  hasTime Boolean   @default(false)
+
+  /// 0 none, 1 low, 2 medium, 3 urgent
+  priority Int @default(0)
+
+  /// Fractional index within its list. Lower sorts first.
+  position Float
+
+  /// JSON RecurrenceRule, e.g. {"freq":"weekly","interval":1,"byDay":[1,3]}
+  recurrence String?
+
+  /// Soft delete. Powers undo and the Trash view; nothing is destroyed until
+  /// the user empties the trash.
+  deletedAt DateTime?
+
+  /// Reserved so single-user data can be migrated to real accounts later
+  /// without rewriting this table.
+  userId String?
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  parentId String?
+  parent   Task?  @relation("Subtasks", fields: [parentId], references: [id], onDelete: Cascade)
+  children Task[] @relation("Subtasks")
+
+  tags TaskTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deletedAt, completed, dueDate])
+  @@index([projectId, position])
+  @@index([parentId, position])
+}
+
+model TaskTag {
+  taskId String
+  tagId  String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+  @@index([tagId])
+}
