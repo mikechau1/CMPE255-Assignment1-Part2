@@ -3,4 +3,4 @@
 Six end-to-end projects built for CMPE 255 Assignment 1, Part 2. Each folder is a
 self-contained application with its own README and quick-start instructions.
 
-Demo: 
+Demo: https://youtu.be/try1hMVBVt4
