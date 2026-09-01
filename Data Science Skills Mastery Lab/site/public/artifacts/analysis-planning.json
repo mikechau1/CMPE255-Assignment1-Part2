@@ -1,0 +1,147 @@
+{
+ "skill": "analysis-planning",
+ "source": "data-analytics-skills",
+ "category": "Workflow Optimization",
+ "phase": 1,
+ "track": "T1",
+ "title": "A CRISP-DM work plan with effort and risk attached",
+ "prescribes": "Before analysing anything, write the plan: questions, deliverables, effort estimate, dependencies and the risks that would invalidate the work.",
+ "applied": "Instantiated the skill's bundled analysis_plan_template.md against this lab and estimated each CRISP-DM phase, so the schedule and the methodology are the same document.",
+ "narrative": [
+  "Planning up front is what makes the six CRISP-DM phases auditable: every phase in this lab has a named deliverable, and the coverage gate at the end fails if a phase silently drops work.",
+  "Effort is deliberately front-loaded on Modeling (16h) because that phase carries the deep-learning, LLM fine-tuning and RAG tracks, all of which run on CPU here and are therefore slow rather than hard.",
+  "The risk column is not decoration -- 'target leakage' is the risk that actually fired, and phase 4's ml-debugging demo shows it being caught."
+ ],
+ "kpis": [
+  {
+   "label": "Phases planned",
+   "value": "6",
+   "caption": "CRISP-DM",
+   "tone": "neutral"
+  },
+  {
+   "label": "Estimated effort",
+   "value": "54h",
+   "caption": "sum of phase estimates",
+   "tone": "neutral"
+  },
+  {
+   "label": "Skills scheduled",
+   "value": "46",
+   "caption": "across the six phases",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "effort-by-phase",
+   "kind": "bar",
+   "title": "Estimated effort by CRISP-DM phase",
+   "data": [
+    {
+     "x": "1. Business Understanding",
+     "hours": 4
+    },
+    {
+     "x": "2. Data Understanding",
+     "hours": 8
+    },
+    {
+     "x": "3. Data Preparation",
+     "hours": 10
+    },
+    {
+     "x": "4. Modeling",
+     "hours": 16
+    },
+    {
+     "x": "5. Evaluation",
+     "hours": 8
+    },
+    {
+     "x": "6. Deployment",
+     "hours": 8
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "hours",
+     "label": "Estimated hours"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "hours",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "plan",
+   "title": "Phase plan",
+   "columns": [
+    "Phase",
+    "Name",
+    "Deliverable",
+    "Effort",
+    "Top risk"
+   ],
+   "rows": [
+    [
+     1,
+     "Business Understanding",
+     "Scoped question, metric definitions, assumptions log",
+     "4h",
+     "Stakeholder unavailable"
+    ],
+    [
+     2,
+     "Data Understanding",
+     "EDA + quality audit + SQL validation on 3 datasets",
+     "8h",
+     "Undocumented columns"
+    ],
+    [
+     3,
+     "Data Preparation",
+     "Leakage-safe cleaning, features, resampling, segments",
+     "10h",
+     "Target leakage"
+    ],
+    [
+     4,
+     "Modeling",
+     "Pipelines, tuning, tracking, CNN, LoRA, RAG",
+     "16h",
+     "CPU-only training budget"
+    ],
+    [
+     5,
+     "Evaluation",
+     "Metrics, calibration, A/B read, impact in dollars",
+     "8h",
+     "Threshold disagreement"
+    ],
+    [
+     6,
+     "Deployment",
+     "FastAPI service, dashboard spec, exec summary",
+     "8h",
+     "No production infra"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Analysis Plan\n\n**Project:** [name]  \n**Analyst:** [name]  \n**Requestor:** [name and team]  \n**Date created:** [YYYY-MM-DD]  \n**Target delivery date:** [YYYY-MM-DD]  \n**Status:** Draft / In progress / Complete\n\n---\n\n## Business Question\n\n> [The single specific question this analysis will answer]\n\n---\n\n## Sub-Questions and Sequencing\n\n| # | Sub-question | Dependencies | Est. hours | Status |\n|---|---|---|---|---|\n| 1 | [e.g. What is the overall churn trend for the last 12 months?] | None | 2h | Pending |\n| 2 | [e.g. Which segments have the highest churn rate?] | Step 1 | 3h | Pending |\n| 3 | [e.g. What differentiates churned vs. retained customers?] | Step 2 | 4h | Pending |\n\n**Total estimated effort:** [X hours / days]  \n**Buffer (15%):** [Y hours]  \n**Revised estimate:** [Z hours]\n\n---\n\n## Data Plan\n\n| Data needed | Source | Availability | Confirmed by |\n|---|---|---|---|\n| [e.g. Customer subscription history] | [prod.subscriptions] | Yes | [date] |\n| [e.g. Product usage events] | [prod.events] | TBC | [follow up with] |\n\n---\n\n## Approach Summary\n\n[2\u20134 sentences describing the overall method \u2014 what type of analysis, what technique, what the output will look like.]\n\n---\n\n## Risks ",
+ "code_language": "markdown",
+ "takeaway": "Estimating before starting exposed that half the effort sits in phase 4, which is why the heavy tracks were sized to run on CPU in minutes rather than hours.",
+ "used_skill_scripts": [
+  ".claude/skills/analysis-planning/references/analysis_plan_template.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:15"
+}

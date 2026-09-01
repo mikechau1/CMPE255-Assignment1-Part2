@@ -1,0 +1,139 @@
+{
+ "skill": "methodology-explainer",
+ "source": "data-analytics-skills",
+ "category": "Stakeholder Communication",
+ "phase": 6,
+ "track": "T1",
+ "title": "The same method at three depths, and four defensible choices",
+ "prescribes": "Explain method at the depth the audience needs, and be explicit about the choices that had alternatives -- the questions a sceptical reader will ask are predictable, so answer them in advance.",
+ "applied": "Wrote the churn methodology at executive, analyst and practitioner depth using the skill's explanation patterns, and pre-answered the four design choices most open to challenge.",
+ "narrative": [
+  "Depth is not a dial on the same sentence. The executive version explains why the result is believable; the analyst version explains the guard against self-deception; the practitioner version is a reproduction recipe. Truncating the third to make the first produces something that convinces nobody.",
+  "The 'why not X' table is the part that earns trust. Every entry names a real alternative, and one of them concedes a genuine trade-off -- the logistic model is within 0.004 AUC and is kept as a fallback if interpretability becomes a requirement.",
+  "The threshold answer is the one to rehearse, because 0.50 feels like a fact to anyone who has not seen the economics. It is a business input, and stating that early prevents an argument later."
+ ],
+ "kpis": [
+  {
+   "label": "Depths written",
+   "value": "3",
+   "caption": "executive, analyst, practitioner",
+   "tone": "neutral"
+  },
+  {
+   "label": "Design choices defended",
+   "value": "4",
+   "caption": "each with its alternative",
+   "tone": "neutral"
+  },
+  {
+   "label": "Reproduction recipe",
+   "value": "complete",
+   "caption": "seed, split, params, metrics",
+   "tone": "good"
+  },
+  {
+   "label": "Conceded trade-off",
+   "value": "1",
+   "caption": "interpretability vs 0.004 AUC",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "depth-length",
+   "kind": "bar",
+   "title": "Explanation length by audience depth",
+   "data": [
+    {
+     "x": "Executive (30 seconds)",
+     "words": 31
+    },
+    {
+     "x": "Business analyst (5 minutes)",
+     "words": 57
+    },
+    {
+     "x": "Data scientist (full detail)",
+     "words": 58
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "words",
+     "label": "words"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "depths",
+   "title": "The method at three depths",
+   "columns": [
+    "Audience",
+    "Explanation",
+    "What they do with it"
+   ],
+   "rows": [
+    [
+     "Executive (30 seconds)",
+     "We looked at every customer's history and learned which patterns come before someone leaving. We checked the model on customers it had never seen, so the accuracy claim is not circular.",
+     "Decide whether to fund the campaign"
+    ],
+    [
+     "Business analyst (5 minutes)",
+     "Customers were split 80/20 before anything was fitted. Cleaning, encoding and feature building happen inside the model pipeline so they are re-learned on each cross-validation fold rather than peeking at the held-out data. Thirty tuning trials were scored by 5-fold cross-validation; the winner was evaluated once on the 20% split, which was never used for any decision.",
+     "Challenge the method and the metric choice"
+    ],
+    [
+     "Data scientist (full detail)",
+     "Stratified 80/20 split at seed 20255255. ColumnTransformer with median/most-frequent imputation, StandardScaler, OneHotEncoder(min_frequency=20). Out-of-fold target encoding on the contract x internet x payment x tenure-band key. HistGradientBoosting tuned by Optuna TPE, 30 trials, 5-fold stratified CV on ROC-AUC, early stopping at 15% validation fraction. Reported: ROC-AUC, average precision, Brier, decile lift, plus expected campaign value across a threshold sweep.",
+     "Reproduce or attack the result"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "choices",
+   "title": "Design choices and why",
+   "columns": [
+    "Question",
+    "Answer"
+   ],
+   "rows": [
+    [
+     "Why cross-validation and a held-out split?",
+     "CV picks the model; the untouched split estimates how it will do. Using one number for both jobs inflates it."
+    ],
+    [
+     "Why ROC-AUC for tuning but PR-AUC for reporting?",
+     "AUC is stable to optimise against; PR reflects the campaign's actual cost structure at 26.5% prevalence."
+    ],
+    [
+     "Why gradient boosting and not something interpretable?",
+     "It won by a small margin; a logistic regression is within 0.004 AUC and is kept as the fallback artifact if interpretability becomes the constraint."
+    ],
+    [
+     "Why is the threshold 0.20 and not 0.50?",
+     "0.50 is an arbitrary default. 0.20 maximises expected campaign value under the stated offer economics, and it moves if those economics change."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Methodology Explanation Patterns\n\nReusable structures for explaining how an analysis was done, tailored to different communication contexts.\n\n---\n\n## Pattern 1: The One-Paragraph Summary (Executive)\n\nUse when the audience needs enough to trust the output without wanting the detail.\n\n**Structure:**\n1. What question were we answering?\n2. What data did we use, and for what time period?\n3. What method did we apply (in plain English)?\n4. What is the key limitation?\n\n**Example:**\n> To understand whether the new onboarding flow improved activation, we compared users who experienced the redesign (n=4,200) against a matched control group (n=4,100) over a 6-week period using our product analytics data. We measured 7-day activation rate for both groups and tested whether the difference was larger than chance. One limitation: the groups were matched on signup channel but not on company size, so enterprise accounts may be slightly over-represented in the treatment group.\n\n**Plain-language swaps for this pattern:**\n- \"A/B test\" \u2192 \"We split users randomly into two groups and compared them\"\n- \"Mat",
+ "code_language": "markdown",
+ "takeaway": "Three depths, four pre-answered objections, and one conceded trade-off -- which is what makes the other three answers credible.",
+ "used_skill_scripts": [
+  ".claude/skills/methodology-explainer/references/methodology_explanation_patterns.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:34"
+}

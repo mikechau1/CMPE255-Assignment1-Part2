@@ -1,0 +1,159 @@
+{
+ "skill": "insight-synthesis",
+ "source": "data-analytics-skills",
+ "category": "Data Storytelling & Visualization",
+ "phase": 5,
+ "track": "T1",
+ "title": "Six findings, ranked by impact x confidence, each with its evidence",
+ "prescribes": "Turn findings into insights: each one states what is true, what evidence supports it, and what should change as a result -- then rank by impact and confidence rather than by order of discovery.",
+ "applied": "Synthesised across the phase 2-4 artifacts on disk, attaching each insight to the specific skill output that produced its number and scoring it on the skill's impact x confidence grid.",
+ "narrative": [
+  "Analysis produces facts; synthesis produces decisions. Each row below carries a 'so what' that names an action, because a finding with no implied action is trivia no matter how well measured.",
+  "The top-ranked insight -- churn is concentrated in onboarding -- is supported by two independent artifacts (the correlation structure in exploratory-data-analysis and the tenure bands in business-metrics-calculator), which is why it scores 25/25 rather than resting on one chart.",
+  "Ranking by impact x confidence deliberately demotes the target-encoding finding: it is certain and methodologically important, but it changes no business decision. That is the correct treatment, and it is the ranking most analysts avoid making explicit."
+ ],
+ "kpis": [
+  {
+   "label": "Insights synthesised",
+   "value": "6",
+   "caption": "from 20+ skill artifacts",
+   "tone": "neutral"
+  },
+  {
+   "label": "Top priority score",
+   "value": "25/25",
+   "caption": "impact x confidence",
+   "tone": "good"
+  },
+  {
+   "label": "Backed by 2+ artifacts",
+   "value": "5",
+   "caption": "cross-checked findings",
+   "tone": "neutral"
+  },
+  {
+   "label": "Actions proposed",
+   "value": "6",
+   "caption": "one per insight",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "impact-confidence",
+   "kind": "scatter",
+   "title": "Insight prioritisation: impact vs confidence",
+   "data": [
+    {
+     "x": 5,
+     "y": 5,
+     "series": "Churn is an onboarding problem, not a lo"
+    },
+    {
+     "x": 5,
+     "y": 5,
+     "series": "Month-to-month contracts hold 87% of the"
+    },
+    {
+     "x": 5,
+     "y": 4,
+     "series": "Revenue churn exceeds logo churn, so the"
+    },
+    {
+     "x": 5,
+     "y": 4,
+     "series": "A quarter of retail order lines are anon"
+    },
+    {
+     "x": 4,
+     "y": 4,
+     "series": "Sixteen percent of retail customers gene"
+    },
+    {
+     "x": 5,
+     "y": 3,
+     "series": "Naive target encoding inflates developme"
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "y",
+     "label": "impact"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "confidence (1-5)",
+   "yLabel": "impact (1-5)",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "insights",
+   "title": "Ranked insights",
+   "columns": [
+    "Priority",
+    "Insight",
+    "Evidence",
+    "Source skill",
+    "So what"
+   ],
+   "rows": [
+    [
+     25,
+     "Churn is an onboarding problem, not a loyalty problem",
+     "Tenure is the strongest single predictor (r = -0.35); the 0-6 month band carries the highest churn rate of any tenure band.",
+     "exploratory-data-analysis",
+     "Move retention spend into the first two billing cycles, where the model's top decile is concentrated."
+    ],
+    [
+     25,
+     "Month-to-month contracts hold 87% of the revenue at risk",
+     "Revenue-at-risk by contract type on the full snapshot.",
+     "stakeholder-requirements-gathering",
+     "Contract conversion is the single highest-leverage retention offer, and it is testable."
+    ],
+    [
+     20,
+     "Revenue churn exceeds logo churn, so the leavers are worth more than average",
+     "30.5% revenue churn against 26.5% logo churn.",
+     "business-metrics-calculator",
+     "Rank the campaign by expected revenue saved, not by probability alone."
+    ],
+    [
+     20,
+     "A quarter of retail order lines are anonymous",
+     "24.9% of rows have no CustomerID; the finance and dashboard revenue definitions differ by 7.3% as a result.",
+     "data-quality-audit",
+     "Every customer-level retail number needs its population stated, or two teams will reconcile the same metric twice."
+    ],
+    [
+     16,
+     "Sixteen percent of retail customers generate 65% of revenue",
+     "RFM k-means segmentation; the Champions segment's revenue share.",
+     "segmentation-analysis",
+     "A flat per-customer retention budget misallocates most of its spend."
+    ],
+    [
+     15,
+     "Naive target encoding inflates development scores without helping production",
+     "Train AUC 0.849 vs 0.827 out-of-fold, with identical test AUC of 0.839.",
+     "feature-engineering",
+     "Keep the out-of-fold encoder; treat any unexplained train-test gap as leakage until proven otherwise."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Insight Framework\n\n## What makes a finding an insight?\n\nA finding states what happened. An insight explains why it matters and what to do about it.\n\n| Finding | Insight |\n|---|---|\n| \"Conversion rate dropped 2pp this month\" | \"Conversion dropped 2pp \u2014 driven entirely by mobile, where the new checkout flow has a 40% abandonment at the address step. Fixing this step could recover ~$180K/month.\" |\n| \"Enterprise customers have higher LTV\" | \"Enterprise LTV is 8\u00d7 Basic, but Basic represents 60% of our user base and only 15% of revenue. The acquisition mix mismatch is the primary driver of our CAC efficiency problem.\" |\n\nThe three elements that transform a finding into an insight:\n1. **The pattern** \u2014 what the data shows\n2. **The explanation** \u2014 why it is happening (or the most likely cause)\n3. **The implication** \u2014 what it means for a decision or action\n\n---\n\n## Insight types\n\n**Descriptive insight:** What is happening and how big is it?\nUse for: establishing baselines, communicating current state.\n\n**Diagnostic insight:** Why is it happening?\nUse for: root cause analysis, understanding drivers.\n\n**Predictive insight:** What is likely to happen?\nUse for: forecasting, risk identificati",
+ "code_language": "markdown",
+ "takeaway": "Two of the six findings would change where retention money goes; the rest are true and should not compete for the same slide.",
+ "used_skill_scripts": [
+  ".claude/skills/insight-synthesis/references/insight_framework.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:30"
+}

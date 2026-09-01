@@ -1,0 +1,181 @@
+{
+ "skill": "analysis-retrospective",
+ "source": "data-analytics-skills",
+ "category": "Workflow Optimization",
+ "phase": 6,
+ "track": "meta",
+ "title": "Eight real incidents from building this lab",
+ "prescribes": "After delivery, capture what worked, what did not and what to do differently -- with specific incidents rather than sentiments, so the lesson is transferable.",
+ "applied": "Logged every failure encountered while building the lab into the skill's retrospective template, including the two negative results and the one analysis error.",
+ "narrative": [
+  "8 incidents, and the pattern is that 5 of them were environment or upstream drift rather than analysis mistakes. Skills that ship code age against their dependencies; the lesson is a compatibility shim, not distrust of the skill.",
+  "The one genuine analysis error is worth naming plainly: the campaign economics valued a saved customer at one year of margin in the threshold sweep and at lifetime value in the impact calculation, which made the same campaign look both unprofitable and profitable. The fix was one function used by both -- the same 'one metric, one definition' rule that `metric-reconciliation` teaches in phase 2, applied to our own work.",
+  "Two negative results were kept rather than deleted: the reranker that did not help, and the Bayesian search that tied with random search. A demonstration that only shows techniques winning is a brochure."
+ ],
+ "kpis": [
+  {
+   "label": "Incidents logged",
+   "value": "8",
+   "caption": "with fixes and lessons",
+   "tone": "neutral"
+  },
+  {
+   "label": "Environment / upstream",
+   "value": "5",
+   "caption": "not analysis mistakes",
+   "tone": "warn"
+  },
+  {
+   "label": "Analysis errors",
+   "value": "1",
+   "caption": "inconsistent value basis",
+   "tone": "bad"
+  },
+  {
+   "label": "Negative results kept",
+   "value": "2",
+   "caption": "reranking, Bayesian search",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "incident-types",
+   "kind": "bar",
+   "title": "Incidents by category",
+   "data": [
+    {
+     "x": "Upstream API drift",
+     "n": 2
+    },
+    {
+     "x": "Platform change",
+     "n": 1
+    },
+    {
+     "x": "Environment",
+     "n": 2
+    },
+    {
+     "x": "Analysis error",
+     "n": 1
+    },
+    {
+     "x": "Negative result",
+     "n": 2
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "incidents"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "incidents",
+   "title": "Incident log",
+   "columns": [
+    "Category",
+    "What happened",
+    "Fix",
+    "Lesson"
+   ],
+   "rows": [
+    [
+     "Upstream API drift",
+     "sql_lint.py passes dialect='ansi'; sqlglot 30 removed that name",
+     "Passed dialect='duckdb' -- the dialect we actually execute",
+     "Pin the dialect at the call site"
+    ],
+    [
+     "Upstream API drift",
+     "cohort_builder.py uses the 'MS' period alias; pandas 2.3 rejects it",
+     "Overrode FREQ_MAP['monthly'] = 'M' before calling",
+     "Skill scripts need a compatibility shim layer"
+    ],
+    [
+     "Platform change",
+     "MLflow 3 refuses a plain filesystem tracking store",
+     "Switched to a local SQLite backend",
+     "Read the deprecation before designing around a default"
+    ],
+    [
+     "Environment",
+     "torchvision 0.27 against torch 2.5.1 broke every transformers import",
+     "Pinned torchvision 0.20.1 to match torch",
+     "Version-match the vision/audio companions to torch"
+    ],
+    [
+     "Environment",
+     "Python's certifi bundle rejected the dataset hosts (expired root)",
+     "Routed verification through the Windows store with truststore",
+     "Never solve a certificate error by disabling verification"
+    ],
+    [
+     "Analysis error",
+     "The first campaign economics valued a saved customer at one year of margin while impact-quantification used lifetime value -- the same campaign looked both profitable and unprofitable",
+     "Defined customer_ltv() once and used it for both",
+     "One metric, one definition, one function"
+    ],
+    [
+     "Negative result",
+     "Cross-encoder reranking added no recall over RRF fusion and cost 573 ms/query",
+     "Reported it as a negative result instead of dropping the comparison",
+     "Short chunks give a reranker nothing to work with"
+    ],
+    [
+     "Negative result",
+     "Optuna and random search tied; random search found its best at trial 2",
+     "Rewrote the narrative to say so",
+     "Do not let a preferred tool win a comparison it lost"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "retro",
+   "title": "Retrospective",
+   "columns": [
+    "Went well",
+    "Do differently"
+   ],
+   "rows": [
+    [
+     "Making every demo return one dataclass meant the site needed exactly one renderer.",
+     "Define the shared economics before writing any phase that spends money -- the LTV inconsistency cost a rerun of phase 5."
+    ],
+    [
+     "Running the skills' own bundled scripts on real data found three upstream incompatibilities that reading the code would not have.",
+     "Check every bundled script against the installed library versions up front rather than discovering it mid-phase."
+    ],
+    [
+     "The coverage gate (46 artifacts or the build fails) removed any temptation to quietly skip a skill.",
+     "Size the heavy tracks by wall clock first; the CPU-only torch build shaped every later decision and was discovered by accident."
+    ],
+    [
+     "Seeding once in lib/seeds and importing it everywhere made phases 3-5 rerun to identical numbers.",
+     ""
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Analysis Retrospective\n\n**Project:** [name]  \n**Analyst(s):** [names]  \n**Date of retro:** [YYYY-MM-DD]  \n**Framework used:** Start/Stop/Continue / 4Ls / Timeline / Solo  \n**Time spent on retro:** [X minutes]\n\n---\n\n## Project Summary\n\n**What we delivered:** [1 sentence]  \n**Planned timeline:** [start] \u2192 [end]  \n**Actual timeline:** [start] \u2192 [end]  \n**On time?** Yes / No (+[X] days)  \n**Stakeholder satisfaction:** Positive / Mixed / Negative\n\n---\n\n## What Went Well\n\n1. [What worked and should be repeated]\n2. [What worked and should be repeated]\n3. [What worked and should be repeated]\n\n---\n\n## What Didn't Work\n\n| Issue | Root cause (5-whys) | Category |\n|---|---|---|\n| [e.g. Data access took 2 days longer than expected] | [Didn't raise the access request until day 2 of the project] | Planning |\n| [e.g. Stakeholder changed the scope after kickoff] | [Requirements weren't documented and signed off] | Scoping |\n\n**Categories:** Planning / Data quality / Scoping / Communication / Technical / Estimation / Other\n\n---\n\n## Surprises\n\nThings we didn't anticipate that materially affected the project:\n\n1. [Surprise 1 \u2014 what it was and how it affected the project]\n2. [Surprise 2]\n\n---\n\n## Lea",
+ "code_language": "markdown",
+ "takeaway": "5 of 8 incidents were dependency or platform drift, one was our own inconsistent metric definition, and two were negative results worth keeping -- all of which are only visible because the skills were actually run rather than described.",
+ "used_skill_scripts": [
+  ".claude/skills/analysis-retrospective/references/retrospective_template.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:34"
+}

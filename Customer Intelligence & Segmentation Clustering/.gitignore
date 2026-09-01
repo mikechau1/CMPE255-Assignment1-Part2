@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+frontend/dist/
+.pytest_cache/
+data/raw/*.csv
+artifacts/*.joblib
+artifacts/*.pkl
+artifacts/*.json
+artifacts/*.tsv

@@ -1,0 +1,70 @@
+# Single source of truth for the pipeline. Read by src/nyctaxi/config.py.
+
+project_name: "NYC Taxi Trip Prediction"
+random_seed: 42
+
+paths:
+  data_raw: "data/raw"
+  data_interim: "data/interim"
+  data_processed: "data/processed"
+  data_geo: "data/geo"
+  models: "models"
+  figures: "docs/figures"
+  frontend_dist: "frontend/dist"
+
+data:
+  # Preferred source. Falls back to "tlc" automatically when Kaggle
+  # credentials are absent. Set to "tlc" or "kaggle" to force one.
+  source: "auto"
+  kaggle_competition: "nyc-taxi-trip-duration"
+  # TLC fallback: which monthly yellow-taxi parquet files to pull.
+  tlc_months: ["2016-01", "2016-02", "2016-03"]
+  tlc_base_url: "https://d37ci6vzurychx.cloudfront.net/trip-data"
+  tlc_zone_shapefile_url: "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zones.zip"
+  tlc_zone_lookup_url: "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+
+# CRISP-DM phase 3 -- data preparation. Every rule here is logged with a
+# row-count delta so docs/03-data-preparation.md has a real audit trail.
+clean:
+  nyc_bbox: { min_lon: -74.30, max_lon: -73.65, min_lat: 40.48, max_lat: 40.95 }
+  min_duration_s: 30
+  max_duration_s: 10800        # 3 hours
+  max_speed_kmh: 100.0
+  min_speed_kmh: 1.0
+  max_haversine_km: 100.0
+  max_passengers: 6
+
+features:
+  n_clusters: 100              # KMeans on pickup & dropoff coords
+  target_encode_folds: 5       # out-of-fold scheme -- see features.py leakage note
+  target_encode_smoothing: 50.0
+
+split:
+  # Time-based split is primary: it mirrors how the deployed model is used.
+  # A random split is also scored, purely to report the optimism gap.
+  strategy: "time"
+  valid_frac: 0.20
+
+model:
+  target: "trip_duration_s"
+  quantiles: [0.1, 0.5, 0.9]
+  lightgbm:
+    objective: "regression"
+    metric: "rmse"
+    learning_rate: 0.05
+    num_leaves: 128
+    min_data_in_leaf: 50
+    feature_fraction: 0.85
+    bagging_fraction: 0.85
+    bagging_freq: 1
+    lambda_l2: 1.0
+    num_boost_round: 3000
+    early_stopping_rounds: 100
+    verbose: -1
+
+api:
+  osrm_url: "https://router.project-osrm.org"
+  nominatim_url: "https://nominatim.openstreetmap.org"
+  user_agent: "nyc-taxi-trip-prediction/1.0 (CMPE255 coursework)"
+  cache_size: 512
+  external_timeout_s: 8.0

@@ -1,0 +1,156 @@
+{
+ "skill": "context-packager",
+ "source": "data-analytics-skills",
+ "category": "Workflow Optimization",
+ "phase": 1,
+ "track": "meta",
+ "title": "What 46 installed skills cost in context, and what to send instead",
+ "prescribes": "Layer context by priority (task > business > schema > prior findings > constraints > format), estimate the token cost, and trim from the bottom when over budget.",
+ "applied": "Ran token_counter.py over every file in .claude/skills, then used context_bundler.py to build the actual churn-task bundle from the semantic model and the assumptions log.",
+ "narrative": [
+  "The 46 installed skills total roughly 168,299 estimated tokens across 223 files. Loading all of them into one prompt would consume 84% of a 200k window before any data is attached, which is precisely why skills are progressive-disclosure documents rather than a single system prompt.",
+  "The task bundle built here -- the scoped question plus the semantic model plus the assumptions -- is 1,269 tokens, 0.6% of the same budget. That is the content an agent actually needs to score churn correctly.",
+  "The heaviest skills are the ones shipping reference libraries; that is a fair cost, but it is a cost you should measure before pasting a folder into a prompt."
+ ],
+ "kpis": [
+  {
+   "label": "Skills installed",
+   "value": "46",
+   "caption": "two GitHub collections",
+   "tone": "neutral"
+  },
+  {
+   "label": "Total skill tokens",
+   "value": "168,299",
+   "caption": "estimated, all bundled files",
+   "tone": "neutral"
+  },
+  {
+   "label": "Task bundle",
+   "value": "1,269 tok",
+   "caption": "0.6% of a 200k window",
+   "tone": "good"
+  },
+  {
+   "label": "Heaviest skill",
+   "value": "metric-reconciliation",
+   "caption": "9,457 tokens",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "skill-token-cost",
+   "kind": "hbar",
+   "title": "Estimated token cost of the 12 heaviest installed skills",
+   "data": [
+    {
+     "x": "metric-reconciliation",
+     "tokens": 9457
+    },
+    {
+     "x": "schema-mapper",
+     "tokens": 9444
+    },
+    {
+     "x": "data-quality-audit",
+     "tokens": 9276
+    },
+    {
+     "x": "programmatic-eda",
+     "tokens": 8293
+    },
+    {
+     "x": "semantic-model-builder",
+     "tokens": 8285
+    },
+    {
+     "x": "query-validation",
+     "tokens": 7518
+    },
+    {
+     "x": "impact-quantification",
+     "tokens": 6932
+    },
+    {
+     "x": "technical-to-business-translator",
+     "tokens": 6928
+    },
+    {
+     "x": "cohort-analysis",
+     "tokens": 6752
+    },
+    {
+     "x": "visualization-builder",
+     "tokens": 5470
+    },
+    {
+     "x": "context-packager",
+     "tokens": 5153
+    },
+    {
+     "x": "root-cause-investigation",
+     "tokens": 4966
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "tokens",
+     "label": "Estimated tokens"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "token_counter.py uses 3 chars/token for code-like text, 4 for prose.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "bundle",
+   "title": "Bundle layers actually sent",
+   "columns": [
+    "Layer",
+    "Content",
+    "Why"
+   ],
+   "rows": [
+    [
+     "task",
+     "Score customers for churn; recommend an offer threshold",
+     "the decision"
+    ],
+    [
+     "business",
+     "artifacts/semantic_model.yml",
+     "metric definitions the answer must use"
+    ],
+    [
+     "constraints",
+     "artifacts/assumptions_log.json",
+     "what may not be assumed silently"
+    ],
+    [
+     "schema / prior findings / format",
+     "not included",
+     "trimmed first under the skill's order"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Context Bundle\n\n## TASK\nScore Telco customers for churn risk and recommend a retention offer threshold.\n\n## BUSINESS CONTEXT\n### semantic_model.yml\nentities:\n- name: customer\n  label: Customer\n  type: primary\n  expr: customerID\n  description: A telco subscriber account in the Kaggle churn snapshot.\n  meta:\n    owner: retention-analytics\n    source_table: data/raw/Telco-Customer-Churn.csv\n    grain: one row per customer account\ndimensions:\n- name: contract\n  label: Contract type\n  type: categorical\n  expr: Contract\n  description: 'Commitment length: month-to-month, one year or two year.'\n  meta:\n    owner: retention-analytics\n    possible_values:\n    - Month-to-month\n    - One year\n    - Two year\n- name: internet_service\n  label: Internet service\n  type: categorical\n  expr: InternetService\n  description: Fibre, DSL or none.\n  meta:\n    owner: retention-analytics\n    possible_values:\n   ",
+ "code_language": "markdown",
+ "takeaway": "Everything the churn task needs fits in 1,269 tokens; the 46 skill documents are 132x larger and belong on disk, not in the prompt.",
+ "used_skill_scripts": [
+  ".claude/skills/context-packager/scripts/token_counter.py",
+  ".claude/skills/context-packager/scripts/context_bundler.py"
+ ],
+ "artifacts": [
+  "artifacts/context_bundle.txt"
+ ],
+ "generated_at": "2026-09-01T04:36:15"
+}

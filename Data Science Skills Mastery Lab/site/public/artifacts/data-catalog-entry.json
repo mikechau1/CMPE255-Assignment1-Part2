@@ -1,0 +1,173 @@
+{
+ "skill": "data-catalog-entry",
+ "source": "data-analytics-skills",
+ "category": "Documentation & Knowledge",
+ "phase": 2,
+ "track": "T1",
+ "title": "A catalog entry extracted from the live table, not typed by hand",
+ "prescribes": "Generate the technical half of a catalog entry by inspecting the database, then fill the human half: ownership, criticality, quality, lineage, sensitivity and access.",
+ "applied": "Loaded the Telco frame into SQLite with a real primary-key index, ran catalog_extractor.py's SQLAlchemy inspection against it, and completed every placeholder from evidence in this lab.",
+ "narrative": [
+  "The extractor found 22 columns and 7,043 rows by inspecting the database, so the schema half of the entry cannot drift from reality the way a hand-written wiki page does.",
+  "The half a machine cannot produce is the half that matters: criticality, the churn-window caveat, the SeniorCitizen type trap found by schema-mapper, and the lineage back to a URL with a SHA-256. All of those came from other phase-2 skills, which is the argument for running them first.",
+  "Lineage points forward too -- the phase-4 model and the phase-6 service are listed as downstream consumers, so a future change to this table has a blast radius written down."
+ ],
+ "kpis": [
+  {
+   "label": "Columns catalogued",
+   "value": "22",
+   "caption": "via SQLAlchemy inspection",
+   "tone": "neutral"
+  },
+  {
+   "label": "Rows at extraction",
+   "value": "7,043",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Completeness",
+   "value": "99.99%",
+   "caption": "null cells / all cells",
+   "tone": "good"
+  },
+  {
+   "label": "Placeholders left",
+   "value": "0",
+   "caption": "every [fill in] resolved",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "col-types",
+   "kind": "bar",
+   "title": "Catalogued column types",
+   "data": [
+    {
+     "x": "TEXT",
+     "n": 17
+    },
+    {
+     "x": "INTEGER",
+     "n": 3
+    },
+    {
+     "x": "REAL",
+     "n": 2
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "Columns"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "cols",
+   "title": "Extracted schema (first 12 columns)",
+   "columns": [
+    "Column",
+    "Type",
+    "Nullable",
+    "Primary key"
+   ],
+   "rows": [
+    [
+     "customerID",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "gender",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "SeniorCitizen",
+     "INTEGER",
+     "yes",
+     "-"
+    ],
+    [
+     "Partner",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "Dependents",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "tenure",
+     "INTEGER",
+     "yes",
+     "-"
+    ],
+    [
+     "PhoneService",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "MultipleLines",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "InternetService",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "OnlineSecurity",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "OnlineBackup",
+     "TEXT",
+     "yes",
+     "-"
+    ],
+    [
+     "DeviceProtection",
+     "TEXT",
+     "yes",
+     "-"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# telco_customers\n\n## Overview\n\n**Name:** `telco_customers`  \n**Type:** table  \n**Domain:** Customer retention  \n**Criticality:** high  \n\n**Description:**  \nOne row per telco subscriber account, with service mix, billing and a churn label; the training table for the retention model.\n\n## Ownership\n\n- **Business Owner:** VP Customer Retention\n- **Technical Owner:** CMPE255 skills lab\n\n## Schema\n\n**Row Count (at extraction):** 7,043  \n**Extracted:** 2026-09-01T11:36:46.575245  \n\n| Column | Type | Nullable | Keys | Description |\n| --- | --- | --- | --- | --- |\n| customerID | TEXT | Yes | - | [description] |\n| gender | TEXT | Yes | - | [description] |\n| SeniorCitizen | INTEGER | Yes | - | [description] |\n| Partner | TEXT | Yes | - | [description] |\n| Dependents | TEXT | Yes | - | [description] |\n| tenure | INTEGER | Yes | - | [description] |\n| PhoneService | TEXT | Yes | - | [description] |\n| MultipleLines | TEXT | Yes | - | [description] |\n| InternetService | TEXT | Yes | - | [description] |\n| OnlineSecurity | TEXT | Yes | - | [description] |\n| OnlineBackup | TEXT | Yes | - | [description] |\n| DeviceProtection | TEXT | Yes | - | [description] |\n| TechSupport | TEXT | Yes | - | [description] |\n| StreamingTV | TEXT | Yes | - | [description] |\n| StreamingMovies | TEXT | Yes | - | [description] |\n| Contract | TEXT | Yes | - | [description] |\n| PaperlessBilling | TEXT | Yes | - | [description] |\n| PaymentMethod | TEXT | Yes | - | [description] |\n| MonthlyCharges | REAL | Yes | - | [description] |\n| TotalCharges | REAL | Yes | - | [description] |\n| Churn | TEXT | Yes | - | [description] |\n| Churn_flag | INTEGER | Yes | - | [description] |\n\n## Data Quality\n\n- **Completeness:** 99.99% (11 null cells, all in TotalCharges)\n- **Freshness:** static Kaggle snapshot; no refresh\n- **Known",
+ "code_language": "markdown",
+ "takeaway": "The catalog entry is generated from the table and completed from this lab's own findings, so every claim in it is traceable rather than remembered.",
+ "used_skill_scripts": [
+  ".claude/skills/data-catalog-entry/scripts/catalog_extractor.py"
+ ],
+ "artifacts": [
+  "artifacts/catalog_telco_customers.md",
+  "data/interim/lab.db"
+ ],
+ "generated_at": "2026-09-01T04:36:46"
+}

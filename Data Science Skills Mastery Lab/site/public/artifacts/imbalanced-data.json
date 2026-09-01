@@ -1,0 +1,402 @@
+{
+ "skill": "imbalanced-data",
+ "source": "agent-ml-skills",
+ "category": "Data Prep & Exploration",
+ "phase": 3,
+ "track": "T1b",
+ "title": "Fraud at 0.615% prevalence: metrics first, resampling second",
+ "prescribes": "With a rare target, drop accuracy, judge on PR-AUC and recall at a chosen precision, apply class weights or SMOTE to the training split only, and tune the decision threshold.",
+ "applied": "Trained three logistic models on Credit Card Fraud (mlg-ulb/creditcardfraud, 80k-row stratified subsample keeping all frauds) -- untouched, class-weighted, and SMOTE-resampled -- and compared them on ROC-AUC, PR-AUC and the best achievable F1 threshold.",
+ "narrative": [
+  "Fraud is 0.173% of the full Kaggle file (492 of 284,807). The 80k-row subsample used here keeps every fraud, so prevalence rises to 0.615% -- still rare enough that predicting 'never fraud' scores 99.383% accuracy on the test split. That single number is why accuracy is banned here: it is beaten by a model that does nothing, and it is the metric a stakeholder will reach for unless you replace it first.",
+  "ROC-AUC barely separates the three strategies (0.984 to 0.986) because it is dominated by the overwhelming negative class. PR-AUC does separate them, which is the whole argument for using it when positives are rare.",
+  "SMOTE is applied strictly inside the training split -- synthesising minority points before the split would place near-duplicates of training frauds into the test set and produce a beautiful, meaningless score.",
+  "The threshold is a business decision, not a default. At the F1-optimal cut-off each strategy trades precision against recall differently; the operating point should come from the cost of a missed fraud versus a false alarm, which is exactly the input phase 5 quantifies."
+ ],
+ "kpis": [
+  {
+   "label": "Positive prevalence",
+   "value": "0.615%",
+   "caption": "492 positives",
+   "tone": "neutral"
+  },
+  {
+   "label": "Accuracy of 'always negative'",
+   "value": "99.383%",
+   "caption": "why accuracy is useless here",
+   "tone": "bad"
+  },
+  {
+   "label": "Best PR-AUC",
+   "value": "0.868",
+   "caption": "SMOTE (train only)",
+   "tone": "good"
+  },
+  {
+   "label": "ROC-AUC spread",
+   "value": "0.001",
+   "caption": "ROC hides what PR shows",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "pr-curves",
+   "kind": "line",
+   "title": "Precision-recall curves by imbalance strategy",
+   "data": [
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0062,
+     "class_weight='balanced'": 0.0062,
+     "SMOTE (train only)": 0.0062
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0063,
+     "class_weight='balanced'": 0.0063,
+     "SMOTE (train only)": 0.0063
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0065,
+     "class_weight='balanced'": 0.0065,
+     "SMOTE (train only)": 0.0065
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0067,
+     "class_weight='balanced'": 0.0067,
+     "SMOTE (train only)": 0.0067
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0069,
+     "class_weight='balanced'": 0.0069,
+     "SMOTE (train only)": 0.0069
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0071,
+     "class_weight='balanced'": 0.0071,
+     "SMOTE (train only)": 0.0071
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0073,
+     "class_weight='balanced'": 0.0073,
+     "SMOTE (train only)": 0.0073
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0075,
+     "class_weight='balanced'": 0.0075,
+     "SMOTE (train only)": 0.0075
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0078,
+     "class_weight='balanced'": 0.0078,
+     "SMOTE (train only)": 0.0078
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.008,
+     "class_weight='balanced'": 0.008,
+     "SMOTE (train only)": 0.008
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0083,
+     "class_weight='balanced'": 0.0083,
+     "SMOTE (train only)": 0.0083
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0086,
+     "class_weight='balanced'": 0.0086,
+     "SMOTE (train only)": 0.0086
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0089,
+     "class_weight='balanced'": 0.0089,
+     "SMOTE (train only)": 0.0089
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0092,
+     "class_weight='balanced'": 0.0092,
+     "SMOTE (train only)": 0.0092
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0096,
+     "class_weight='balanced'": 0.0096,
+     "SMOTE (train only)": 0.0096
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.01,
+     "class_weight='balanced'": 0.01,
+     "SMOTE (train only)": 0.01
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0105,
+     "class_weight='balanced'": 0.0104,
+     "SMOTE (train only)": 0.0104
+    },
+    {
+     "x": 1.0,
+     "Logistic (no handling)": 0.0109,
+     "class_weight='balanced'": 0.0108,
+     "SMOTE (train only)": 0.0109
+    },
+    {
+     "x": 0.9932,
+     "Logistic (no handling)": 0.0114,
+     "class_weight='balanced'": 0.0113,
+     "SMOTE (train only)": 0.0113
+    },
+    {
+     "x": 0.9932,
+     "Logistic (no handling)": 0.0119,
+     "class_weight='balanced'": 0.0118,
+     "SMOTE (train only)": 0.0117
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0125,
+     "class_weight='balanced'": 0.0124,
+     "SMOTE (train only)": 0.0124
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0132,
+     "class_weight='balanced'": 0.0131,
+     "SMOTE (train only)": 0.013
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.014,
+     "class_weight='balanced'": 0.0138,
+     "SMOTE (train only)": 0.0138
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0149,
+     "class_weight='balanced'": 0.0147,
+     "SMOTE (train only)": 0.0147
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0158,
+     "class_weight='balanced'": 0.0157,
+     "SMOTE (train only)": 0.0156
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.017,
+     "class_weight='balanced'": 0.0168,
+     "SMOTE (train only)": 0.0167
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0183,
+     "class_weight='balanced'": 0.0181,
+     "SMOTE (train only)": 0.018
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0198,
+     "class_weight='balanced'": 0.0195,
+     "SMOTE (train only)": 0.0195
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0216,
+     "class_weight='balanced'": 0.0213,
+     "SMOTE (train only)": 0.0213
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0238,
+     "class_weight='balanced'": 0.0234,
+     "SMOTE (train only)": 0.0233
+    },
+    {
+     "x": 0.9865,
+     "Logistic (no handling)": 0.0264,
+     "class_weight='balanced'": 0.026,
+     "SMOTE (train only)": 0.0259
+    },
+    {
+     "x": 0.9797,
+     "Logistic (no handling)": 0.0295,
+     "class_weight='balanced'": 0.0292,
+     "SMOTE (train only)": 0.0291
+    },
+    {
+     "x": 0.973,
+     "Logistic (no handling)": 0.0334,
+     "class_weight='balanced'": 0.0333,
+     "SMOTE (train only)": 0.0332
+    },
+    {
+     "x": 0.973,
+     "Logistic (no handling)": 0.039,
+     "class_weight='balanced'": 0.0388,
+     "SMOTE (train only)": 0.0386
+    },
+    {
+     "x": 0.973,
+     "Logistic (no handling)": 0.0468,
+     "class_weight='balanced'": 0.0464,
+     "SMOTE (train only)": 0.0459
+    },
+    {
+     "x": 0.973,
+     "Logistic (no handling)": 0.0584,
+     "class_weight='balanced'": 0.0573,
+     "SMOTE (train only)": 0.0566
+    },
+    {
+     "x": 0.9392,
+     "Logistic (no handling)": 0.075,
+     "class_weight='balanced'": 0.0748,
+     "SMOTE (train only)": 0.0737
+    },
+    {
+     "x": 0.9324,
+     "Logistic (no handling)": 0.1117,
+     "class_weight='balanced'": 0.1071,
+     "SMOTE (train only)": 0.1068
+    },
+    {
+     "x": 0.9122,
+     "Logistic (no handling)": 0.2174,
+     "class_weight='balanced'": 0.2012,
+     "SMOTE (train only)": 0.1968
+    },
+    {
+     "x": 0.0,
+     "Logistic (no handling)": 1.0,
+     "class_weight='balanced'": 1.0,
+     "SMOTE (train only)": 1.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "Logistic (no handling)",
+     "label": "Logistic (no handling)"
+    },
+    {
+     "key": "class_weight='balanced'",
+     "label": "class_weight='balanced'"
+    },
+    {
+     "key": "SMOTE (train only)",
+     "label": "SMOTE (train only)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "recall",
+   "yLabel": "precision",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "metric-compare",
+   "kind": "bar",
+   "title": "ROC-AUC vs PR-AUC by strategy",
+   "data": [
+    {
+     "x": "Logistic (no handling)",
+     "roc_auc": 0.9856,
+     "pr_auc": 0.8612
+    },
+    {
+     "x": "class_weight='balanced'",
+     "roc_auc": 0.9846,
+     "pr_auc": 0.8648
+    },
+    {
+     "x": "SMOTE (train only)",
+     "roc_auc": 0.9841,
+     "pr_auc": 0.8677
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "roc_auc",
+     "label": "ROC-AUC"
+    },
+    {
+     "key": "pr_auc",
+     "label": "PR-AUC"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "ROC-AUC looks flat across strategies; PR-AUC is the metric that discriminates.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "strategies",
+   "title": "Strategy comparison on the held-out split",
+   "columns": [
+    "Strategy",
+    "ROC-AUC",
+    "PR-AUC",
+    "Best threshold",
+    "Precision",
+    "Recall",
+    "F1"
+   ],
+   "rows": [
+    [
+     "Logistic (no handling)",
+     0.9856,
+     0.8612,
+     0.3201,
+     0.93,
+     0.811,
+     0.866
+    ],
+    [
+     "class_weight='balanced'",
+     0.9846,
+     0.8648,
+     1.0,
+     0.967,
+     0.804,
+     0.878
+    ],
+    [
+     "SMOTE (train only)",
+     0.9841,
+     0.8677,
+     1.0,
+     0.983,
+     0.791,
+     0.876
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "Xtr, Xte, ytr, yte = train_test_split(X, y, stratify=y, random_state=SEED)\nscaler = StandardScaler().fit(Xtr)              # fitted on train only\nXsm, ysm = SMOTE(random_state=SEED).fit_resample(scaler.transform(Xtr), ytr)  # train only\np = model.fit(Xsm, ysm).predict_proba(scaler.transform(Xte))[:, 1]\nprec, rec, thr = precision_recall_curve(yte, p)   # never accuracy",
+ "code_language": "python",
+ "takeaway": "At 0.615% prevalence the do-nothing baseline is 99.4% accurate and worthless; PR-AUC and an explicit threshold are the only honest way to compare the three strategies -- ROC-AUC separates them by 0.001.",
+ "used_skill_scripts": [],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:52"
+}

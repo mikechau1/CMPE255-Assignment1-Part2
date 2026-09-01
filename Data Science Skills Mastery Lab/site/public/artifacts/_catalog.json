@@ -1,0 +1,938 @@
+{
+ "phases": [
+  {
+   "phase": 1,
+   "name": "Business Understanding",
+   "blurb": "Frame the churn/retention problem, agree the metrics, plan the work."
+  },
+  {
+   "phase": 2,
+   "name": "Data Understanding",
+   "blurb": "Profile, audit and query the raw Kaggle data before touching a model."
+  },
+  {
+   "phase": 3,
+   "name": "Data Preparation",
+   "blurb": "Clean, engineer, rebalance and segment -- train-only, leakage-checked."
+  },
+  {
+   "phase": 4,
+   "name": "Modeling",
+   "blurb": "Pipelines, tuning, tracking, deep learning, LLM fine-tuning, RAG -- and a deliberate bug."
+  },
+  {
+   "phase": 5,
+   "name": "Evaluation",
+   "blurb": "Do the numbers hold up, and are they worth money?"
+  },
+  {
+   "phase": 6,
+   "name": "Deployment",
+   "blurb": "Serve the model, specify the dashboard, and tell the story to humans."
+  }
+ ],
+ "tracks": [
+  {
+   "id": "T1",
+   "label": "Telco Customer Churn (blastchar/telco-customer-churn)"
+  },
+  {
+   "id": "T1b",
+   "label": "Credit Card Fraud (mlg-ulb/creditcardfraud)"
+  },
+  {
+   "id": "T2",
+   "label": "Online Retail (vijayuv/onlineretail)"
+  },
+  {
+   "id": "T3",
+   "label": "Titanic (c/titanic)"
+  },
+  {
+   "id": "T4",
+   "label": "Fashion-MNIST (zalando-research/fashionmnist)"
+  },
+  {
+   "id": "T5",
+   "label": "Text corpus: the 46 installed SKILL.md files"
+  },
+  {
+   "id": "meta",
+   "label": "The lab itself"
+  }
+ ],
+ "skills": [
+  {
+   "skill": "analysis-assumptions-log",
+   "source": "data-analytics-skills",
+   "category": "Documentation & Knowledge",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Track and document analytical assumptions and decisions. Use when making analytical choices, documenting trade-offs, ensuring transparency, or creating audit trails for analytical work.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/assumptions_log_template.md",
+    "references/assumption_categories.md",
+    "scripts/__pycache__/assumptions_tracker.cpython-312.pyc",
+    "scripts/assumptions_tracker.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "analysis-planning",
+   "source": "data-analytics-skills",
+   "category": "Workflow Optimization",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Structure analysis approach before starting work. Use when receiving new analysis requests, breaking down complex questions into steps, or planning iterative analysis workflows.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/analysis_plan_template.md",
+    "assets/kickoff_doc_template.md",
+    "references/effort_estimation.md",
+    "references/risks_dependencies.md",
+    "references/scoping_framework.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "business-metrics-calculator",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Standard business metric calculation with industry benchmarks. Use when calculating SaaS metrics (MRR, churn, LTV, CAC), e-commerce KPIs, or product analytics metrics with proper definitions.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/metrics_report_template.md",
+    "references/metric_definitions.md",
+    "scripts/__pycache__/saas_metrics.cpython-312.pyc",
+    "scripts/saas_metrics.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "context-packager",
+   "source": "data-analytics-skills",
+   "category": "Workflow Optimization",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "meta",
+   "track_label": "The lab itself",
+   "description": "Efficiently package context for AI-assisted analysis. Use when preparing to work with Claude on analysis, organizing context documents, or structuring prompts for complex analytical tasks.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/context_package_template.md",
+    "references/context_layering_guide.md",
+    "references/context_quality_rubric.md",
+    "scripts/__pycache__/context_bundler.cpython-312.pyc",
+    "scripts/__pycache__/token_counter.cpython-312.pyc",
+    "scripts/context_bundler.py",
+    "scripts/token_counter.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "reproducible-ml",
+   "source": "agent-ml-skills",
+   "category": "MLOps & Reliability",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "meta",
+   "track_label": "The lab itself",
+   "description": "Use when an ML result must be reproducible \u2014 fixing seeds, pinning environments, versioning data, and structuring projects so runs can be exactly recreated. Covers determinism gotchas across NumPy, PyTorch, and CUDA.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "semantic-model-builder",
+   "source": "data-analytics-skills",
+   "category": "Documentation & Knowledge",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Build structured semantic layer documentation for metrics, dimensions, and entities. Activate when you need to define a business metric, document a data model, or create YAML definitions compatible with dbt Semantic Layer or similar frameworks.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/dimension_definition.yaml",
+    "assets/entity_definition.yaml",
+    "assets/metric_definition.yaml",
+    "references/dbt_semantic_layer_guide.md",
+    "references/dimension_hierarchy_patterns.md",
+    "references/metric_definition_framework.md",
+    "scripts/__pycache__/metric_template_generator.cpython-312.pyc",
+    "scripts/__pycache__/model_yaml_validator.cpython-312.pyc",
+    "scripts/metric_template_generator.py",
+    "scripts/model_yaml_validator.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "stakeholder-requirements-gathering",
+   "source": "data-analytics-skills",
+   "category": "Stakeholder Communication",
+   "phase": 1,
+   "phase_name": "Business Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Structured requirements elicitation for analysis requests. Use when scoping new analysis projects, clarifying ambiguous business questions, or documenting analysis acceptance criteria with stakeholders.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/analysis_brief_template.md",
+    "assets/interview_guide.md",
+    "assets/requirements_doc_template.md",
+    "references/decision_maker_framework.md",
+    "references/elicitation_techniques.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "data-catalog-entry",
+   "source": "data-analytics-skills",
+   "category": "Documentation & Knowledge",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Create standardized metadata for data assets. Use when documenting new datasets, building data catalogs, improving data discoverability, or creating data dictionaries for teams.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/catalog_entry_template.md",
+    "references/catalog_standards.md",
+    "scripts/__pycache__/catalog_extractor.cpython-312.pyc",
+    "scripts/catalog_extractor.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "data-quality-audit",
+   "source": "data-analytics-skills",
+   "category": "Data Quality & Validation",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Comprehensive data quality assessment against business rules, schema constraints, and freshness expectations. Activate when validating data pipeline outputs before production use, auditing a dataset against defined business rules, or producing a quality scorecard for a data asset.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/audit_report_template.html",
+    "assets/quality_rubric.md",
+    "references/business_rule_patterns.md",
+    "references/quality_dimensions.md",
+    "scripts/__pycache__/duplicate_finder.cpython-312.pyc",
+    "scripts/__pycache__/freshness_check.cpython-312.pyc",
+    "scripts/__pycache__/null_counter.cpython-312.pyc",
+    "scripts/__pycache__/referential_integrity.cpython-312.pyc",
+    "scripts/__pycache__/value_range_validator.cpython-312.pyc",
+    "scripts/duplicate_finder.py",
+    "scripts/freshness_check.py",
+    "scripts/null_counter.py",
+    "scripts/referential_integrity.py",
+    "scripts/value_range_validator.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "exploratory-data-analysis",
+   "source": "agent-ml-skills",
+   "category": "Data Prep & Exploration",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when starting on a new dataset, before modeling, or when asked to \"explore\", \"profile\", \"understand\", or \"summarize\" data. Covers structured EDA, distributions, correlations, target leakage checks, and visualization.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "metric-reconciliation",
+   "source": "data-analytics-skills",
+   "category": "Data Quality & Validation",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Cross-source metric validation and discrepancy investigation. Use when metrics from different sources don't match, investigating data quality issues between systems, or validating data migration accuracy.",
+   "bundled_files": [
+    "SKILL.md",
+    "metric-reconciliation/SKILL.md",
+    "metric-reconciliation/assets/reconciliation_report_template.md",
+    "metric-reconciliation/references/reconciliation_patterns.md",
+    "metric-reconciliation/scripts/__pycache__/reconcile_metrics.cpython-312.pyc",
+    "metric-reconciliation/scripts/reconcile_metrics.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "pandas-patterns",
+   "source": "agent-ml-skills",
+   "category": "Data Prep & Exploration",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Use when writing or reviewing pandas code. Covers idiomatic, vectorized, memory-efficient patterns; avoiding SettingWithCopyWarning, chained indexing, and slow apply loops.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "programmatic-eda",
+   "source": "data-analytics-skills",
+   "category": "Data Quality & Validation",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Systematic exploratory data analysis. Activate when a dataset needs profiling \u2014 structure check, nulls, outliers, distributions, correlations \u2014 before deeper analysis begins.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/eda_report_template.md",
+    "assets/findings_summary.md",
+    "references/eda_checklist.md",
+    "references/pandas_polars_recipes.md",
+    "references/quality_thresholds.md",
+    "scripts/__pycache__/correlation_explorer.cpython-312.pyc",
+    "scripts/__pycache__/data_overview.cpython-312.pyc",
+    "scripts/__pycache__/distribution_summary.cpython-312.pyc",
+    "scripts/__pycache__/null_profiler.cpython-312.pyc",
+    "scripts/__pycache__/outlier_detector.cpython-312.pyc",
+    "scripts/correlation_explorer.py",
+    "scripts/data_overview.py",
+    "scripts/distribution_summary.py",
+    "scripts/null_profiler.py",
+    "scripts/outlier_detector.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "query-validation",
+   "source": "data-analytics-skills",
+   "category": "Data Quality & Validation",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "SQL query review for correctness, performance, and best practices. Activate when a query needs review before production use, shows unexpected results, or runs too slowly.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/optimization_recommendations.md",
+    "assets/query_review_template.md",
+    "references/engine_specific_guide.md",
+    "references/sql_anti_patterns.md",
+    "scripts/__pycache__/cardinality_estimator.cpython-312.pyc",
+    "scripts/__pycache__/sql_lint.cpython-312.pyc",
+    "scripts/cardinality_estimator.py",
+    "scripts/explain_plan_parser.py",
+    "scripts/sql_lint.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "schema-mapper",
+   "source": "data-analytics-skills",
+   "category": "Data Quality & Validation",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Database schema understanding and relationship mapping. Use when exploring unfamiliar databases, documenting table relationships, identifying join paths, or generating ERD documentation for existing schemas.",
+   "bundled_files": [
+    "SKILL.md",
+    "schema-mapper/SKILL.md",
+    "schema-mapper/assets/schema_mapping_template.md",
+    "schema-mapper/references/schema_mapping_patterns.md",
+    "schema-mapper/scripts/__pycache__/schema_compare.cpython-312.pyc",
+    "schema-mapper/scripts/schema_compare.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "sql-to-business-logic",
+   "source": "data-analytics-skills",
+   "category": "Documentation & Knowledge",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Translate SQL queries into plain language business logic. Use when documenting queries, explaining analysis to non-technical stakeholders, code reviewing for correctness, or building a query catalog.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/query_documentation_template.md",
+    "references/sql_pattern_library.md",
+    "scripts/__pycache__/sql_explainer.cpython-312.pyc",
+    "scripts/sql_explainer.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "time-series-analysis",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 2,
+   "phase_name": "Data Understanding",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Temporal pattern detection and forecasting. Use when analyzing trends over time, detecting seasonality, identifying anomalies in time series, or building simple forecasting models for planning.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/ts_report_template.md",
+    "references/ts_patterns_guide.md",
+    "scripts/__pycache__/ts_analyzer.cpython-312.pyc",
+    "scripts/ts_analyzer.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "cohort-analysis",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 3,
+   "phase_name": "Data Preparation",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Time-based cohort analysis with retention and behaviour tracking. Activate when you need to measure how groups of users/customers behave over time \u2014 retention rates, revenue by cohort, or feature adoption curves.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/cohort_report_template.md",
+    "assets/retention_matrix.html",
+    "references/cohort_definition_patterns.md",
+    "references/retention_metrics_glossary.md",
+    "scripts/__pycache__/cohort_builder.cpython-312.pyc",
+    "scripts/__pycache__/retention_matrix.cpython-312.pyc",
+    "scripts/cohort_builder.py",
+    "scripts/cohort_query.sql",
+    "scripts/cohort_visualizer.py",
+    "scripts/retention_matrix.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "data-cleaning",
+   "source": "agent-ml-skills",
+   "category": "Data Prep & Exploration",
+   "phase": 3,
+   "phase_name": "Data Preparation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when preparing raw data for modeling \u2014 handling missing values, duplicates, inconsistent types, outliers, and bad categorical values. Emphasizes fitting all imputation on train-only to avoid leakage.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "feature-engineering",
+   "source": "agent-ml-skills",
+   "category": "Data Prep & Exploration",
+   "phase": 3,
+   "phase_name": "Data Preparation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when creating, encoding, scaling, or selecting features for ML models. Covers categorical encoding, numeric transforms, datetime/text/aggregation features, and leakage-safe target encoding.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "imbalanced-data",
+   "source": "agent-ml-skills",
+   "category": "Data Prep & Exploration",
+   "phase": 3,
+   "phase_name": "Data Preparation",
+   "track": "T1b",
+   "track_label": "Credit Card Fraud (mlg-ulb/creditcardfraud)",
+   "description": "Use when the target is rare (fraud, churn, disease, anomalies). Covers correct metrics, resampling (SMOTE/undersampling), class weights, threshold tuning, and avoiding the accuracy trap and resampling leakage.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "segmentation-analysis",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 3,
+   "phase_name": "Data Preparation",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Customer/user segmentation with actionable insights. Use when identifying distinct customer groups, analyzing segment-specific behavior, profiling high-value segments, or testing segmentation hypotheses.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/segment_profile_template.md",
+    "references/segmentation_approaches.md",
+    "scripts/__pycache__/segmentation_runner.cpython-312.pyc",
+    "scripts/segmentation_runner.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "experiment-tracking",
+   "source": "agent-ml-skills",
+   "category": "MLOps & Reliability",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when running ML experiments that need to be compared, reproduced, or shared. Covers MLflow/Weights & Biases logging, what to track, run organization, and model registry basics.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "hyperparameter-tuning",
+   "source": "agent-ml-skills",
+   "category": "Modeling",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when optimizing model hyperparameters. Covers search strategy (random vs Bayesian/Optuna), leakage-safe tuning inside CV, search-space design, early stopping, and budget management.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "llm-finetuning",
+   "source": "agent-ml-skills",
+   "category": "LLMs & GenAI",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T5",
+   "track_label": "Text corpus: the 46 installed SKILL.md files",
+   "description": "Use when fine-tuning a large language model. Covers choosing full vs LoRA/QLoRA, dataset formatting, the transformers/PEFT/TRL stack, key hyperparameters, and evaluating fine-tunes without overfitting.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "ml-debugging",
+   "source": "agent-ml-skills",
+   "category": "MLOps & Reliability",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when a model won't learn, loss is NaN, metrics look too good/bad, or training is unstable. Provides a systematic decision tree for diagnosing data, optimization, and generalization failures.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "pytorch-training-loop",
+   "source": "agent-ml-skills",
+   "category": "Modeling",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T4",
+   "track_label": "Fashion-MNIST (zalando-research/fashionmnist)",
+   "description": "Use when writing or reviewing a PyTorch training loop. Covers correct train/eval modes, gradient handling, mixed precision, checkpointing, reproducibility, and device management.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "rag-pipeline",
+   "source": "agent-ml-skills",
+   "category": "LLMs & GenAI",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T5",
+   "track_label": "Text corpus: the 46 installed SKILL.md files",
+   "description": "Use when building retrieval-augmented generation. Covers chunking strategy, embedding choice, vector stores, hybrid + reranking retrieval, prompt assembly, and evaluating retrieval and answer quality.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "sklearn-pipelines",
+   "source": "agent-ml-skills",
+   "category": "Modeling",
+   "phase": 4,
+   "phase_name": "Modeling",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when building scikit-learn models that must not leak preprocessing. Covers Pipeline, ColumnTransformer, custom transformers, and combining preprocessing with cross-validation correctly.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "ab-test-analysis",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Rigorous A/B test statistical analysis. Use when analyzing experiment results, calculating statistical significance, checking for sample ratio mismatch, or validating test design before launch.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/ab_test_report_template.md",
+    "references/ab_test_design_guide.md",
+    "scripts/__pycache__/ab_test_analyzer.cpython-312.pyc",
+    "scripts/ab_test_analyzer.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "analysis-qa-checklist",
+   "source": "data-analytics-skills",
+   "category": "Stakeholder Communication",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Pre-delivery quality assurance for analysis work. Use when reviewing analysis before sharing with stakeholders, checking for completeness, validating assumptions, or ensuring clarity of recommendations.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/qa_signoff_template.md",
+    "references/common_analysis_errors.md",
+    "references/qa_checklist_master.md",
+    "scripts/__pycache__/qa_runner.cpython-312.pyc",
+    "scripts/qa_runner.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "impact-quantification",
+   "source": "data-analytics-skills",
+   "category": "Stakeholder Communication",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Estimate and communicate business impact of insights. Use when sizing opportunities discovered in analysis, calculating ROI of recommended actions, or prioritizing initiatives by potential impact.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/business_case_template.md",
+    "assets/impact_estimate_template.md",
+    "references/assumption_documentation.md",
+    "references/impact_quantification_framework.md",
+    "scripts/__pycache__/confidence_interval.cpython-312.pyc",
+    "scripts/__pycache__/cost_savings.cpython-312.pyc",
+    "scripts/__pycache__/revenue_impact.cpython-312.pyc",
+    "scripts/confidence_interval.py",
+    "scripts/cost_savings.py",
+    "scripts/revenue_impact.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "insight-synthesis",
+   "source": "data-analytics-skills",
+   "category": "Data Storytelling & Visualization",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Transform data findings into compelling insights. Use when converting analysis results into actionable insights, connecting findings to business impact, or preparing insights for stakeholder communication.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/insight_brief_template.md",
+    "references/insight_framework.md",
+    "references/prioritization_guide.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "model-evaluation",
+   "source": "agent-ml-skills",
+   "category": "Modeling",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when choosing metrics, validating models, or interpreting results. Covers metric selection by problem type, cross-validation strategy, calibration, confusion-matrix analysis, and avoiding misleading scores.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "peer-review-template",
+   "source": "data-analytics-skills",
+   "category": "Workflow Optimization",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "meta",
+   "track_label": "The lab itself",
+   "description": "Structured peer review for analytical work. Use when reviewing teammates' analysis, providing constructive feedback, or establishing analysis quality standards.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/peer_review_template.md",
+    "assets/review_response_template.md",
+    "references/analytical_rigor_checklist.md",
+    "references/code_review_for_analysis.md",
+    "references/peer_review_framework.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "root-cause-investigation",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 5,
+   "phase_name": "Evaluation",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Systematic investigation of metric changes and anomalies. Use when a metric unexpectedly changes, investigating business metric drops, explaining performance variations, or drilling into aggregated metric drivers.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/rca_report_template.md",
+    "references/hypothesis_testing_guide.md",
+    "references/rca_framework.md",
+    "scripts/__pycache__/drilldown_analyzer.cpython-312.pyc",
+    "scripts/drilldown_analyzer.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "analysis-documentation",
+   "source": "data-analytics-skills",
+   "category": "Documentation & Knowledge",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "meta",
+   "track_label": "The lab itself",
+   "description": "Structured, reproducible analysis documentation. Use when documenting analysis findings, creating analysis notebooks, ensuring reproducibility, or building analysis archives for future reference.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/analysis_doc_template.md",
+    "references/audience_depth_guide.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "analysis-retrospective",
+   "source": "data-analytics-skills",
+   "category": "Workflow Optimization",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "meta",
+   "track_label": "The lab itself",
+   "description": "Post-analysis learning and process improvement. Use when completing major analysis projects, documenting lessons learned, or improving team analytical practices.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/learnings_log_template.md",
+    "assets/retrospective_template.md",
+    "references/learning_capture.md",
+    "references/retro_frameworks.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "dashboard-specification",
+   "source": "data-analytics-skills",
+   "category": "Data Storytelling & Visualization",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Design specifications for effective dashboards. Use when planning new dashboards, improving existing ones, or documenting dashboard requirements before development starts.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/dashboard_spec_template.md",
+    "references/dashboard_design_principles.md",
+    "references/dashboard_requirements_guide.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "data-narrative-builder",
+   "source": "data-analytics-skills",
+   "category": "Data Storytelling & Visualization",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Build compelling data-driven narratives. Use when presenting analysis results, creating stakeholder reports, or transforming a set of findings into a story that drives a specific decision or action.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/narrative_template.md",
+    "references/data_writing_guide.md",
+    "references/narrative_frameworks.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "executive-summary-generator",
+   "source": "data-analytics-skills",
+   "category": "Data Storytelling & Visualization",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Create concise executive summaries from detailed analysis. Use when preparing board decks, executive briefings, or condensing complex analysis into decision-ready formats for senior audiences.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/executive_summary_template.md",
+    "references/executive_communication.md",
+    "references/pyramid_principle_guide.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "funnel-analysis",
+   "source": "data-analytics-skills",
+   "category": "Data Analysis & Investigation",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T2",
+   "track_label": "Online Retail (vijayuv/onlineretail)",
+   "description": "Conversion funnel analysis with drop-off investigation. Use when analyzing multi-step processes, identifying conversion bottlenecks, comparing segments through a funnel, or optimizing user journeys.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/funnel_report_template.md",
+    "references/funnel_design_guide.md",
+    "scripts/__pycache__/funnel_analyzer.cpython-312.pyc",
+    "scripts/funnel_analyzer.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "methodology-explainer",
+   "source": "data-analytics-skills",
+   "category": "Stakeholder Communication",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Explain analysis methodology to diverse audiences. Use when documenting 'how we did this' sections, building trust through transparency, or teaching analytical approaches to stakeholders.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/methodology_slide_template.md",
+    "assets/methodology_writeup_template.md",
+    "references/audience_depth_guide.md",
+    "references/methodology_explanation_patterns.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "model-serving",
+   "source": "agent-ml-skills",
+   "category": "MLOps & Reliability",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Use when deploying a trained model behind an API. Covers FastAPI inference services, loading artifacts safely, request validation, batching, ONNX/quantization for speed, health checks, and monitoring.",
+   "bundled_files": [
+    "SKILL.md"
+   ],
+   "installed": true,
+   "has_scripts": false
+  },
+  {
+   "skill": "technical-to-business-translator",
+   "source": "data-analytics-skills",
+   "category": "Stakeholder Communication",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Translate technical analysis into business language. Use when explaining statistical concepts to non-analysts, simplifying technical findings, or bridging communication between data teams and business stakeholders.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/translation_template.md",
+    "references/metaphor_bank.md",
+    "references/stakeholder_personas.md",
+    "references/translation_pattern_library.md",
+    "scripts/__pycache__/jargon_detector.cpython-312.pyc",
+    "scripts/__pycache__/readability_scorer.cpython-312.pyc",
+    "scripts/jargon_detector.py",
+    "scripts/readability_scorer.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  },
+  {
+   "skill": "visualization-builder",
+   "source": "data-analytics-skills",
+   "category": "Data Storytelling & Visualization",
+   "phase": 6,
+   "phase_name": "Deployment",
+   "track": "T1",
+   "track_label": "Telco Customer Churn (blastchar/telco-customer-churn)",
+   "description": "Create effective, publication-ready data visualizations. Use when choosing chart types, designing presentation visuals, building dashboard charts, or applying visual design best practices to data output.",
+   "bundled_files": [
+    "SKILL.md",
+    "assets/viz_spec_template.md",
+    "references/chart_selection_guide.md",
+    "references/visual_design_principles.md",
+    "scripts/__pycache__/chart_builder.cpython-312.pyc",
+    "scripts/chart_builder.py"
+   ],
+   "installed": true,
+   "has_scripts": true
+  }
+ ],
+ "counts": {
+  "total": 46,
+  "agent-ml-skills": 15,
+  "data-analytics-skills": 31
+ }
+}

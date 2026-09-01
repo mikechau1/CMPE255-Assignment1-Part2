@@ -1,0 +1,150 @@
+{
+ "skill": "visualization-builder",
+ "source": "data-analytics-skills",
+ "category": "Data Storytelling & Visualization",
+ "phase": 6,
+ "track": "T1",
+ "title": "76 charts on this site, each chosen by rule rather than habit",
+ "prescribes": "Pick the chart from the data's shape -- time-series, comparison, part-to-whole, distribution -- and emit a spec (type, axes, series, design notes) rather than an image, so the rendering layer stays interchangeable.",
+ "applied": "Ran the skill's chart_builder.py to justify five representative choices, emitted a real chart spec for the monthly-revenue line, and counted the chart types the lab actually produced.",
+ "narrative": [
+  "The pipeline emits 76 charts across the 46 skill artifacts, and every one is a JSON spec rather than a PNG. That is the reason the React site can render them interactively, and the reason a different front end could render the same numbers tomorrow without rerunning any Python.",
+  "The distribution of chart types is itself a check on the analysis: 39 bar, 13 hbar, 13 line, 4 heatmap, 4 scatter, 2 stacked-bar, 1 funnel. Bars dominate because most of the questions here are comparisons; a deck that was all pie charts would be answering a different question than the one asked.",
+  "The recommender's `avoid` list is the useful half. For a 12-category comparison it pushes to a horizontal bar because rotated x-labels are unreadable; for part-to-whole with more than a handful of slices it refuses the pie outright. Those are the two mistakes that make a dashboard look amateur, and they are rule-checkable."
+ ],
+ "kpis": [
+  {
+   "label": "Charts emitted",
+   "value": "76",
+   "caption": "across 46 artifacts",
+   "tone": "neutral"
+  },
+  {
+   "label": "Chart types used",
+   "value": "7",
+   "caption": "line, bar, hbar, heatmap, scatter, funnel",
+   "tone": "neutral"
+  },
+  {
+   "label": "Rendered from",
+   "value": "JSON specs",
+   "caption": "no images in the pipeline",
+   "tone": "good"
+  },
+  {
+   "label": "Most-used type",
+   "value": "bar",
+   "caption": "39 charts",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "chart-types",
+   "kind": "bar",
+   "title": "Chart types produced by the pipeline",
+   "data": [
+    {
+     "x": "bar",
+     "n": 39
+    },
+    {
+     "x": "hbar",
+     "n": 13
+    },
+    {
+     "x": "line",
+     "n": 13
+    },
+    {
+     "x": "heatmap",
+     "n": 4
+    },
+    {
+     "x": "scatter",
+     "n": 4
+    },
+    {
+     "x": "stacked-bar",
+     "n": 2
+    },
+    {
+     "x": "funnel",
+     "n": 1
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "charts"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "recs",
+   "title": "chart_builder.py recommendations for five real charts",
+   "columns": [
+    "Chart on this site",
+    "Data type",
+    "Cardinality",
+    "Recommended",
+    "Avoid"
+   ],
+   "rows": [
+    [
+     "Monthly retail revenue",
+     "time-series",
+     "13 categories",
+     "line",
+     "pie, bar (unless comparing few discrete periods)"
+    ],
+    [
+     "ROC-AUC by candidate model",
+     "comparison",
+     "4 categories",
+     "bar (vertical)",
+     "pie (hard to compare), line (implies continuity)"
+    ],
+    [
+     "Top churn-risk feature levels",
+     "comparison",
+     "12 categories",
+     "horizontal bar",
+     "vertical bar (label clutter), pie"
+    ],
+    [
+     "Revenue share by RFM segment",
+     "part-to-whole",
+     "4 categories",
+     "pie / donut",
+     "bar (doesn't show total context)"
+    ],
+    [
+     "Single-request latency",
+     "distribution",
+     "10 categories",
+     "histogram / box plot",
+     "bar (bins obscure shape), line"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "{\n \"chart_type\": \"line\",\n \"title\": \"Monthly revenue\",\n \"x_axis\": {\n  \"label\": \"month\",\n  \"values\": [\n   \"2010-12\",\n   \"2011-01\",\n   \"2011-02\",\n   \"2011-03\",\n   \"2011-04\",\n   \"2011-05\",\n   \"2011-06\",\n   \"2011-07\",\n   \"2011-08\",\n   \"2011-09\",\n   \"2011-10\",\n   \"2011-11\",\n   \"2011-12\"\n  ]\n },\n \"y_axis\": {\n  \"label\": \"GBP\"\n },\n \"series\": [\n  {\n   \"name\": \"primary\",\n   \"values\": [\n    572713.89,\n    569445.04,\n    447137.35,\n    595500.76,\n    469200.36,\n    678594.56,\n    661213.69,\n    600091.01,\n    645343.9,\n    952838.38,\n    1039318.79,\n    1161817.38,\n    518192.79\n   ]\n  }\n ],\n \"annotations\": [],\n \"design_notes\": {\n  \"max_colors\": 3,\n  \"highlight_max\": true,\n  \"grid\": \"horizontal only\",\n  \"legend\": \"top\"\n }\n}",
+ "code_language": "json",
+ "takeaway": "Every chart here is a spec plus a renderer, chosen by the data's shape -- which is why the same numbers can be re-rendered without re-running the analysis.",
+ "used_skill_scripts": [
+  ".claude/skills/visualization-builder/scripts/chart_builder.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:34"
+}

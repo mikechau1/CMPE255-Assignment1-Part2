@@ -1,0 +1,129 @@
+{
+ "skill": "stakeholder-requirements-gathering",
+ "source": "data-analytics-skills",
+ "category": "Stakeholder Communication",
+ "phase": 1,
+ "track": "T1",
+ "title": "Scoping the churn request before any analysis",
+ "prescribes": "Interrogate a vague request until you know the decision, the decision-maker, the success criteria, the grain, the timeline and what is out of scope.",
+ "applied": "Ran the skill's question framework against the Telco Churn brief and grounded every answer in a number from the actual file rather than in a guess.",
+ "narrative": [
+  "The raw request was 'look into churn'. The dataset has 7,043 accounts of which 1,869 (26.5%) have churned, carrying $139,131 of monthly charges.",
+  "Scoping matters here because the answer changes the model: 'who will churn' is a ranking problem (precision at the top decile), while 'why do people churn' is an explanatory problem where a calibrated, interpretable model beats a marginally more accurate one. The stakeholder wants the first.",
+  "Month-to-month contracts hold most of the exposure, which immediately narrows the campaign population and is the kind of finding that should surface in scoping, not three weeks later."
+ ],
+ "kpis": [
+  {
+   "label": "Accounts in scope",
+   "value": "7,043",
+   "caption": "one row per customer",
+   "tone": "neutral"
+  },
+  {
+   "label": "Observed churn",
+   "value": "26.5%",
+   "caption": "1,869 accounts",
+   "tone": "bad"
+  },
+  {
+   "label": "MRR at risk",
+   "value": "$139,131",
+   "caption": "monthly charges of churned accounts",
+   "tone": "warn"
+  },
+  {
+   "label": "Annualised exposure",
+   "value": "$1,669,570",
+   "caption": "if the rate persists",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "risk-by-contract",
+   "kind": "bar",
+   "title": "Monthly revenue at risk by contract type",
+   "data": [
+    {
+     "x": "Month-to-month",
+     "mrr": 257294.0,
+     "at_risk": 120847.0
+    },
+    {
+     "x": "One year",
+     "mrr": 95817.0,
+     "at_risk": 14118.0
+    },
+    {
+     "x": "Two year",
+     "mrr": 103006.0,
+     "at_risk": 4165.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "mrr",
+     "label": "Total MRR"
+    },
+    {
+     "key": "at_risk",
+     "label": "MRR at risk"
+    }
+   ],
+   "subtitle": "Telco Churn snapshot -- churned customers' monthly charges",
+   "xLabel": "",
+   "yLabel": "USD / month",
+   "note": "",
+   "valueFormat": "currency",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "scoping-qa",
+   "title": "Scoping questions and the answers we got",
+   "columns": [
+    "Question",
+    "Answer"
+   ],
+   "rows": [
+    [
+     "Who decides on the output?",
+     "VP Customer Retention (budget owner), with Finance signing off on the offer cost."
+    ],
+    [
+     "What decision changes?",
+     "Which customers get a retention offer next month, and how big that offer can be."
+    ],
+    [
+     "What does success look like?",
+     "Enough churn caught in the top decile to make an offer campaign NPV-positive."
+    ],
+    [
+     "What is the unit of analysis?",
+     "One row per active customer account (7,043 in the snapshot)."
+    ],
+    [
+     "What is explicitly out of scope?",
+     "Pricing strategy, network quality remediation, and win-back of already-churned accounts."
+    ],
+    [
+     "When is it needed?",
+     "Before the next campaign cycle; a monthly batch score is sufficient -- no real-time need."
+    ],
+    [
+     "What is the cost of a wrong answer?",
+     "False positive = wasted discount (~$19/customer). False negative = lost contract value."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "by_contract = (df.groupby('Contract')\n                 .agg(customers=('customerID', 'count'),\n                      churn_rate=('Churn_flag', 'mean'),\n                      mrr=('MonthlyCharges', 'sum')))",
+ "code_language": "python",
+ "takeaway": "The deliverable is a monthly ranked list with a defensible cut-off, not a churn essay -- and 87% of the revenue at risk sits in month-to-month contracts.",
+ "used_skill_scripts": [],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:15"
+}

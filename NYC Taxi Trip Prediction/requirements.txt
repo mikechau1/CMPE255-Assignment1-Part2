@@ -1,0 +1,28 @@
+# --- core data / modeling ---
+pandas==2.2.3
+numpy==2.1.3
+scikit-learn==1.5.2
+lightgbm==4.5.0
+pyarrow==18.1.0
+joblib==1.4.2
+
+# --- data sources / geo ---
+kaggle==1.6.17
+pyshp==2.3.1
+pyproj==3.7.0
+requests==2.32.3
+
+# --- serving ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+httpx==0.28.1
+PyYAML==6.0.2
+
+# --- reporting ---
+matplotlib==3.9.3
+
+# --- dev ---
+pytest==8.3.4
+ruff==0.8.4

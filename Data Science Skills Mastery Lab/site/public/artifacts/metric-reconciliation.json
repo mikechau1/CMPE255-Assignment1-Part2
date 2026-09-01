@@ -1,0 +1,135 @@
+{
+ "skill": "metric-reconciliation",
+ "source": "data-analytics-skills",
+ "category": "Data Quality & Validation",
+ "phase": 2,
+ "track": "T2",
+ "title": "Two revenue numbers, one dataset, reconciled line by line",
+ "prescribes": "When two sources disagree on a metric, quantify the gap against a tolerance and decompose it into named causes until the residual is zero -- never split the difference.",
+ "applied": "Computed 2011 revenue under a finance definition and a dashboard definition, compared them with reconcile_metrics.py at a 0.5% tolerance, and attributed every pound of the gap.",
+ "narrative": [
+  "Finance reports GBP 8,998,791; the dashboard reports GBP 8,338,694. The gap is 7.3%, well outside the 0.5% tolerance, so the skill's verdict is INVESTIGATE rather than 'close enough'.",
+  "Three named causes account for it: anonymous orders (GBP 1,504,244) that the dashboard excludes because it aggregates by customer, cancellations (GBP -822,023, negative) that finance nets off, and zero-priced giveaway lines (GBP -22,124). The residual is GBP 0.00.",
+  "Neither number is wrong. The failure would be publishing both without this bridge -- which is how an organisation ends up with two revenue figures and no way to choose."
+ ],
+ "kpis": [
+  {
+   "label": "Finance definition",
+   "value": "GBP 8,998,791",
+   "caption": "all invoiced lines",
+   "tone": "neutral"
+  },
+  {
+   "label": "Dashboard definition",
+   "value": "GBP 8,338,694",
+   "caption": "identified customers only",
+   "tone": "neutral"
+  },
+  {
+   "label": "Gap",
+   "value": "7.3%",
+   "caption": "INVESTIGATE",
+   "tone": "bad"
+  },
+  {
+   "label": "Unexplained residual",
+   "value": "GBP 0.00",
+   "caption": "after attribution",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "reconciliation",
+   "kind": "bar",
+   "title": "Revenue reconciliation bridge (2011)",
+   "data": [
+    {
+     "x": "Finance",
+     "gbp": 8998791
+    },
+    {
+     "x": "- anonymous orders",
+     "gbp": -1504244
+    },
+    {
+     "x": "- cancellations",
+     "gbp": 822023
+    },
+    {
+     "x": "- zero-priced lines",
+     "gbp": 22124
+    },
+    {
+     "x": "Dashboard",
+     "gbp": 8338694
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "gbp",
+     "label": "GBP"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "currency",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "bridge",
+   "title": "Gap attribution",
+   "columns": [
+    "Component",
+    "GBP",
+    "Why the definitions differ"
+   ],
+   "rows": [
+    [
+     "Finance total",
+     "8,998,790.91",
+     "every invoiced line, cancellations netted"
+    ],
+    [
+     "Anonymous orders",
+     "-1,504,244.39",
+     "no CustomerID, so absent from customer aggregates"
+    ],
+    [
+     "Cancellations",
+     "--822,023.37",
+     "negative lines finance nets, dashboard drops"
+    ],
+    [
+     "Zero-priced lines",
+     "--22,124.12",
+     "samples and adjustments"
+    ],
+    [
+     "Dashboard total",
+     "8,338,694.01",
+     "identified customers, positive lines"
+    ],
+    [
+     "Residual",
+     "0.00",
+     "should be zero"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "============================================================\nMETRIC RECONCILIATION REPORT\n============================================================\n  Finance (all invoiced lines, net of cancellations): 8,998,790.91\n  Dashboard (identified customers, positive lines): 8,338,694.01\n  Absolute difference: +660,096.90\n  Percentage difference: +7.3354%\n\n  STATUS: INVESTIGATE\n\n  NEXT STEPS:\n  1. Compare query/pipeline definition for each source side-by-side.\n  2. Check: filter conditions, join types, null handling, date truncation.\n  3. Pull row-level data to find the first divergence point.\n  4. Document the root cause in assets/reconciliation_report_template.md.\n============================================================",
+ "code_language": "text",
+ "takeaway": "The 2011 revenue gap decomposes exactly into anonymous orders, cancellations and free samples -- with a residual under a pound, so nothing is left to argument.",
+ "used_skill_scripts": [
+  ".claude/skills/metric-reconciliation/metric-reconciliation/scripts/reconcile_metrics.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:46"
+}

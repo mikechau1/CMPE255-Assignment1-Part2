@@ -1,0 +1,187 @@
+{
+ "skill": "dashboard-specification",
+ "source": "data-analytics-skills",
+ "category": "Data Storytelling & Visualization",
+ "phase": 6,
+ "track": "T1",
+ "title": "The spec this website was built from",
+ "prescribes": "Specify a dashboard before building it: who reads it, what decision each panel supports, the exact metric definition, the chart type, the refresh cadence, and what is deliberately left out.",
+ "applied": "Instantiated the skill's dashboard_spec_template.md for the retention dashboard, tying every panel to the phase artifact that supplies its numbers.",
+ "narrative": [
+  "Each panel names its source artifact, so there is no orphan chart: if a number appears on the dashboard, a specific skill produced it and a specific JSON file on disk contains it. That traceability is the difference between a dashboard and a slide deck that refreshes.",
+  "Three audiences, three decisions, one surface. The VP's question is monthly and financial; the campaign manager's is weekly and operational; the data scientist's is continuous and diagnostic. Panels that serve none of those three questions are not on the spec.",
+  "The explicit non-goals matter as much: no per-customer drill-through (privacy and no operational need), no real-time refresh (the campaign is monthly), and no retail data on the same surface (different dataset, different population -- mixing them would invite a false comparison)."
+ ],
+ "kpis": [
+  {
+   "label": "Panels specified",
+   "value": "7",
+   "caption": "each with a named source",
+   "tone": "neutral"
+  },
+  {
+   "label": "Audiences",
+   "value": "3",
+   "caption": "each with one decision",
+   "tone": "neutral"
+  },
+  {
+   "label": "Refresh cadences",
+   "value": "4",
+   "caption": "daily, weekly, monthly, per-run",
+   "tone": "neutral"
+  },
+  {
+   "label": "Explicit non-goals",
+   "value": "3",
+   "caption": "what the dashboard will not do",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "panel-cadence",
+   "kind": "bar",
+   "title": "Panels by refresh cadence",
+   "data": [
+    {
+     "x": "daily",
+     "n": 2
+    },
+    {
+     "x": "monthly",
+     "n": 1
+    },
+    {
+     "x": "on each scoring run",
+     "n": 2
+    },
+    {
+     "x": "on every refresh",
+     "n": 1
+    },
+    {
+     "x": "weekly",
+     "n": 1
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "panels"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "panels",
+   "title": "Panel specification",
+   "columns": [
+    "Panel",
+    "Metric",
+    "Chart type",
+    "Source artifact",
+    "Refresh"
+   ],
+   "rows": [
+    [
+     "Retention KPI row",
+     "churn rate, MRR at risk, model AUC, net campaign value",
+     "KPI tiles",
+     "business-metrics-calculator, model-evaluation, impact-quantification",
+     "daily"
+    ],
+    [
+     "Revenue at risk by contract",
+     "MRR of customers above threshold, split by contract",
+     "grouped bar",
+     "stakeholder-requirements-gathering",
+     "daily"
+    ],
+    [
+     "Model decile lift",
+     "churn rate per model decile vs base rate",
+     "bar",
+     "model-evaluation",
+     "on each scoring run"
+    ],
+    [
+     "Threshold economics",
+     "margin protected, campaign cost and net by threshold",
+     "line",
+     "impact-quantification",
+     "on each scoring run"
+    ],
+    [
+     "Campaign funnel",
+     "flagged -> contacted -> accepted -> retained",
+     "funnel",
+     "funnel-analysis",
+     "weekly"
+    ],
+    [
+     "Cohort retention",
+     "monthly acquisition cohorts, % retained",
+     "heatmap",
+     "cohort-analysis",
+     "monthly"
+    ],
+    [
+     "Data quality banner",
+     "freshness, null rate, row count vs expectation",
+     "status strip",
+     "data-quality-audit",
+     "on every refresh"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "audiences",
+   "title": "Audience and decision",
+   "columns": [
+    "Audience",
+    "Question",
+    "Panels used",
+    "Decision cadence"
+   ],
+   "rows": [
+    [
+     "VP Retention",
+     "Is the campaign worth running this month, and at what threshold?",
+     "KPI row + threshold economics",
+     "monthly budget decision"
+    ],
+    [
+     "Campaign manager",
+     "Which customers do I contact this week?",
+     "decile lift + downloadable scored list",
+     "weekly action"
+    ],
+    [
+     "Data science",
+     "Has the model or the data drifted?",
+     "quality banner + AUC trend + score distribution",
+     "on every run"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Dashboard Specification\n\n**Dashboard name:** [name]\n**Owner:** [name / team]\n**Date:** [YYYY-MM-DD]\n**Status:** Draft / Approved / Built / Deprecated\n\n---\n\n## Purpose\n\n**Primary question this dashboard answers:**\n[One sentence]\n\n**Primary audience:** [role, technical level]\n**Secondary audience:** [if any]\n**Usage frequency:** Daily / Weekly / Monthly / Ad-hoc\n\n---\n\n## Metrics\n\n| Metric | Definition | Source table | Owner | Refresh | Acceptable lag |\n|---|---|---|---|---|---|\n| [metric] | [business definition] | [schema.table] | [team] | [cadence] | [hours/days] |\n\n---\n\n## Layout specification\n\n### Page 1: [page name]\n\n**Primary question:** [what this page answers]\n\n| Position | Chart type | Metric | Dimensions | Filters |\n|---|---|---|---|---|\n| Top-left (hero) | KPI card | [metric] | \u2014 | [default filters] |\n| Top-right | KPI card | [metric] | \u2014 | \u2014 |\n| Centre | Line chart | [metric] | Over time | Date range |\n| Bottom-left | Bar chart | [metric] | By [dimension] | \u2014 |\n| Bottom-right | Table | [metrics] | By [dimension] | \u2014 |\n\n**Default time range:** [last 30 days / current month / etc.]\n**Sticky filters:** [date range, region, segment \u2014 which apply to all charts]\n\n---\n\n### Page 2: [page name \u2014 if applicable]\n\n[Repeat layout table]\n\n---\n\n## Interactivity\n\n| Feature | Required ",
+ "code_language": "markdown",
+ "takeaway": "Seven panels, three audiences, three stated non-goals -- and every panel traceable to the skill artifact that computes it.",
+ "used_skill_scripts": [
+  ".claude/skills/dashboard-specification/references/dashboard_spec_template.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:33"
+}

@@ -1,0 +1,227 @@
+{
+ "skill": "reproducible-ml",
+ "source": "agent-ml-skills",
+ "category": "MLOps & Reliability",
+ "phase": 1,
+ "track": "meta",
+ "title": "Seeds, environment fingerprint and data digests, pinned before modelling",
+ "prescribes": "Pin seeds across python/numpy/torch, pin the environment, version the data, and record enough that another machine can reproduce a number rather than approximate it.",
+ "applied": "Established one seed (20255255) used by every phase, captured a package fingerprint, and tied each result to the SHA-256 digests recorded when the Kaggle mirrors were downloaded.",
+ "narrative": [
+  "Seeding happens in exactly one place (`lib/seeds.set_global_seed`) and every phase module calls it on import, so the train/test split is stable: two independent derivations produced the identical index (hash 12e0feef89cf131f, match=True).",
+  "Data versioning is handled by digest rather than by a DVC remote, which suits a lab: `data/raw/manifest.json` records the URL, byte count and SHA-256 of every file, so a rerun that silently picked up a different mirror would be visible instead of mysterious.",
+  "The environment fingerprint (702fe3b389601ae8) records the versions that produced these numbers -- notably torch 2.5.1+cpu, which is the CPU build, and that single fact explains every training-time decision in phase 4."
+ ],
+ "kpis": [
+  {
+   "label": "Global seed",
+   "value": "20255255",
+   "caption": "python, numpy, torch",
+   "tone": "neutral"
+  },
+  {
+   "label": "Split reproducible",
+   "value": "yes",
+   "caption": "index hash 12e0feef89cf131f",
+   "tone": "good"
+  },
+  {
+   "label": "Datasets pinned",
+   "value": "9",
+   "caption": "SHA-256 in manifest.json",
+   "tone": "neutral"
+  },
+  {
+   "label": "Env fingerprint",
+   "value": "702fe3b389601ae8",
+   "caption": "python 3.12.10",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "dataset-sizes",
+   "kind": "hbar",
+   "title": "Pinned dataset sizes",
+   "data": [
+    {
+     "x": "telco_churn",
+     "mb": 0.97
+    },
+    {
+     "x": "titanic",
+     "mb": 0.06
+    },
+    {
+     "x": "online_retail",
+     "mb": 23.72
+    },
+    {
+     "x": "fashion_mnist_train_images",
+     "mb": 26.42
+    },
+    {
+     "x": "fashion_mnist_train_labels",
+     "mb": 0.03
+    },
+    {
+     "x": "fashion_mnist_test_images",
+     "mb": 4.42
+    },
+    {
+     "x": "fashion_mnist_test_labels",
+     "mb": 0.01
+    },
+    {
+     "x": "online_retail_csv",
+     "mb": 48.58
+    },
+    {
+     "x": "creditcard",
+     "mb": 148.7
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "mb",
+     "label": "MB on disk"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "datasets",
+   "title": "Data versioning: what these results were computed from",
+   "columns": [
+    "Dataset",
+    "Kaggle equivalent",
+    "Size",
+    "SHA-256"
+   ],
+   "rows": [
+    [
+     "telco_churn",
+     "blastchar/telco-customer-churn",
+     "0.97 MB",
+     "16320c9c1ec72448..."
+    ],
+    [
+     "titanic",
+     "c/titanic",
+     "0.06 MB",
+     "4a437fde05fe5264..."
+    ],
+    [
+     "online_retail",
+     "vijayuv/onlineretail",
+     "23.72 MB",
+     "f5385cbb54bbebf7..."
+    ],
+    [
+     "fashion_mnist_train_images",
+     "zalando-research/fashionmnist",
+     "26.42 MB",
+     "3aede38d61863908..."
+    ],
+    [
+     "fashion_mnist_train_labels",
+     "zalando-research/fashionmnist",
+     "0.03 MB",
+     "a04f17134ac03560..."
+    ],
+    [
+     "fashion_mnist_test_images",
+     "zalando-research/fashionmnist",
+     "4.42 MB",
+     "346e55b948d973a9..."
+    ],
+    [
+     "fashion_mnist_test_labels",
+     "zalando-research/fashionmnist",
+     "0.01 MB",
+     "67da17c76eaffca5..."
+    ],
+    [
+     "online_retail_csv",
+     "vijayuv/onlineretail",
+     "48.58 MB",
+     "c820e928a9cb01d0..."
+    ],
+    [
+     "creditcard",
+     "mlg-ulb/creditcardfraud",
+     "148.70 MB",
+     "5ac0db239c79b823..."
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "env",
+   "title": "Environment fingerprint",
+   "columns": [
+    "Package",
+    "Version"
+   ],
+   "rows": [
+    [
+     "numpy",
+     "2.5.0"
+    ],
+    [
+     "pandas",
+     "2.3.3"
+    ],
+    [
+     "sklearn",
+     "1.9.0"
+    ],
+    [
+     "scipy",
+     "1.18.1"
+    ],
+    [
+     "torch",
+     "2.5.1+cpu"
+    ],
+    [
+     "transformers",
+     "5.16.1"
+    ],
+    [
+     "xgboost",
+     "3.4.1"
+    ],
+    [
+     "lightgbm",
+     "4.7.0"
+    ],
+    [
+     "python",
+     "3.12.10"
+    ],
+    [
+     "platform",
+     "Windows 11"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "def set_global_seed(seed: int = 20255255) -> int:\n    os.environ['PYTHONHASHSEED'] = str(seed)\n    random.seed(seed)\n    np.random.seed(seed)\n    torch.manual_seed(seed)\n    return seed",
+ "code_language": "python",
+ "takeaway": "Every number on this site is traceable to a seed, a package set and a file digest -- rerunning phases 3-5 reproduces them exactly rather than approximately.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "data/raw/manifest.json"
+ ],
+ "generated_at": "2026-09-01T04:36:40"
+}

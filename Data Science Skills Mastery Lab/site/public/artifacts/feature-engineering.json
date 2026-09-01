@@ -1,0 +1,192 @@
+{
+ "skill": "feature-engineering",
+ "source": "agent-ml-skills",
+ "category": "Data Prep & Exploration",
+ "phase": 3,
+ "track": "T1",
+ "title": "Eight engineered features, and the target-encoding trap measured",
+ "prescribes": "Build features from domain structure -- ratios, counts, bands, datetime parts -- and when target-encoding a categorical, compute it out-of-fold or it will leak.",
+ "applied": "Added eight features to the churn frame, then encoded a four-way segment key both naively and out-of-fold and compared what each does to train and test AUC.",
+ "narrative": [
+  "The useful features here are ratios and counts, not transformations of single columns. `charge_drift` (current monthly charge minus lifetime average) is a price-increase detector; `charge_per_service` normalises billing by how much the customer actually buys; `n_services` counts add-ons, which is the strongest engineered signal at r = -0.070.",
+  "The target-encoding comparison is the demonstration that matters. Encoded naively -- mapping each segment to its mean churn rate computed on all training rows -- the single feature scores 0.849 AUC on train and 0.839 on test. Encoded out-of-fold, it scores 0.827 on train and 0.839 on test.",
+  "The naive version's train score is inflated by +0.022 while its test score is +0.000 -- it looks better in development and is not better in production. That gap between the two train numbers is the leak, visible directly.",
+  "The out-of-fold encoding is the one written to `data/processed/churn_*_features.parquet`, so the model in phase 4 never sees its own target."
+ ],
+ "kpis": [
+  {
+   "label": "Features added",
+   "value": "8",
+   "caption": "ratios, counts, bands, encoding",
+   "tone": "neutral"
+  },
+  {
+   "label": "Naive TE train AUC",
+   "value": "0.849",
+   "caption": "test 0.839",
+   "tone": "bad"
+  },
+  {
+   "label": "OOF TE train AUC",
+   "value": "0.827",
+   "caption": "test 0.839",
+   "tone": "good"
+  },
+  {
+   "label": "Inflation removed",
+   "value": "+0.022",
+   "caption": "train AUC that was not real",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "te-comparison",
+   "kind": "bar",
+   "title": "Target encoding: naive vs out-of-fold, one feature, same model",
+   "data": [
+    {
+     "x": "Naive (leaky)",
+     "train": 0.8491,
+     "test": 0.8386
+    },
+    {
+     "x": "Out-of-fold",
+     "train": 0.8267,
+     "test": 0.8386
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "train",
+     "label": "Train AUC"
+    },
+    {
+     "key": "test",
+     "label": "Test AUC"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "The leak shows up as a train-test gap, not as a better test score.",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "feature-corr",
+   "kind": "hbar",
+   "title": "Engineered features vs churn (Pearson r)",
+   "data": [
+    {
+     "x": "segment_te",
+     "r": 0.5245
+    },
+    {
+     "x": "is_new",
+     "r": 0.3156
+    },
+    {
+     "x": "charge_per_service",
+     "r": 0.3142
+    },
+    {
+     "x": "auto_pay",
+     "r": -0.2115
+    },
+    {
+     "x": "avg_charge_per_month",
+     "r": 0.1861
+    },
+    {
+     "x": "n_services",
+     "r": -0.0701
+    },
+    {
+     "x": "charge_drift",
+     "r": -0.0041
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "r",
+     "label": "correlation with churn"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": [
+    -0.5,
+    0.5
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "features",
+   "title": "Engineered features",
+   "columns": [
+    "Feature",
+    "Definition",
+    "Rationale"
+   ],
+   "rows": [
+    [
+     "n_services",
+     "count of subscribed add-on services",
+     "engagement proxy"
+    ],
+    [
+     "tenure_band",
+     "tenure bucketed into 5 bands",
+     "non-linear onboarding cliff"
+    ],
+    [
+     "avg_charge_per_month",
+     "TotalCharges / tenure",
+     "realised price, not list price"
+    ],
+    [
+     "charge_drift",
+     "MonthlyCharges - avg_charge_per_month",
+     "recent price increase"
+    ],
+    [
+     "charge_per_service",
+     "MonthlyCharges / max(n_services, 1)",
+     "value for money"
+    ],
+    [
+     "is_new",
+     "tenure <= 6",
+     "the highest-churn window"
+    ],
+    [
+     "auto_pay",
+     "PaymentMethod contains 'automatic'",
+     "friction to leave"
+    ],
+    [
+     "segment_te",
+     "out-of-fold mean churn of the segment key",
+     "high-order interaction, leak-free"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "def oof_target_encode(train, y, test, n_splits=5):\n    prior = y.mean()\n    oof = pd.Series(index=train.index, dtype=float)\n    for tr_idx, va_idx in KFold(n_splits, shuffle=True, random_state=SEED).split(train):\n        m = y.iloc[tr_idx].groupby(train.iloc[tr_idx]).mean()   # fold-only means\n        oof.iloc[va_idx] = train.iloc[va_idx].map(m).fillna(prior).values\n    return oof, test.map(y.groupby(train).mean()).fillna(prior)",
+ "code_language": "python",
+ "takeaway": "Naive target encoding bought +0.022 of train AUC and +0.000 of test AUC -- it is a self-deception, and the out-of-fold version costs five lines to avoid it.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "data/processed/churn_train_features.parquet",
+  "data/processed/churn_test_features.parquet"
+ ],
+ "generated_at": "2026-09-01T04:36:50"
+}

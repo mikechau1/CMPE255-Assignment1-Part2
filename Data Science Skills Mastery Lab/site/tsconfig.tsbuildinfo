@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/hooks.ts","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/components/badges.tsx","./src/components/chartcard.tsx","./src/components/datatable.tsx","./src/components/kpirow.tsx","./src/pages/datasets.tsx","./src/pages/home.tsx","./src/pages/phasepage.tsx","./src/pages/skillpage.tsx","./src/pages/skillsindex.tsx"],"version":"5.9.3"}

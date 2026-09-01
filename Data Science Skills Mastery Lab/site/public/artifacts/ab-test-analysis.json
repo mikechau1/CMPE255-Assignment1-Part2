@@ -1,0 +1,156 @@
+{
+ "skill": "ab-test-analysis",
+ "source": "data-analytics-skills",
+ "category": "Data Analysis & Investigation",
+ "phase": 5,
+ "track": "T1",
+ "title": "Reading a retention-offer experiment: SRM first, then the lift",
+ "prescribes": "Check the sample ratio before looking at the metric, use a two-proportion test with a confidence interval rather than a bare p-value, and state the minimum detectable effect.",
+ "applied": "Simulated a 50/50 retention-offer test on the 668 customers the model flags, assuming a 30% save rate, and analysed the resulting counts with the skill's ab_test_analyzer.py.",
+ "narrative": [
+  "The SRM check runs first and passes (chi2 = 0.0539, p = 0.816): 337 control against 331 treatment is within noise of 50/50. A failed SRM invalidates everything downstream, which is why it is checked before the result is even looked at.",
+  "Retention is 47.8% in control against 68.3% in treatment: +20.5 points, a relative lift of +42.9%, with a 95% CI of [+13.2, +27.8] points and p = 0.0000. Verdict: significant at alpha = 0.05.",
+  "The confidence interval is doing the real work. It says the effect is somewhere in a range, and the bottom of that range is the number the business case should use -- not the point estimate, which is the single most over-quoted figure in experiment reporting.",
+  "The power table below is the honest caveat: at 10% of this sample the same underlying effect would not have reached significance. Running the experiment on a pilot and concluding 'no effect' would have been a Type II error, not a finding.",
+  "This is a simulation on real scored customers -- the assignment, the outcome counts and the arithmetic are real, the treatment effect is assumed. It demonstrates the analysis, not a measured campaign result."
+ ],
+ "kpis": [
+  {
+   "label": "SRM check",
+   "value": "pass",
+   "caption": "chi2 0.0539, p 0.816",
+   "tone": "good"
+  },
+  {
+   "label": "Retention lift",
+   "value": "+42.9%",
+   "caption": "+20.5 pts absolute",
+   "tone": "good"
+  },
+  {
+   "label": "p-value",
+   "value": "0.0000",
+   "caption": "significant",
+   "tone": "good"
+  },
+  {
+   "label": "95% CI (abs)",
+   "value": "+13.2 to +27.8 pts",
+   "caption": "the range the business case must use",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "ab-rates",
+   "kind": "bar",
+   "title": "Retention rate by arm",
+   "data": [
+    {
+     "x": "Control (n=337)",
+     "rate": 0.4777
+    },
+    {
+     "x": "Treatment (n=331)",
+     "rate": 0.6828
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "rate",
+     "label": "Retention rate"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  },
+  {
+   "id": "power",
+   "kind": "bar",
+   "title": "What a smaller experiment would have concluded",
+   "data": [
+    {
+     "x": "10% of arm",
+     "p_value": 0.1351
+    },
+    {
+     "x": "25% of arm",
+     "p_value": 0.007
+    },
+    {
+     "x": "50% of arm",
+     "p_value": 0.0001
+    },
+    {
+     "x": "100% of arm",
+     "p_value": 0.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "p_value",
+     "label": "p-value"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Same effect, smaller sample: significance disappears below roughly half the arm.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "power",
+   "title": "Sample size vs conclusion",
+   "columns": [
+    "Sample",
+    "Relative lift",
+    "p-value",
+    "Significant at 0.05"
+   ],
+   "rows": [
+    [
+     "10% of arm",
+     "+37.50%",
+     0.1351,
+     "no"
+    ],
+    [
+     "25% of arm",
+     "+43.41%",
+     0.007,
+     "yes"
+    ],
+    [
+     "50% of arm",
+     "+43.82%",
+     0.0001,
+     "yes"
+    ],
+    [
+     "100% of arm",
+     "+42.92%",
+     0.0,
+     "yes"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "============================================================\nA/B TEST ANALYSIS REPORT\n============================================================\n\n--- Sample Ratio Mismatch (SRM) Check ---\n  Control:   337  (expected 334)\n  Treatment: 331  (expected 334)\n  Chi2: 0.0539  |  p-value: 0.816424\n  SRM detected: No\n\n--- Metric: retention rate ---\n  Control rate:   47.7745%\n  Treatment rate: 68.2779%\n  Absolute diff:  +20.5035%\n  Relative lift:  +42.92%\n  Z-score: 5.3671  |  p-value: 0.0\n  95% CI for diff: [+13.1836%, +27.8233%]\n\n  VERDICT: SIGNIFICANT at alpha=0.05\n  Recommendation: Treatment shows a positive, statistically significant lift.\n============================================================",
+ "code_language": "text",
+ "takeaway": "The SRM check passes and the lift is significant, but the interval -- not the point estimate -- is what the retention budget should be built on.",
+ "used_skill_scripts": [
+  ".claude/skills/ab-test-analysis/scripts/ab_test_analyzer.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:28"
+}

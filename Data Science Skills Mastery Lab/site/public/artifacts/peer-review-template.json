@@ -1,0 +1,145 @@
+{
+ "skill": "peer-review-template",
+ "source": "data-analytics-skills",
+ "category": "Workflow Optimization",
+ "phase": 5,
+ "track": "meta",
+ "title": "This lab, reviewed against its own checklist",
+ "prescribes": "Review analysis the way code is reviewed: severity-graded findings, each with the specific concern and a requested action, and an explicit disposition for every one.",
+ "applied": "Filled the skill's peer_review_template.md against this lab and graded six findings, including the two that are still open.",
+ "narrative": [
+  "6 findings, 1 blocking, 2 still open. The blocking one is the same unverified churn window that the assumptions log and the QA checklist both surfaced -- three independent skills converging on one weakness is a sign the process works, not that it is repetitive.",
+  "The two 'Major' findings are about the business case rather than the code: a 30% save rate and a $240 offer cost are inputs nobody in this lab measured. The model is defensible; the money attached to it is provisional, and the review says so in those words.",
+  "Reviewing one's own work with a template is weaker than a second reader, and this artifact should not pretend otherwise. What the template buys is that the objections are written down in a form a second reader can act on, instead of living in the author's head."
+ ],
+ "kpis": [
+  {
+   "label": "Findings",
+   "value": "6",
+   "caption": "severity-graded",
+   "tone": "neutral"
+  },
+  {
+   "label": "Blocking",
+   "value": "1",
+   "caption": "must clear before launch",
+   "tone": "bad"
+  },
+  {
+   "label": "Open",
+   "value": "2",
+   "caption": "tracked, not closed",
+   "tone": "warn"
+  },
+  {
+   "label": "Addressed / answered",
+   "value": "4",
+   "caption": "with evidence",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "findings",
+   "kind": "bar",
+   "title": "Review findings by severity",
+   "data": [
+    {
+     "x": "Blocking",
+     "n": 1
+    },
+    {
+     "x": "Major",
+     "n": 2
+    },
+    {
+     "x": "Minor",
+     "n": 2
+    },
+    {
+     "x": "Question",
+     "n": 1
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "findings"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "review",
+   "title": "Peer review findings",
+   "columns": [
+    "Severity",
+    "Finding",
+    "Concern",
+    "Requested action",
+    "Status"
+   ],
+   "rows": [
+    [
+     "Blocking",
+     "Target definition unverified",
+     "The churn flag's observation window is assumed, not confirmed with the data owner.",
+     "Confirm the extract window before any campaign is launched on these scores.",
+     "open"
+    ],
+    [
+     "Major",
+     "Save rate is assumed, not measured",
+     "The 30% retention-offer save rate drives the entire business case and comes from no data here.",
+     "Run the phase-5 experiment for real before quoting the net value externally.",
+     "open"
+    ],
+    [
+     "Major",
+     "Retail and churn datasets are unrelated",
+     "Cohort, RFM and funnel work uses Online Retail; the churn model uses Telco. Insights from one do not transfer to the other.",
+     "Stated explicitly on every artifact; do not present them as one customer base.",
+     "addressed"
+    ],
+    [
+     "Minor",
+     "Fashion-MNIST and the LLM track are illustrative",
+     "They demonstrate the skills' loops and adapters, not a business outcome for this problem.",
+     "Labelled as track T4/T5 throughout and excluded from the impact case.",
+     "addressed"
+    ],
+    [
+     "Minor",
+     "Class imbalance handled on a subsample",
+     "The fraud demo uses an 80k-row subsample of the 285k-row file to keep runtime sane.",
+     "Prevalence change is stated in the artifact; conclusions are about metric choice, not absolute PR-AUC.",
+     "addressed"
+    ],
+    [
+     "Question",
+     "Why HistGradientBoosting over LightGBM/XGBoost?",
+     "Both are installed and were not benchmarked head to head.",
+     "Fair challenge; the tuned HGB is within noise of the logistic baseline, so a different booster is unlikely to change the decision.",
+     "answered"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Peer Review\n\n**Work reviewed:** [title / link]  \n**Author:** [name]  \n**Reviewer:** [name]  \n**Review type:** Full / Logic / Code / Sanity check  \n**Date:** [YYYY-MM-DD]  \n**Turnaround commitment:** [date review will be returned by]\n\n---\n\n## Context\n\n**Business question this analysis addresses:**  \n[1 sentence \u2014 confirm you read the brief]\n\n**What I reviewed:**  \n[ ] Logic and conclusions  \n[ ] Data sourcing and transformations  \n[ ] Code (SQL / Python / notebook)  \n[ ] Communication and presentation\n\n---\n\n## Must Fix\n\n*Issues that change the conclusion or produce a wrong output. Delivery is blocked until resolved.*\n\n| # | Location | Issue | Suggested fix |\n|---|---|---|---|\n| 1 | [e.g. line 42 / slide 3 / CTE revenue_calc] | [What's wrong] | [What to do] |\n\n---\n\n## Should Fix\n\n*Issues that weaken the conclusion or could mislead the audience. Should be resolved before delivery.*\n\n| # | Location | Issue | Suggested fix |\n|---|---|---|---|\n| 1 | [location] | [issue] | [suggestion] |\n\n---\n\n## Minor / Optional\n\n*Suggestions for clarity, style, or future improvement. Author's discretion.*\n\n| # | Location | Suggestion |\n|---|---|---|\n| 1 | [location] | [suggestion] |\n\n---\n\n## What's Working Well\n\n[At least 2 things done well \u2014 be specific. Good reviews note both strengths and issues.]\n\n1. [Specific strength]\n2. [Specific strength]\n\n---\n\n## Overall Assessment\n\n- [ ] **Approved** \u2014 no significant issues; ready to deliver as-is\n- [ ] **Approved with minor revisions** \u2014 should-fix an",
+ "code_language": "markdown",
+ "takeaway": "The review's blocking finding is not in the modelling -- it is the definition of the target, which no amount of tuning would have fixed.",
+ "used_skill_scripts": [
+  ".claude/skills/peer-review-template/references/peer_review_template.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:30"
+}

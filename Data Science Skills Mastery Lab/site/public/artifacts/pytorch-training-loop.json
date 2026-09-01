@@ -1,0 +1,808 @@
+{
+ "skill": "pytorch-training-loop",
+ "source": "agent-ml-skills",
+ "category": "Modeling",
+ "phase": 4,
+ "track": "T4",
+ "title": "A CNN trained on Fashion-MNIST in 43s of CPU",
+ "prescribes": "Write the loop explicitly: model.train() / model.eval() around each phase, torch.no_grad() for evaluation, gradient clipping, a scheduler stepped once per epoch, AMP only on CUDA, and checkpoints saved on validation improvement.",
+ "applied": "Trained a 0.43M-parameter CNN for 6 epochs on a 12,000-image Fashion-MNIST subsample, evaluating on 3,000 held-out images each epoch.",
+ "narrative": [
+  "Best validation accuracy is 89.400% at epoch 6, reached in 43 seconds on CPU (torch 2.5.1+cpu -- this is the CPU build, so AMP is disabled and the autocast/GradScaler path is present but inert; the same loop runs unchanged on CUDA).",
+  "The mode discipline is not decoration. Running the identical evaluation with the model left in `train()` -- dropout active, batchnorm updating on test batches -- gives 87.433% instead of 89.400%. That is a +1.967% swing from one forgotten line, and nothing crashes to tell you.",
+  "Per-class accuracy exposes what the aggregate hides: Shirt is the weakest class at 70.7%, and its errors go mostly to T-shirt/top. Shirt/pullover/coat confusion is the known hard case in this dataset, not a bug in the loop.",
+  "Checkpointing writes only when validation improves and stores the optimiser state and the seed alongside the weights, so training is resumable rather than merely restartable."
+ ],
+ "kpis": [
+  {
+   "label": "Best val accuracy",
+   "value": "89.40%",
+   "caption": "epoch 6 of 6",
+   "tone": "good"
+  },
+  {
+   "label": "Train time",
+   "value": "43s",
+   "caption": "CPU, 6 epochs, 12k images",
+   "tone": "neutral"
+  },
+  {
+   "label": "Parameters",
+   "value": "0.43M",
+   "caption": "small CNN",
+   "tone": "neutral"
+  },
+  {
+   "label": "Cost of forgetting eval()",
+   "value": "87.43%",
+   "caption": "-1.97% vs correct mode",
+   "tone": "bad"
+  }
+ ],
+ "charts": [
+  {
+   "id": "loss-curve",
+   "kind": "line",
+   "title": "Loss by epoch",
+   "data": [
+    {
+     "x": 1,
+     "train": 0.8168,
+     "val": 0.4512
+    },
+    {
+     "x": 2,
+     "train": 0.4955,
+     "val": 0.3859
+    },
+    {
+     "x": 3,
+     "train": 0.4239,
+     "val": 0.3573
+    },
+    {
+     "x": 4,
+     "train": 0.3861,
+     "val": 0.3171
+    },
+    {
+     "x": 5,
+     "train": 0.344,
+     "val": 0.3033
+    },
+    {
+     "x": 6,
+     "train": 0.3231,
+     "val": 0.295
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "train",
+     "label": "Train loss"
+    },
+    {
+     "key": "val",
+     "label": "Validation loss"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "epoch",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "acc-curve",
+   "kind": "line",
+   "title": "Accuracy by epoch",
+   "data": [
+    {
+     "x": 1,
+     "train": 0.713,
+     "val": 0.827
+    },
+    {
+     "x": 2,
+     "train": 0.8211,
+     "val": 0.8603
+    },
+    {
+     "x": 3,
+     "train": 0.8464,
+     "val": 0.8633
+    },
+    {
+     "x": 4,
+     "train": 0.8606,
+     "val": 0.8863
+    },
+    {
+     "x": 5,
+     "train": 0.8746,
+     "val": 0.8893
+    },
+    {
+     "x": 6,
+     "train": 0.8824,
+     "val": 0.894
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "train",
+     "label": "Train accuracy"
+    },
+    {
+     "key": "val",
+     "label": "Validation accuracy"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "epoch",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  },
+  {
+   "id": "confusion",
+   "kind": "heatmap",
+   "title": "Confusion matrix (best checkpoint, 3,000 test images)",
+   "data": [
+    {
+     "row": "T-shirt/top",
+     "col": "T-shirt/top",
+     "value": 281
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Pullover",
+     "value": 3
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Dress",
+     "value": 7
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Coat",
+     "value": 1
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Shirt",
+     "value": 34
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Sneaker",
+     "value": 0
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Bag",
+     "value": 4
+    },
+    {
+     "row": "T-shirt/top",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Trouser",
+     "col": "T-shirt/top",
+     "value": 0
+    },
+    {
+     "row": "Trouser",
+     "col": "Trouser",
+     "value": 267
+    },
+    {
+     "row": "Trouser",
+     "col": "Pullover",
+     "value": 0
+    },
+    {
+     "row": "Trouser",
+     "col": "Dress",
+     "value": 4
+    },
+    {
+     "row": "Trouser",
+     "col": "Coat",
+     "value": 3
+    },
+    {
+     "row": "Trouser",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Trouser",
+     "col": "Shirt",
+     "value": 1
+    },
+    {
+     "row": "Trouser",
+     "col": "Sneaker",
+     "value": 0
+    },
+    {
+     "row": "Trouser",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Trouser",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Pullover",
+     "col": "T-shirt/top",
+     "value": 5
+    },
+    {
+     "row": "Pullover",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "Pullover",
+     "col": "Pullover",
+     "value": 252
+    },
+    {
+     "row": "Pullover",
+     "col": "Dress",
+     "value": 3
+    },
+    {
+     "row": "Pullover",
+     "col": "Coat",
+     "value": 26
+    },
+    {
+     "row": "Pullover",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Pullover",
+     "col": "Shirt",
+     "value": 13
+    },
+    {
+     "row": "Pullover",
+     "col": "Sneaker",
+     "value": 0
+    },
+    {
+     "row": "Pullover",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Pullover",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Dress",
+     "col": "T-shirt/top",
+     "value": 7
+    },
+    {
+     "row": "Dress",
+     "col": "Trouser",
+     "value": 5
+    },
+    {
+     "row": "Dress",
+     "col": "Pullover",
+     "value": 6
+    },
+    {
+     "row": "Dress",
+     "col": "Dress",
+     "value": 257
+    },
+    {
+     "row": "Dress",
+     "col": "Coat",
+     "value": 9
+    },
+    {
+     "row": "Dress",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Dress",
+     "col": "Shirt",
+     "value": 9
+    },
+    {
+     "row": "Dress",
+     "col": "Sneaker",
+     "value": 0
+    },
+    {
+     "row": "Dress",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Dress",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Coat",
+     "col": "T-shirt/top",
+     "value": 0
+    },
+    {
+     "row": "Coat",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "Coat",
+     "col": "Pullover",
+     "value": 32
+    },
+    {
+     "row": "Coat",
+     "col": "Dress",
+     "value": 9
+    },
+    {
+     "row": "Coat",
+     "col": "Coat",
+     "value": 246
+    },
+    {
+     "row": "Coat",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Coat",
+     "col": "Shirt",
+     "value": 14
+    },
+    {
+     "row": "Coat",
+     "col": "Sneaker",
+     "value": 0
+    },
+    {
+     "row": "Coat",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Coat",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "T-shirt/top",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Pullover",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Dress",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Coat",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Sandal",
+     "value": 307
+    },
+    {
+     "row": "Sandal",
+     "col": "Shirt",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Sneaker",
+     "value": 5
+    },
+    {
+     "row": "Sandal",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Sandal",
+     "col": "Ankle boot",
+     "value": 1
+    },
+    {
+     "row": "Shirt",
+     "col": "T-shirt/top",
+     "value": 34
+    },
+    {
+     "row": "Shirt",
+     "col": "Trouser",
+     "value": 2
+    },
+    {
+     "row": "Shirt",
+     "col": "Pullover",
+     "value": 16
+    },
+    {
+     "row": "Shirt",
+     "col": "Dress",
+     "value": 4
+    },
+    {
+     "row": "Shirt",
+     "col": "Coat",
+     "value": 26
+    },
+    {
+     "row": "Shirt",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Shirt",
+     "col": "Shirt",
+     "value": 205
+    },
+    {
+     "row": "Shirt",
+     "col": "Sneaker",
+     "value": 0
+    },
+    {
+     "row": "Shirt",
+     "col": "Bag",
+     "value": 3
+    },
+    {
+     "row": "Shirt",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "T-shirt/top",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Pullover",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Dress",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Coat",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Sandal",
+     "value": 2
+    },
+    {
+     "row": "Sneaker",
+     "col": "Shirt",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Sneaker",
+     "value": 306
+    },
+    {
+     "row": "Sneaker",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Sneaker",
+     "col": "Ankle boot",
+     "value": 8
+    },
+    {
+     "row": "Bag",
+     "col": "T-shirt/top",
+     "value": 0
+    },
+    {
+     "row": "Bag",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "Bag",
+     "col": "Pullover",
+     "value": 0
+    },
+    {
+     "row": "Bag",
+     "col": "Dress",
+     "value": 1
+    },
+    {
+     "row": "Bag",
+     "col": "Coat",
+     "value": 1
+    },
+    {
+     "row": "Bag",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Bag",
+     "col": "Shirt",
+     "value": 2
+    },
+    {
+     "row": "Bag",
+     "col": "Sneaker",
+     "value": 1
+    },
+    {
+     "row": "Bag",
+     "col": "Bag",
+     "value": 294
+    },
+    {
+     "row": "Bag",
+     "col": "Ankle boot",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "T-shirt/top",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Trouser",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Pullover",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Dress",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Coat",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Sandal",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Shirt",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Sneaker",
+     "value": 17
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Bag",
+     "value": 0
+    },
+    {
+     "row": "Ankle boot",
+     "col": "Ankle boot",
+     "value": 267
+    }
+   ],
+   "x": "col",
+   "series": [
+    {
+     "key": "value",
+     "label": "images"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Rows are true classes, columns predicted.",
+   "valueFormat": "number",
+   "domain": [
+    0,
+    307
+   ]
+  },
+  {
+   "id": "per-class",
+   "kind": "hbar",
+   "title": "Per-class accuracy",
+   "data": [
+    {
+     "x": "T-shirt/top",
+     "acc": 0.8515
+    },
+    {
+     "x": "Trouser",
+     "acc": 0.9709
+    },
+    {
+     "x": "Pullover",
+     "acc": 0.8428
+    },
+    {
+     "x": "Dress",
+     "acc": 0.8771
+    },
+    {
+     "x": "Coat",
+     "acc": 0.8173
+    },
+    {
+     "x": "Sandal",
+     "acc": 0.9808
+    },
+    {
+     "x": "Shirt",
+     "acc": 0.7069
+    },
+    {
+     "x": "Sneaker",
+     "acc": 0.9684
+    },
+    {
+     "x": "Bag",
+     "acc": 0.9833
+    },
+    {
+     "x": "Ankle boot",
+     "acc": 0.9401
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "acc",
+     "label": "accuracy"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "history",
+   "title": "Training history",
+   "columns": [
+    "Epoch",
+    "Train loss",
+    "Val loss",
+    "Train acc",
+    "Val acc",
+    "LR"
+   ],
+   "rows": [
+    [
+     1,
+     0.8168,
+     0.4512,
+     0.713,
+     0.827,
+     0.000933
+    ],
+    [
+     2,
+     0.4955,
+     0.3859,
+     0.8211,
+     0.8603,
+     0.00075
+    ],
+    [
+     3,
+     0.4239,
+     0.3573,
+     0.8464,
+     0.8633,
+     0.0005
+    ],
+    [
+     4,
+     0.3861,
+     0.3171,
+     0.8606,
+     0.8863,
+     0.00025
+    ],
+    [
+     5,
+     0.344,
+     0.3033,
+     0.8746,
+     0.8893,
+     6.7e-05
+    ],
+    [
+     6,
+     0.3231,
+     0.295,
+     0.8824,
+     0.894,
+     0.0
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "for epoch in range(1, EPOCHS + 1):\n    model.train()                                   # dropout on, batchnorm learning\n    for xb, yb in train_dl:\n        xb, yb = xb.to(device), yb.to(device)\n        opt.zero_grad(set_to_none=True)\n        with torch.amp.autocast(device.type, enabled=use_amp):\n            loss = lossf(model(xb), yb)\n        scaler.scale(loss).backward()\n        scaler.unscale_(opt); nn.utils.clip_grad_norm_(model.parameters(), 1.0)\n        scaler.step(opt); scaler.update()\n\n    model.eval()                                    # dropout off, batchnorm frozen\n    with torch.no_grad():                           # no graph built\n        val_acc = evaluate(model, test_dl)\n    sched.step()\n    if val_acc > best_acc:                          # checkpoint on improvement only\n        torch.save({'model_state': model.state_dict(),\n                    'optimizer_state': opt.state_dict(), 'epoch': epoch}, ckpt)",
+ "code_language": "python",
+ "takeaway": "89.4% accuracy in 43s of CPU -- and forgetting `model.eval()` would silently cost 2.0% of it.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "artifacts/fashion_cnn.pt"
+ ],
+ "generated_at": "2026-09-01T04:38:51"
+}

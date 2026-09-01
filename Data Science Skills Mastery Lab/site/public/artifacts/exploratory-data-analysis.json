@@ -1,0 +1,451 @@
+{
+ "skill": "exploratory-data-analysis",
+ "source": "agent-ml-skills",
+ "category": "Data Prep & Exploration",
+ "phase": 2,
+ "track": "T1",
+ "title": "Profiling Telco Churn: distributions, correlations and a leakage check",
+ "prescribes": "On a new dataset: shape and dtypes, target balance, per-feature distributions, correlation structure, and an explicit hunt for leakage before any model is fitted.",
+ "applied": "Profiled all 21 Telco columns, ranked categorical levels by churn rate, correlated the numeric block against the target, and tested the two leakage hypotheses this dataset invites.",
+ "narrative": [
+  "The target is 26.5% positive across 7,043 rows -- imbalanced enough that accuracy is useless as a metric, but not so rare that resampling is mandatory. That single number decides the phase-5 metric set.",
+  "Tenure is the strongest numeric signal (r = -0.352), and MonthlyCharges pulls the other way (r = 0.193): customers who pay more and have been around less are the risk pool.",
+  "The leakage check matters more than the correlations. customerID is unique (True), so no row-level duplication inflates a split. TotalCharges is within 5% of tenure x MonthlyCharges for 80% of rows -- it is a near-deterministic function of two other columns, so it adds collinearity rather than information and must not be treated as an independent feature."
+ ],
+ "kpis": [
+  {
+   "label": "Rows x columns",
+   "value": "7,043 x 22",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Target rate",
+   "value": "26.5%",
+   "caption": "churned",
+   "tone": "warn"
+  },
+  {
+   "label": "Strongest numeric r",
+   "value": "-0.352",
+   "caption": "tenure vs churn",
+   "tone": "neutral"
+  },
+  {
+   "label": "TotalCharges ~ tenure x MRC",
+   "value": "80%",
+   "caption": "of rows within 5%",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "churn-by-level",
+   "kind": "hbar",
+   "title": "Highest-churn feature levels (segments of 300+ customers)",
+   "data": [
+    {
+     "x": "PaymentMethod = Electronic check",
+     "rate": 0.4529
+    },
+    {
+     "x": "Contract = Month-to-month",
+     "rate": 0.4271
+    },
+    {
+     "x": "InternetService = Fiber optic",
+     "rate": 0.4189
+    },
+    {
+     "x": "OnlineSecurity = No",
+     "rate": 0.4177
+    },
+    {
+     "x": "TechSupport = No",
+     "rate": 0.4164
+    },
+    {
+     "x": "OnlineBackup = No",
+     "rate": 0.3993
+    },
+    {
+     "x": "DeviceProtection = No",
+     "rate": 0.3913
+    },
+    {
+     "x": "StreamingMovies = No",
+     "rate": 0.3368
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "rate",
+     "label": "Churn rate"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  },
+  {
+   "id": "tenure-hist",
+   "kind": "stacked-bar",
+   "title": "Tenure distribution by churn outcome",
+   "data": [
+    {
+     "x": "1-6m",
+     "Retained": 697,
+     "Churned": 784
+    },
+    {
+     "x": "7-12m",
+     "Retained": 452,
+     "Churned": 253
+    },
+    {
+     "x": "13-18m",
+     "Retained": 371,
+     "Churned": 177
+    },
+    {
+     "x": "19-24m",
+     "Retained": 359,
+     "Churned": 117
+    },
+    {
+     "x": "25-30m",
+     "Retained": 337,
+     "Churned": 94
+    },
+    {
+     "x": "31-36m",
+     "Retained": 315,
+     "Churned": 86
+    },
+    {
+     "x": "37-42m",
+     "Retained": 296,
+     "Churned": 83
+    },
+    {
+     "x": "43-48m",
+     "Retained": 321,
+     "Churned": 62
+    },
+    {
+     "x": "49-54m",
+     "Retained": 352,
+     "Churned": 68
+    },
+    {
+     "x": "55-60m",
+     "Retained": 360,
+     "Churned": 52
+    },
+    {
+     "x": "61-66m",
+     "Retained": 420,
+     "Churned": 43
+    },
+    {
+     "x": "67-72m",
+     "Retained": 894,
+     "Churned": 50
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "Retained",
+     "label": "Retained"
+    },
+    {
+     "key": "Churned",
+     "label": "Churned"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "tenure (months)",
+   "yLabel": "customers",
+   "note": "Churn is front-loaded: the first six months contain the largest churned block.",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "charges-hist",
+   "kind": "stacked-bar",
+   "title": "Monthly charges distribution by churn outcome",
+   "data": [
+    {
+     "x": "$18-26",
+     "Retained": 1456,
+     "Churned": 148
+    },
+    {
+     "x": "$26-35",
+     "Retained": 90,
+     "Churned": 41
+    },
+    {
+     "x": "$35-43",
+     "Retained": 119,
+     "Churned": 45
+    },
+    {
+     "x": "$43-51",
+     "Retained": 383,
+     "Churned": 169
+    },
+    {
+     "x": "$51-60",
+     "Retained": 383,
+     "Churned": 91
+    },
+    {
+     "x": "$60-68",
+     "Retained": 315,
+     "Churned": 36
+    },
+    {
+     "x": "$68-76",
+     "Retained": 506,
+     "Churned": 326
+    },
+    {
+     "x": "$76-85",
+     "Retained": 493,
+     "Churned": 289
+    },
+    {
+     "x": "$85-93",
+     "Retained": 448,
+     "Churned": 228
+    },
+    {
+     "x": "$93-102",
+     "Retained": 437,
+     "Churned": 315
+    },
+    {
+     "x": "$102-110",
+     "Retained": 372,
+     "Churned": 156
+    },
+    {
+     "x": "$110-118",
+     "Retained": 172,
+     "Churned": 25
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "Retained",
+     "label": "Retained"
+    },
+    {
+     "key": "Churned",
+     "label": "Churned"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "monthly charges",
+   "yLabel": "customers",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "corr-heatmap",
+   "kind": "heatmap",
+   "title": "Correlation matrix (numeric block)",
+   "data": [
+    {
+     "row": "tenure",
+     "col": "tenure",
+     "value": 1.0
+    },
+    {
+     "row": "tenure",
+     "col": "MonthlyCharges",
+     "value": 0.248
+    },
+    {
+     "row": "tenure",
+     "col": "TotalCharges",
+     "value": 0.826
+    },
+    {
+     "row": "tenure",
+     "col": "SeniorCitizen",
+     "value": 0.017
+    },
+    {
+     "row": "tenure",
+     "col": "Churn_flag",
+     "value": -0.352
+    },
+    {
+     "row": "MonthlyCharges",
+     "col": "tenure",
+     "value": 0.248
+    },
+    {
+     "row": "MonthlyCharges",
+     "col": "MonthlyCharges",
+     "value": 1.0
+    },
+    {
+     "row": "MonthlyCharges",
+     "col": "TotalCharges",
+     "value": 0.651
+    },
+    {
+     "row": "MonthlyCharges",
+     "col": "SeniorCitizen",
+     "value": 0.22
+    },
+    {
+     "row": "MonthlyCharges",
+     "col": "Churn_flag",
+     "value": 0.193
+    },
+    {
+     "row": "TotalCharges",
+     "col": "tenure",
+     "value": 0.826
+    },
+    {
+     "row": "TotalCharges",
+     "col": "MonthlyCharges",
+     "value": 0.651
+    },
+    {
+     "row": "TotalCharges",
+     "col": "TotalCharges",
+     "value": 1.0
+    },
+    {
+     "row": "TotalCharges",
+     "col": "SeniorCitizen",
+     "value": 0.102
+    },
+    {
+     "row": "TotalCharges",
+     "col": "Churn_flag",
+     "value": -0.199
+    },
+    {
+     "row": "SeniorCitizen",
+     "col": "tenure",
+     "value": 0.017
+    },
+    {
+     "row": "SeniorCitizen",
+     "col": "MonthlyCharges",
+     "value": 0.22
+    },
+    {
+     "row": "SeniorCitizen",
+     "col": "TotalCharges",
+     "value": 0.102
+    },
+    {
+     "row": "SeniorCitizen",
+     "col": "SeniorCitizen",
+     "value": 1.0
+    },
+    {
+     "row": "SeniorCitizen",
+     "col": "Churn_flag",
+     "value": 0.151
+    },
+    {
+     "row": "Churn_flag",
+     "col": "tenure",
+     "value": -0.352
+    },
+    {
+     "row": "Churn_flag",
+     "col": "MonthlyCharges",
+     "value": 0.193
+    },
+    {
+     "row": "Churn_flag",
+     "col": "TotalCharges",
+     "value": -0.199
+    },
+    {
+     "row": "Churn_flag",
+     "col": "SeniorCitizen",
+     "value": 0.151
+    },
+    {
+     "row": "Churn_flag",
+     "col": "Churn_flag",
+     "value": 1.0
+    }
+   ],
+   "x": "col",
+   "series": [
+    {
+     "key": "value",
+     "label": "Pearson r"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": [
+    -1,
+    1
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "leakage",
+   "title": "Leakage checks run before modelling",
+   "columns": [
+    "Check",
+    "Result",
+    "Consequence"
+   ],
+   "rows": [
+    [
+     "customerID uniqueness",
+     "unique = True",
+     "safe to split on rows"
+    ],
+    [
+     "TotalCharges vs tenure x MonthlyCharges",
+     "80.4% of rows within 5%",
+     "collinear; keep but do not over-interpret"
+    ],
+    [
+     "Post-outcome columns",
+     "none present",
+     "no column describes events after the churn decision"
+    ],
+    [
+     "Duplicate customers",
+     "0 found",
+     "no train/test contamination"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "corr = df[['tenure','MonthlyCharges','TotalCharges','SeniorCitizen','Churn_flag']].corr()\nimplied = df.tenure * df.MonthlyCharges\ngap = (df.TotalCharges - implied).abs() / df.TotalCharges\nprint(f'TotalCharges is within 5% of tenure*MonthlyCharges for {(gap < 0.05).mean():.0%} of rows')",
+ "code_language": "python",
+ "takeaway": "Tenure and contract type carry the signal; TotalCharges is a derived column, and treating it as independent evidence would be the first mistake available in this dataset.",
+ "used_skill_scripts": [],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:43"
+}

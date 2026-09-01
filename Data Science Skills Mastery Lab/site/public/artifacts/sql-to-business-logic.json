@@ -1,0 +1,160 @@
+{
+ "skill": "sql-to-business-logic",
+ "source": "data-analytics-skills",
+ "category": "Documentation & Knowledge",
+ "phase": 2,
+ "track": "T2",
+ "title": "Translating the revenue query into something a stakeholder can challenge",
+ "prescribes": "Turn SQL into plain business language -- what is calculated, from what, filtered how, grouped by what -- and surface the validation questions the filters imply.",
+ "applied": "Ran sql_explainer.py over the country-revenue query that feeds the dashboard, then executed the same SQL so the explanation sits beside its actual output.",
+ "narrative": [
+  "Three WHERE clauses decide what this number means, and each is a business choice: 2011 only, positive quantities only (cancellations excluded), and known customers only. A stakeholder cannot challenge 'revenue' -- they can challenge 'revenue excluding anonymous orders'.",
+  "That third filter is not cosmetic: it removes 25% of order lines. The explanation makes it visible in prose instead of leaving it in line 9 of a query.",
+  "The generated validation questions are the useful part of the skill: they ask whether the exclusions are intended, which is exactly the conversation that prevents a mis-read dashboard."
+ ],
+ "kpis": [
+  {
+   "label": "Filters explained",
+   "value": "3",
+   "caption": "period, sign, customer identity",
+   "tone": "neutral"
+  },
+  {
+   "label": "Countries returned",
+   "value": "36",
+   "caption": "2011 activity",
+   "tone": "neutral"
+  },
+  {
+   "label": "Top market",
+   "value": "United Kingdom",
+   "caption": "GBP 6,809,730",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "rev-per-customer",
+   "kind": "bar",
+   "title": "Revenue per active customer by market (2011)",
+   "data": [
+    {
+     "x": "United Kingdom",
+     "rpc": 1785.92
+    },
+    {
+     "x": "Netherlands",
+     "rpc": 34582.73
+    },
+    {
+     "x": "EIRE",
+     "rpc": 85577.34
+    },
+    {
+     "x": "Germany",
+     "rpc": 2297.05
+    },
+    {
+     "x": "France",
+     "rpc": 2373.9
+    },
+    {
+     "x": "Australia",
+     "rpc": 15276.5
+    },
+    {
+     "x": "Spain",
+     "rpc": 2059.77
+    },
+    {
+     "x": "Switzerland",
+     "rpc": 2625.67
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "rpc",
+     "label": "Revenue per customer"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "The UK dominates total revenue but not revenue per customer -- a distinction the plain-language reading makes obvious.",
+   "valueFormat": "currency",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "query-out",
+   "title": "Query output (top 8 markets)",
+   "columns": [
+    "Country",
+    "Active customers",
+    "Revenue",
+    "Revenue / customer"
+   ],
+   "rows": [
+    [
+     "United Kingdom",
+     3813,
+     6809729.7,
+     1785.92
+    ],
+    [
+     "Netherlands",
+     8,
+     276661.86,
+     34582.73
+    ],
+    [
+     "EIRE",
+     3,
+     256732.02,
+     85577.34
+    ],
+    [
+     "Germany",
+     93,
+     213626.0,
+     2297.05
+    ],
+    [
+     "France",
+     84,
+     199407.74,
+     2373.9
+    ],
+    [
+     "Australia",
+     9,
+     137488.46,
+     15276.5
+    ],
+    [
+     "Spain",
+     29,
+     59733.38,
+     2059.77
+    ],
+    [
+     "Switzerland",
+     21,
+     55139.03,
+     2625.67
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "### What is being calculated (SELECT)\n- Country\n- Count distinct DISTINCT CustomerID (as active_customers)\n- Sum of Quantity * UnitPrice (as revenue)\n- Count distinct Quantity * UnitPrice (as revenue_per_customer)\n\n### Data source (FROM)\n- Start with: retail\n\n### Filters applied (WHERE)\n- InvoiceDate on or after 2011-01-01\n- Quantity greater than 0\n- CustomerID is not empty\n\n### Grouping (GROUP BY)\n- Calculate separately for each: Country\n\n### Sorting (ORDER BY)\n- Sort by: revenue DESC\n\n### Validation questions\n- Are these the correct filter conditions for the intended population?\n- Does the GROUP BY grain match what a single row should represent?\n- Are NULL values handled explicitly in aggregations?",
+ "code_language": "markdown",
+ "takeaway": "The query's three filters are business decisions in disguise; stated in English, they are reviewable by the person who owns the number.",
+ "used_skill_scripts": [
+  ".claude/skills/sql-to-business-logic/scripts/sql_explainer.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:46"
+}

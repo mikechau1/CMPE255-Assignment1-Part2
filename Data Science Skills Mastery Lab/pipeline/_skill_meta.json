@@ -1,0 +1,511 @@
+{
+ "ab-test-analysis": {
+  "name": "ab-test-analysis",
+  "description": "Rigorous A/B test statistical analysis. Use when analyzing experiment results, calculating statistical significance, checking for sample ratio mismatch, or validating test design before launch.",
+  "chars": 2832,
+  "files": [
+   "SKILL.md",
+   "ab_test_analyzer.py",
+   "ab_test_design_guide.md",
+   "ab_test_report_template.md"
+  ]
+ },
+ "analysis-assumptions-log": {
+  "name": "analysis-assumptions-log",
+  "description": "Track and document analytical assumptions and decisions. Use when making analytical choices, documenting trade-offs, ensuring transparency, or creating audit trails for analytical work.",
+  "chars": 2311,
+  "files": [
+   "SKILL.md",
+   "assumption_categories.md",
+   "assumptions_log_template.md",
+   "assumptions_tracker.py"
+  ]
+ },
+ "analysis-documentation": {
+  "name": "analysis-documentation",
+  "description": "Structured, reproducible analysis documentation. Use when documenting analysis findings, creating analysis notebooks, ensuring reproducibility, or building analysis archives for future reference.",
+  "chars": 2332,
+  "files": [
+   "SKILL.md",
+   "analysis_doc_template.md",
+   "audience_depth_guide.md"
+  ]
+ },
+ "analysis-planning": {
+  "name": "analysis-planning",
+  "description": "Structure analysis approach before starting work. Use when receiving new analysis requests, breaking down complex questions into steps, or planning iterative analysis workflows.",
+  "chars": 1901,
+  "files": [
+   "SKILL.md",
+   "analysis_plan_template.md",
+   "effort_estimation.md",
+   "kickoff_doc_template.md",
+   "risks_dependencies.md",
+   "scoping_framework.md"
+  ]
+ },
+ "analysis-qa-checklist": {
+  "name": "analysis-qa-checklist",
+  "description": "Pre-delivery quality assurance for analysis work. Use when reviewing analysis before sharing with stakeholders, checking for completeness, validating assumptions, or ensuring clarity of recommendations.",
+  "chars": 1879,
+  "files": [
+   "SKILL.md",
+   "common_analysis_errors.md",
+   "qa_checklist_master.md",
+   "qa_runner.py",
+   "qa_signoff_template.md"
+  ]
+ },
+ "analysis-retrospective": {
+  "name": "analysis-retrospective",
+  "description": "Post-analysis learning and process improvement. Use when completing major analysis projects, documenting lessons learned, or improving team analytical practices.",
+  "chars": 1822,
+  "files": [
+   "SKILL.md",
+   "learning_capture.md",
+   "learnings_log_template.md",
+   "retro_frameworks.md",
+   "retrospective_template.md"
+  ]
+ },
+ "business-metrics-calculator": {
+  "name": "business-metrics-calculator",
+  "description": "Standard business metric calculation with industry benchmarks. Use when calculating SaaS metrics (MRR, churn, LTV, CAC), e-commerce KPIs, or product analytics metrics with proper definitions.",
+  "chars": 2672,
+  "files": [
+   "SKILL.md",
+   "metric_definitions.md",
+   "metrics_report_template.md",
+   "saas_metrics.py"
+  ]
+ },
+ "cohort-analysis": {
+  "name": "cohort-analysis",
+  "description": "Time-based cohort analysis with retention and behaviour tracking. Activate when you need to measure how groups of users/customers behave over time \u2014 retention rates, revenue by cohort, or feature adoption curves.",
+  "chars": 2637,
+  "files": [
+   "SKILL.md",
+   "cohort_builder.py",
+   "cohort_definition_patterns.md",
+   "cohort_query.sql",
+   "cohort_report_template.md",
+   "cohort_visualizer.py",
+   "retention_matrix.html",
+   "retention_matrix.py",
+   "retention_metrics_glossary.md"
+  ]
+ },
+ "context-packager": {
+  "name": "context-packager",
+  "description": "Efficiently package context for AI-assisted analysis. Use when preparing to work with Claude on analysis, organizing context documents, or structuring prompts for complex analytical tasks.",
+  "chars": 1998,
+  "files": [
+   "SKILL.md",
+   "context_bundler.py",
+   "context_layering_guide.md",
+   "context_package_template.md",
+   "context_quality_rubric.md",
+   "token_counter.py"
+  ]
+ },
+ "dashboard-specification": {
+  "name": "dashboard-specification",
+  "description": "Design specifications for effective dashboards. Use when planning new dashboards, improving existing ones, or documenting dashboard requirements before development starts.",
+  "chars": 2963,
+  "files": [
+   "SKILL.md",
+   "dashboard_design_principles.md",
+   "dashboard_requirements_guide.md",
+   "dashboard_spec_template.md"
+  ]
+ },
+ "data-catalog-entry": {
+  "name": "data-catalog-entry",
+  "description": "Create standardized metadata for data assets. Use when documenting new datasets, building data catalogs, improving data discoverability, or creating data dictionaries for teams.",
+  "chars": 2463,
+  "files": [
+   "SKILL.md",
+   "catalog_entry_template.md",
+   "catalog_extractor.py",
+   "catalog_standards.md"
+  ]
+ },
+ "data-cleaning": {
+  "name": "data-cleaning",
+  "description": "Use when preparing raw data for modeling \u2014 handling missing values, duplicates, inconsistent types, outliers, and bad categorical values. Emphasizes fitting all imputation on train-only to avoid leakage.",
+  "chars": 3114,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "data-narrative-builder": {
+  "name": "data-narrative-builder",
+  "description": "Build compelling data-driven narratives. Use when presenting analysis results, creating stakeholder reports, or transforming a set of findings into a story that drives a specific decision or action.",
+  "chars": 2973,
+  "files": [
+   "SKILL.md",
+   "data_writing_guide.md",
+   "narrative_frameworks.md",
+   "narrative_template.md"
+  ]
+ },
+ "data-quality-audit": {
+  "name": "data-quality-audit",
+  "description": "Comprehensive data quality assessment against business rules, schema constraints, and freshness expectations. Activate when validating data pipeline outputs before production use, auditing a dataset against defined business rules, or producing a quality scorecard for a data asset.",
+  "chars": 2739,
+  "files": [
+   "SKILL.md",
+   "audit_report_template.html",
+   "business_rule_patterns.md",
+   "duplicate_finder.py",
+   "freshness_check.py",
+   "null_counter.py",
+   "quality_dimensions.md",
+   "quality_rubric.md",
+   "referential_integrity.py",
+   "value_range_validator.py"
+  ]
+ },
+ "executive-summary-generator": {
+  "name": "executive-summary-generator",
+  "description": "Create concise executive summaries from detailed analysis. Use when preparing board decks, executive briefings, or condensing complex analysis into decision-ready formats for senior audiences.",
+  "chars": 2794,
+  "files": [
+   "SKILL.md",
+   "executive_communication.md",
+   "executive_summary_template.md",
+   "pyramid_principle_guide.md"
+  ]
+ },
+ "experiment-tracking": {
+  "name": "experiment-tracking",
+  "description": "Use when running ML experiments that need to be compared, reproduced, or shared. Covers MLflow/Weights & Biases logging, what to track, run organization, and model registry basics.",
+  "chars": 2758,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "exploratory-data-analysis": {
+  "name": "exploratory-data-analysis",
+  "description": "Use when starting on a new dataset, before modeling, or when asked to \"explore\", \"profile\", \"understand\", or \"summarize\" data. Covers structured EDA, distributions, correlations, target leakage checks, and visualization.",
+  "chars": 3169,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "feature-engineering": {
+  "name": "feature-engineering",
+  "description": "Use when creating, encoding, scaling, or selecting features for ML models. Covers categorical encoding, numeric transforms, datetime/text/aggregation features, and leakage-safe target encoding.",
+  "chars": 3114,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "funnel-analysis": {
+  "name": "funnel-analysis",
+  "description": "Conversion funnel analysis with drop-off investigation. Use when analyzing multi-step processes, identifying conversion bottlenecks, comparing segments through a funnel, or optimizing user journeys.",
+  "chars": 2712,
+  "files": [
+   "SKILL.md",
+   "funnel_analyzer.py",
+   "funnel_design_guide.md",
+   "funnel_report_template.md"
+  ]
+ },
+ "hyperparameter-tuning": {
+  "name": "hyperparameter-tuning",
+  "description": "Use when optimizing model hyperparameters. Covers search strategy (random vs Bayesian/Optuna), leakage-safe tuning inside CV, search-space design, early stopping, and budget management.",
+  "chars": 3058,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "imbalanced-data": {
+  "name": "imbalanced-data",
+  "description": "Use when the target is rare (fraud, churn, disease, anomalies). Covers correct metrics, resampling (SMOTE/undersampling), class weights, threshold tuning, and avoiding the accuracy trap and resampling leakage.",
+  "chars": 3440,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "impact-quantification": {
+  "name": "impact-quantification",
+  "description": "Estimate and communicate business impact of insights. Use when sizing opportunities discovered in analysis, calculating ROI of recommended actions, or prioritizing initiatives by potential impact.",
+  "chars": 2007,
+  "files": [
+   "SKILL.md",
+   "assumption_documentation.md",
+   "business_case_template.md",
+   "confidence_interval.py",
+   "cost_savings.py",
+   "impact_estimate_template.md",
+   "impact_quantification_framework.md",
+   "revenue_impact.py"
+  ]
+ },
+ "insight-synthesis": {
+  "name": "insight-synthesis",
+  "description": "Transform data findings into compelling insights. Use when converting analysis results into actionable insights, connecting findings to business impact, or preparing insights for stakeholder communication.",
+  "chars": 2871,
+  "files": [
+   "SKILL.md",
+   "insight_brief_template.md",
+   "insight_framework.md",
+   "prioritization_guide.md"
+  ]
+ },
+ "llm-finetuning": {
+  "name": "llm-finetuning",
+  "description": "Use when fine-tuning a large language model. Covers choosing full vs LoRA/QLoRA, dataset formatting, the transformers/PEFT/TRL stack, key hyperparameters, and evaluating fine-tunes without overfitting.",
+  "chars": 3691,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "methodology-explainer": {
+  "name": "methodology-explainer",
+  "description": "Explain analysis methodology to diverse audiences. Use when documenting 'how we did this' sections, building trust through transparency, or teaching analytical approaches to stakeholders.",
+  "chars": 1947,
+  "files": [
+   "SKILL.md",
+   "audience_depth_guide.md",
+   "methodology_explanation_patterns.md",
+   "methodology_slide_template.md",
+   "methodology_writeup_template.md"
+  ]
+ },
+ "metric-reconciliation": {
+  "name": "metric-reconciliation",
+  "description": "Cross-source metric validation and discrepancy investigation. Use when metrics from different sources don't match, investigating data quality issues between systems, or validating data migration accuracy.",
+  "chars": 18442,
+  "files": [
+   "SKILL.md",
+   "SKILL.md",
+   "reconcile_metrics.py",
+   "reconciliation_patterns.md",
+   "reconciliation_report_template.md"
+  ]
+ },
+ "ml-debugging": {
+  "name": "ml-debugging",
+  "description": "Use when a model won't learn, loss is NaN, metrics look too good/bad, or training is unstable. Provides a systematic decision tree for diagnosing data, optimization, and generalization failures.",
+  "chars": 2870,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "model-evaluation": {
+  "name": "model-evaluation",
+  "description": "Use when choosing metrics, validating models, or interpreting results. Covers metric selection by problem type, cross-validation strategy, calibration, confusion-matrix analysis, and avoiding misleading scores.",
+  "chars": 2938,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "model-serving": {
+  "name": "model-serving",
+  "description": "Use when deploying a trained model behind an API. Covers FastAPI inference services, loading artifacts safely, request validation, batching, ONNX/quantization for speed, health checks, and monitoring.",
+  "chars": 3017,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "pandas-patterns": {
+  "name": "pandas-patterns",
+  "description": "Use when writing or reviewing pandas code. Covers idiomatic, vectorized, memory-efficient patterns; avoiding SettingWithCopyWarning, chained indexing, and slow apply loops.",
+  "chars": 2739,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "peer-review-template": {
+  "name": "peer-review-template",
+  "description": "Structured peer review for analytical work. Use when reviewing teammates' analysis, providing constructive feedback, or establishing analysis quality standards.",
+  "chars": 1963,
+  "files": [
+   "SKILL.md",
+   "analytical_rigor_checklist.md",
+   "code_review_for_analysis.md",
+   "peer_review_framework.md",
+   "peer_review_template.md",
+   "review_response_template.md"
+  ]
+ },
+ "programmatic-eda": {
+  "name": "programmatic-eda",
+  "description": "Systematic exploratory data analysis. Activate when a dataset needs profiling \u2014 structure check, nulls, outliers, distributions, correlations \u2014 before deeper analysis begins.",
+  "chars": 2326,
+  "files": [
+   "SKILL.md",
+   "correlation_explorer.py",
+   "data_overview.py",
+   "distribution_summary.py",
+   "eda_checklist.md",
+   "eda_report_template.md",
+   "findings_summary.md",
+   "null_profiler.py",
+   "outlier_detector.py",
+   "pandas_polars_recipes.md",
+   "quality_thresholds.md"
+  ]
+ },
+ "pytorch-training-loop": {
+  "name": "pytorch-training-loop",
+  "description": "Use when writing or reviewing a PyTorch training loop. Covers correct train/eval modes, gradient handling, mixed precision, checkpointing, reproducibility, and device management.",
+  "chars": 3319,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "query-validation": {
+  "name": "query-validation",
+  "description": "SQL query review for correctness, performance, and best practices. Activate when a query needs review before production use, shows unexpected results, or runs too slowly.",
+  "chars": 2201,
+  "files": [
+   "SKILL.md",
+   "cardinality_estimator.py",
+   "engine_specific_guide.md",
+   "explain_plan_parser.py",
+   "optimization_recommendations.md",
+   "query_review_template.md",
+   "sql_anti_patterns.md",
+   "sql_lint.py"
+  ]
+ },
+ "rag-pipeline": {
+  "name": "rag-pipeline",
+  "description": "Use when building retrieval-augmented generation. Covers chunking strategy, embedding choice, vector stores, hybrid + reranking retrieval, prompt assembly, and evaluating retrieval and answer quality.",
+  "chars": 3002,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "reproducible-ml": {
+  "name": "reproducible-ml",
+  "description": "Use when an ML result must be reproducible \u2014 fixing seeds, pinning environments, versioning data, and structuring projects so runs can be exactly recreated. Covers determinism gotchas across NumPy, PyTorch, and CUDA.",
+  "chars": 2876,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "root-cause-investigation": {
+  "name": "root-cause-investigation",
+  "description": "Systematic investigation of metric changes and anomalies. Use when a metric unexpectedly changes, investigating business metric drops, explaining performance variations, or drilling into aggregated metric drivers.",
+  "chars": 3055,
+  "files": [
+   "SKILL.md",
+   "drilldown_analyzer.py",
+   "hypothesis_testing_guide.md",
+   "rca_framework.md",
+   "rca_report_template.md"
+  ]
+ },
+ "schema-mapper": {
+  "name": "schema-mapper",
+  "description": "Database schema understanding and relationship mapping. Use when exploring unfamiliar databases, documenting table relationships, identifying join paths, or generating ERD documentation for existing schemas.",
+  "chars": 16113,
+  "files": [
+   "SKILL.md",
+   "SKILL.md",
+   "schema_compare.py",
+   "schema_mapping_patterns.md",
+   "schema_mapping_template.md"
+  ]
+ },
+ "segmentation-analysis": {
+  "name": "segmentation-analysis",
+  "description": "Customer/user segmentation with actionable insights. Use when identifying distinct customer groups, analyzing segment-specific behavior, profiling high-value segments, or testing segmentation hypotheses.",
+  "chars": 2869,
+  "files": [
+   "SKILL.md",
+   "segment_profile_template.md",
+   "segmentation_approaches.md",
+   "segmentation_runner.py"
+  ]
+ },
+ "semantic-model-builder": {
+  "name": "semantic-model-builder",
+  "description": "Build structured semantic layer documentation for metrics, dimensions, and entities. Activate when you need to define a business metric, document a data model, or create YAML definitions compatible with dbt Semantic Layer or similar frameworks.",
+  "chars": 2587,
+  "files": [
+   "SKILL.md",
+   "dbt_semantic_layer_guide.md",
+   "dimension_definition.yaml",
+   "dimension_hierarchy_patterns.md",
+   "entity_definition.yaml",
+   "metric_definition.yaml",
+   "metric_definition_framework.md",
+   "metric_template_generator.py",
+   "model_yaml_validator.py"
+  ]
+ },
+ "sklearn-pipelines": {
+  "name": "sklearn-pipelines",
+  "description": "Use when building scikit-learn models that must not leak preprocessing. Covers Pipeline, ColumnTransformer, custom transformers, and combining preprocessing with cross-validation correctly.",
+  "chars": 3089,
+  "files": [
+   "SKILL.md"
+  ]
+ },
+ "sql-to-business-logic": {
+  "name": "sql-to-business-logic",
+  "description": "Translate SQL queries into plain language business logic. Use when documenting queries, explaining analysis to non-technical stakeholders, code reviewing for correctness, or building a query catalog.",
+  "chars": 2541,
+  "files": [
+   "SKILL.md",
+   "query_documentation_template.md",
+   "sql_explainer.py",
+   "sql_pattern_library.md"
+  ]
+ },
+ "stakeholder-requirements-gathering": {
+  "name": "stakeholder-requirements-gathering",
+  "description": "Structured requirements elicitation for analysis requests. Use when scoping new analysis projects, clarifying ambiguous business questions, or documenting analysis acceptance criteria with stakeholders.",
+  "chars": 2050,
+  "files": [
+   "SKILL.md",
+   "analysis_brief_template.md",
+   "decision_maker_framework.md",
+   "elicitation_techniques.md",
+   "interview_guide.md",
+   "requirements_doc_template.md"
+  ]
+ },
+ "technical-to-business-translator": {
+  "name": "technical-to-business-translator",
+  "description": "Translate technical analysis into business language. Use when explaining statistical concepts to non-analysts, simplifying technical findings, or bridging communication between data teams and business stakeholders.",
+  "chars": 1831,
+  "files": [
+   "SKILL.md",
+   "jargon_detector.py",
+   "metaphor_bank.md",
+   "readability_scorer.py",
+   "stakeholder_personas.md",
+   "translation_pattern_library.md",
+   "translation_template.md"
+  ]
+ },
+ "time-series-analysis": {
+  "name": "time-series-analysis",
+  "description": "Temporal pattern detection and forecasting. Use when analyzing trends over time, detecting seasonality, identifying anomalies in time series, or building simple forecasting models for planning.",
+  "chars": 2837,
+  "files": [
+   "SKILL.md",
+   "ts_analyzer.py",
+   "ts_patterns_guide.md",
+   "ts_report_template.md"
+  ]
+ },
+ "visualization-builder": {
+  "name": "visualization-builder",
+  "description": "Create effective, publication-ready data visualizations. Use when choosing chart types, designing presentation visuals, building dashboard charts, or applying visual design best practices to data output.",
+  "chars": 3180,
+  "files": [
+   "SKILL.md",
+   "chart_builder.py",
+   "chart_selection_guide.md",
+   "visual_design_principles.md",
+   "viz_spec_template.md"
+  ]
+ }
+}

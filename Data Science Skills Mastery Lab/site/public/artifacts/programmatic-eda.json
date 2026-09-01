@@ -1,0 +1,205 @@
+{
+ "skill": "programmatic-eda",
+ "source": "data-analytics-skills",
+ "category": "Data Quality & Validation",
+ "phase": 2,
+ "track": "T1",
+ "title": "The same dataset profiled by the skill's own five scripts",
+ "prescribes": "Profile a dataset with reusable scripts rather than ad-hoc notebook cells: structural overview, null profile with thresholds, distribution summary, correlation scan, outliers.",
+ "applied": "Ran all five bundled scripts (data_overview, null_profiler, distribution_summary, correlation_explorer, outlier_detector) against the Telco frame and kept their raw output.",
+ "narrative": [
+  "The null profile is the payoff: exactly 11 rows have a blank TotalCharges, and every one of them has tenure = [0]. That is not missing data, it is a brand-new account that has never been billed -- which is why phase 3 fills those with 0 rather than a median.",
+  "The outlier scan flags 1142 values across the numeric columns. None are errors: monthly charges top out near $119 and tenure at 72 months, both legitimate. Recording that judgement is the point -- an automated pipeline that clipped them would destroy signal.",
+  "Running the skill's scripts instead of writing new profiling code is the honest test of the skill: the output below is verbatim from .claude/skills/programmatic-eda/scripts/."
+ ],
+ "kpis": [
+  {
+   "label": "Columns profiled",
+   "value": "22",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Columns with nulls",
+   "value": "1",
+   "caption": "after type coercion",
+   "tone": "warn"
+  },
+  {
+   "label": "Blank TotalCharges",
+   "value": "11",
+   "caption": "all with tenure = 0",
+   "tone": "warn"
+  },
+  {
+   "label": "Outlier values flagged",
+   "value": "1142",
+   "caption": "IQR + z-score, none invalid",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "null-pct",
+   "kind": "hbar",
+   "title": "Null percentage by column (threshold: warn 0.1%, fail 5%)",
+   "data": [
+    {
+     "x": "TotalCharges",
+     "pct": 0.16
+    },
+    {
+     "x": "customerID",
+     "pct": 0.0
+    },
+    {
+     "x": "SeniorCitizen",
+     "pct": 0.0
+    },
+    {
+     "x": "Partner",
+     "pct": 0.0
+    },
+    {
+     "x": "Dependents",
+     "pct": 0.0
+    },
+    {
+     "x": "gender",
+     "pct": 0.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "pct",
+     "label": "% null"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "outlier-counts",
+   "kind": "bar",
+   "title": "Outlier counts per numeric column (IQR vs z-score)",
+   "data": [
+    {
+     "x": "SeniorCitizen",
+     "iqr": 1142,
+     "zscore": 0
+    },
+    {
+     "x": "tenure",
+     "iqr": 0,
+     "zscore": 0
+    },
+    {
+     "x": "MonthlyCharges",
+     "iqr": 0,
+     "zscore": 0
+    },
+    {
+     "x": "TotalCharges",
+     "iqr": 0,
+     "zscore": 0
+    },
+    {
+     "x": "Churn_flag",
+     "iqr": 0,
+     "zscore": 0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "iqr",
+     "label": "IQR (k=1.5)"
+    },
+    {
+     "key": "zscore",
+     "label": "z-score (>3)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "outliers",
+   "title": "outlier_detector.py output",
+   "columns": [
+    "Column",
+    "Outliers",
+    "% of rows",
+    "Min",
+    "Max",
+    "Mean"
+   ],
+   "rows": [
+    [
+     "SeniorCitizen",
+     1142,
+     16.21,
+     0.0,
+     1.0,
+     0.1621
+    ],
+    [
+     "tenure",
+     0,
+     0.0,
+     0.0,
+     72.0,
+     32.3711
+    ],
+    [
+     "MonthlyCharges",
+     0,
+     0.0,
+     18.25,
+     118.75,
+     64.7617
+    ],
+    [
+     "TotalCharges",
+     0,
+     0.0,
+     18.8,
+     8684.8,
+     2283.3004
+    ],
+    [
+     "Churn_flag",
+     0,
+     0.0,
+     0.0,
+     1.0,
+     0.2654
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "Shape:   7,043 rows \u00d7 22 columns\nMemory:  6.56 MB\n\nColumn types:\n  object          17\n  int64           3\n  float64         2\n\nPer-column info:\n                    dtype  non_null  null_pct  unique            sample\ncustomerID         object      7043      0.00    7043        7590-VHVEG\ngender             object      7043      0.00       2            Female\nSeniorCitizen       int64      7043      0.00       2                 0\nPartner            object      7043      0.00       2               Yes\nDependents         object      7043      0.00       2                No\ntenure              int64      7043      0.00      73                 1\nPhoneService       object      7043      0.00       2                No\nMultipleLines      object      7043      0.00       3  No phone service\nInternetService    object      7043      0.00       3               DSL\nOnlineSecurity     object      7043      0.00       3                No\nOnlineBackup       object      7043      0.00       3               Yes\nDeviceProtection   object      7043      0.00       3                No\nTechSupport        object      7043      0.00       3                No\nStreamingTV        object      7043      0.00       3                No\nStreamingMovies    object      7043      0.00       3                No\nContract           object      7043      0.00       3    Month-to-month\nPaperlessBilling   object      7043      0.00       2               Yes\nPaymentMethod      object      7043      0.00       4  Elect\n\n=== Descriptive Statistics ===\n                 count         mean          std    min      5%     25%       50%        75%      95%      max   skew   kurt\ntenure          7043.0    32.371149    24.559481   0.00   1.000    9.00    29.000    55.0000    72.00    72.00  0.240 -1.387\nMonthlyCharges  7043.0    64.761692    30.090047  18.25  19.650   35.50    70.350    89.8500   107.40   118.75 -0.221 -1.257\nTotalCharges    7032.0  2283.300441  2266.771362  18.80  49.605  401.45  1397.475  3794.7375  6923.59  8684.80  0.962 -0.232\n\n=== Histograms ===\n\ntenure\n  [      0.00,       7.20) | ######################################## 1612\n  [      7.20,      14.40) | ##################                       759\n  [     14.40,      21.60) | ##############                           570\n  [     21.60,      28.80) | #############                            556\n  [     28.80,      36.00) | ############   \n\n=== Correlation Matrix (pearson) ===\n                SeniorCitizen  tenure  MonthlyCharges  TotalCharges  Churn_flag\nSeniorCitizen           1.000   0.017           0.220         0.102       0.151\ntenure                  0.017   1.000           0.248         0.826      -0.352\nMonthlyCharges          0.220   0.248           1.000         0.651       0.193\nTotalCharges            0.102   0.826           0.651         1.000      -0.199\nChurn_flag              0.151  -0.352           0.193        -0.199       1.000\n\n=== Strong Pairs (|r| \u2265 0.6) ===\n         col_a        col_b  correlation\n        tenure TotalCharges       0.8259\nMonthlyCharges TotalCharges       0.6511\n",
+ "code_language": "text",
+ "takeaway": "Eleven blank TotalCharges values turn out to be structurally-zero new accounts, not missing data -- a distinction that changes the imputation strategy in the next phase.",
+ "used_skill_scripts": [
+  ".claude/skills/programmatic-eda/scripts/data_overview.py",
+  ".claude/skills/programmatic-eda/scripts/null_profiler.py",
+  ".claude/skills/programmatic-eda/scripts/distribution_summary.py",
+  ".claude/skills/programmatic-eda/scripts/correlation_explorer.py",
+  ".claude/skills/programmatic-eda/scripts/outlier_detector.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:43"
+}

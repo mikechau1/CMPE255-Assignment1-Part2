@@ -1,0 +1,177 @@
+{
+ "skill": "data-cleaning",
+ "source": "agent-ml-skills",
+ "category": "Data Prep & Exploration",
+ "phase": 3,
+ "track": "T1",
+ "title": "Cleaning Telco and Titanic with train-only statistics",
+ "prescribes": "Fix types, duplicates and outliers deliberately, and compute every imputation statistic on the training split alone -- never on the full dataset.",
+ "applied": "Coerced TotalCharges, resolved its 11 blanks structurally, collapsed the redundant 'No internet service' level, and imputed Titanic ages from train-only group medians.",
+ "narrative": [
+  "TotalCharges arrives as text because 11 rows are blank. Every one has tenure = [0] -- these accounts have never been billed, so the right fill is 0.0, not the median. Filling with the median would have inserted GBP 1,398 of imaginary billing history into the newest customers, which is precisely the population the model must get right.",
+  "The leakage margin is measurable: the median computed on the training split is 1,397.78 against 1,397.47 on the full dataset. The gap is small here, but the discipline is what keeps the test split honest -- and on Titanic, where 19.9% of ages are missing, the same rule matters much more.",
+  "7 service columns encode 'No internet service' or 'No phone service' as a third level that means the same thing as 'No'. Collapsing them removes one redundant dummy column each without losing information. 22 exact duplicate customers exist once the ID is dropped, so no de-duplication is needed."
+ ],
+ "kpis": [
+  {
+   "label": "Blank TotalCharges",
+   "value": "11",
+   "caption": "filled with 0.0, not the median",
+   "tone": "good"
+  },
+  {
+   "label": "Train vs full median",
+   "value": "1,398 / 1,397",
+   "caption": "the leakage the split prevents",
+   "tone": "neutral"
+  },
+  {
+   "label": "Service columns collapsed",
+   "value": "7",
+   "caption": "'No internet service' -> 'No'",
+   "tone": "neutral"
+  },
+  {
+   "label": "Titanic Age missing",
+   "value": "19.9%",
+   "caption": "imputed by train-only Pclass x Sex median",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "titanic-missing",
+   "kind": "hbar",
+   "title": "Titanic missingness before cleaning",
+   "data": [
+    {
+     "x": "Cabin",
+     "pct": 77.1
+    },
+    {
+     "x": "Age",
+     "pct": 19.87
+    },
+    {
+     "x": "Embarked",
+     "pct": 0.22
+    },
+    {
+     "x": "PassengerId",
+     "pct": 0.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "pct",
+     "label": "% missing"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "age-medians",
+   "kind": "bar",
+   "title": "Train-only Age medians used for imputation",
+   "data": [
+    {
+     "x": "class 1 female",
+     "age": 35.0
+    },
+    {
+     "x": "class 1 male",
+     "age": 39.5
+    },
+    {
+     "x": "class 2 female",
+     "age": 28.0
+    },
+    {
+     "x": "class 2 male",
+     "age": 30.0
+    },
+    {
+     "x": "class 3 female",
+     "age": 22.0
+    },
+    {
+     "x": "class 3 male",
+     "age": 25.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "age",
+     "label": "Median age (train split)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Computed on the 712-row training split; applied unchanged to the test split.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "decisions",
+   "title": "Cleaning decisions and their justification",
+   "columns": [
+    "Issue",
+    "Naive fix",
+    "What we did",
+    "Why"
+   ],
+   "rows": [
+    [
+     "TotalCharges is text with 11 blanks",
+     "drop rows or fill median",
+     "coerce to float, fill 0.0",
+     "tenure = 0 means never billed: a structural zero"
+    ],
+    [
+     "'No internet service' as a third level",
+     "leave it",
+     "map to 'No'",
+     "removes 7 redundant dummy columns, same information"
+    ],
+    [
+     "Titanic Age 19.9% missing",
+     "global median",
+     "train-only median by Pclass x Sex",
+     "age differs sharply by class and sex"
+    ],
+    [
+     "Titanic Cabin 77% missing",
+     "drop the column",
+     "keep as HasCabin boolean",
+     "missingness itself carries class information"
+    ],
+    [
+     "Outliers in MonthlyCharges",
+     "clip at 1.5 IQR",
+     "keep unchanged",
+     "phase 2 confirmed the range is legitimate"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# WRONG: statistic computed over train + test\ndf['TotalCharges'] = df['TotalCharges'].fillna(df['TotalCharges'].median())\n\n# RIGHT: structural zero, and any real imputation fitted on train only\nX_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=SEED)\nX_train['TotalCharges'] = X_train['TotalCharges'].fillna(0.0)   # tenure == 0 -> never billed\nage_by_group = train.groupby(['Pclass', 'Sex'])['Age'].median() # fitted on train\ntest['Age'] = test.apply(lambda r: age_by_group.loc[(r.Pclass, r.Sex)]\n                         if pd.isna(r.Age) else r.Age, axis=1)",
+ "code_language": "python",
+ "takeaway": "Every missing value here has a reason, and the fix follows the reason -- structural zeros get 0.0, genuinely unknown ages get a train-only group median.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "data/processed/churn_train_clean.parquet",
+  "data/processed/churn_test_clean.parquet"
+ ],
+ "generated_at": "2026-09-01T04:36:50"
+}

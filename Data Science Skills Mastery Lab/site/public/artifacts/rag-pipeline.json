@@ -1,0 +1,255 @@
+{
+ "skill": "rag-pipeline",
+ "source": "agent-ml-skills",
+ "category": "LLMs & GenAI",
+ "phase": 4,
+ "track": "T5",
+ "title": "Retrieval over 46 skill documents, four retrievers, 20 labelled questions",
+ "prescribes": "Chunk on structure with overlap, embed, retrieve with both lexical and dense signals, fuse and rerank, and evaluate retrieval against labelled queries instead of eyeballing it.",
+ "applied": "Chunked every installed SKILL.md into 420 passages, indexed them with BM25 and MiniLM-L6 embeddings, fused with reciprocal rank fusion, reranked the top 20 with a cross-encoder, and scored all four against 20 hand-labelled questions.",
+ "narrative": [
+  "The corpus is 420 chunks from 46 documents, averaging 48 words with a 40-word overlap and a split on markdown headings first. Structure-aware chunking matters here because a skill document is a sequence of self-contained instructions -- cutting mid-section produces passages that answer nothing.",
+  "Every retriever is scored on the same 20 questions with a known correct skill, so the comparison is a number rather than an impression. BM25 gets recall@1 of 55%, dense embeddings 80%, RRF fusion 85%, and adding the cross-encoder reranker 85%.",
+  "The two signals fail differently, which is why fusing helps: BM25 puts the right skill in the top three on 100% of questions but only first on 55% -- it finds the neighbourhood and misranks inside it -- while the dense index ranks better at position one and occasionally misses the neighbourhood entirely. Reciprocal rank fusion takes the better half of each.",
+  "The cross-encoder reranker did not help here: recall@1 stays at 85% and MRR moves -0.008, for 606 ms of extra latency per query. That is a real negative result worth keeping: the chunks here average 48 words, and an MS MARCO-trained reranker has little to work with on passages that short. On longer, noisier documents the same step usually earns its cost -- which is the argument for measuring it rather than assuming it.",
+  "Cost is asymmetric and worth stating: BM25 answers all 20 queries in 9 ms, the dense search in 3 ms after a 3.8s indexing pass, and the reranking pass costs 12.1s in total because it runs a transformer over 20 query-passage pairs per question. On CPU that dominates the latency budget."
+ ],
+ "kpis": [
+  {
+   "label": "Chunks indexed",
+   "value": "420",
+   "caption": "46 documents, ~48 words each",
+   "tone": "neutral"
+  },
+  {
+   "label": "Best recall@1",
+   "value": "85%",
+   "caption": "Hybrid (RRF)",
+   "tone": "good"
+  },
+  {
+   "label": "Best MRR",
+   "value": "0.896",
+   "caption": "mean reciprocal rank of the correct skill",
+   "tone": "neutral"
+  },
+  {
+   "label": "Rerank cost",
+   "value": "606 ms/query",
+   "caption": "CPU cross-encoder",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "retriever-compare",
+   "kind": "bar",
+   "title": "Retrieval quality by strategy",
+   "data": [
+    {
+     "x": "BM25 (lexical)",
+     "recall@1": 0.55,
+     "recall@3": 1.0,
+     "mrr": 0.758
+    },
+    {
+     "x": "Dense (MiniLM-L6)",
+     "recall@1": 0.8,
+     "recall@3": 0.9,
+     "mrr": 0.854
+    },
+    {
+     "x": "Hybrid (RRF)",
+     "recall@1": 0.85,
+     "recall@3": 0.95,
+     "mrr": 0.896
+    },
+    {
+     "x": "Hybrid + reranker",
+     "recall@1": 0.85,
+     "recall@3": 0.9,
+     "mrr": 0.887
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "recall@1",
+     "label": "Recall@1"
+    },
+    {
+     "key": "recall@3",
+     "label": "Recall@3"
+    },
+    {
+     "key": "mrr",
+     "label": "MRR"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  },
+  {
+   "id": "chunk-lengths",
+   "kind": "bar",
+   "title": "Chunk length distribution (words)",
+   "data": [
+    {
+     "x": "2-24",
+     "n": 108
+    },
+    {
+     "x": "24-46",
+     "n": 151
+    },
+    {
+     "x": "46-68",
+     "n": 84
+    },
+    {
+     "x": "68-91",
+     "n": 28
+    },
+    {
+     "x": "91-113",
+     "n": 10
+    },
+    {
+     "x": "113-135",
+     "n": 14
+    },
+    {
+     "x": "135-157",
+     "n": 8
+    },
+    {
+     "x": "157-180",
+     "n": 17
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "chunks"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "metrics",
+   "title": "Retrieval evaluation (20 labelled questions)",
+   "columns": [
+    "Retriever",
+    "Recall@1",
+    "Recall@3",
+    "Recall@5",
+    "MRR"
+   ],
+   "rows": [
+    [
+     "BM25 (lexical)",
+     "55%",
+     "100%",
+     "100%",
+     "0.758"
+    ],
+    [
+     "Dense (MiniLM-L6)",
+     "80%",
+     "90%",
+     "90%",
+     "0.854"
+    ],
+    [
+     "Hybrid (RRF)",
+     "85%",
+     "95%",
+     "95%",
+     "0.896"
+    ],
+    [
+     "Hybrid + reranker",
+     "85%",
+     "90%",
+     "95%",
+     "0.887"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "examples",
+   "title": "Top result after reranking (first six questions)",
+   "columns": [
+    "Question",
+    "Expected skill",
+    "Top-1 skill",
+    "Result",
+    "Retrieved passage"
+   ],
+   "rows": [
+    [
+     "how do I stop preprocessing from leaking into cross validation",
+     "sklearn-pipelines",
+     "hyperparameter-tuning",
+     "miss",
+     "## Overview Tuning squeezes the last 5-15% out of a model \u2014 but done carelessly it overfits the validation set..."
+    ],
+    [
+     "my fraud target is only 0.2% positive, what metric should I use",
+     "imbalanced-data",
+     "imbalanced-data",
+     "hit",
+     "## Overview When positives are rare, naive training and naive metrics both mislead. A model that always predic..."
+    ],
+    [
+     "the model scores 0.99 AUC and I do not believe it",
+     "ml-debugging",
+     "imbalanced-data",
+     "miss",
+     "## Hand-off A model trained with leak-free resampling/weights, scored with PR-AUC and a tuned threshold via mo..."
+    ],
+    [
+     "how should I fill missing values without touching the test set",
+     "data-cleaning",
+     "data-cleaning",
+     "hit",
+     "## Missing-value strategy | Situation | Strategy | |-----------|----------| | Numeric, MCAR, small % | Median ..."
+    ],
+    [
+     "compare random search against bayesian optimisation for my model",
+     "hyperparameter-tuning",
+     "hyperparameter-tuning",
+     "hit",
+     "--- name: hyperparameter-tuning description: Use when optimizing model hyperparameters. Covers search strategy..."
+    ],
+    [
+     "how do I serve a trained sklearn model behind an HTTP API",
+     "model-serving",
+     "model-serving",
+     "hit",
+     "--- name: model-serving description: Use when deploying a trained model behind an API. Covers FastAPI inferenc..."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# reciprocal rank fusion of the two rankings, then cross-encoder rerank\nrrf = np.zeros(len(texts))\nfor r, idx in enumerate(np.argsort(-bm25_scores[qi])[:100]): rrf[idx] += 1 / (60 + r + 1)\nfor r, idx in enumerate(np.argsort(-dense_scores[qi])[:100]): rrf[idx] += 1 / (60 + r + 1)\n\ncand = np.argsort(-rrf)[:20]\nscores = reranker.predict([(query, texts[i]) for i in cand])\nranked = cand[np.argsort(-scores)]",
+ "code_language": "python",
+ "takeaway": "Fusing lexical and dense retrieval lifts recall@1 from 55% to 85%, while the cross-encoder rerank adds 606 ms per query and no accuracy on this corpus -- a conclusion only the labelled query set could support.",
+ "used_skill_scripts": [],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:23"
+}

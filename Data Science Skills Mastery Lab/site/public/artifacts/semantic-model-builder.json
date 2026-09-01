@@ -1,0 +1,119 @@
+{
+ "skill": "semantic-model-builder",
+ "source": "data-analytics-skills",
+ "category": "Documentation & Knowledge",
+ "phase": 1,
+ "track": "T1",
+ "title": "One definition of churn_rate, validated as YAML",
+ "prescribes": "Define entities, dimensions and metrics once in a semantic model, with owner, grain and source recorded, and validate the file rather than trusting review.",
+ "applied": "Generated a scaffold with metric_template_generator.py, filled it from the real Telco columns, wrote artifacts/semantic_model.yml and validated it with model_yaml_validator.py in strict mode.",
+ "narrative": [
+  "The semantic model is where phase 1 stops being prose. `churn_rate`, `mrr` and `revenue_at_risk` now have exactly one definition each, and every later phase -- including the FastAPI service and the dashboard spec -- refers back to these names.",
+  "Strict validation is the useful part: it fails on any `[REQUIRED]` placeholder left in the scaffold, so an unfilled template cannot be committed. This file passes with 0 issues.",
+  "The `calculation_notes` on churn_rate record a real limitation of this Kaggle dataset -- Churn is a snapshot flag with no event date -- which is exactly the sort of caveat that gets lost in a slide."
+ ],
+ "kpis": [
+  {
+   "label": "Entities",
+   "value": "1",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Dimensions",
+   "value": "3",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Metrics",
+   "value": "3",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Strict validation",
+   "value": "PASS",
+   "caption": "no placeholders remain",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "metric-coverage",
+   "kind": "bar",
+   "title": "Semantic model object counts",
+   "data": [
+    {
+     "x": "Entities",
+     "n": 1
+    },
+    {
+     "x": "Dimensions",
+     "n": 3
+    },
+    {
+     "x": "Metrics",
+     "n": 3
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "Objects defined"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "metric-defs",
+   "title": "Metric definitions",
+   "columns": [
+    "Metric",
+    "Type",
+    "Owner",
+    "Definition"
+   ],
+   "rows": [
+    [
+     "mrr",
+     "simple",
+     "finance-analytics",
+     "Sum of MonthlyCharges across active accounts."
+    ],
+    [
+     "churn_rate",
+     "ratio",
+     "retention-analytics",
+     "Churned accounts divided by total accounts in the period."
+    ],
+    [
+     "revenue_at_risk",
+     "derived",
+     "retention-analytics",
+     "MonthlyCharges summed over accounts the model scores above the campaign threshold."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Metric definition \u2014 generated 2026-09-01\n# Fill in all [REQUIRED] fields before committing.\n\nmetrics:\n  - name: churn_rate\n    description: \"[REQUIRED] One sentence: what this metric measures and why it matters.\"\n    label: \"[REQUIRED] Human-readable label, e.g. 'Monthly Recurring Revenue'\"\n    type: simple  # simple | ratio | cumulative | derived\n    type_params:\n      measure:\n        name: [REQUIRED]  # name of the underlying measure\n        fill_nulls_with: 0  # or null\n    filter: |\n      # Optional: semantic layer filter expression\n      # e.g. {{ Dimension('order__status') }} = 'completed'\n    meta:\n      owner: \"[REQUIRED] team or person responsible for this metric\"\n      data_source: \"[REQUIRED] source table(s)\"\n      grain: \"[REQUIRED] e.g. one row per subscription per month\"\n      business_context: >\n        [REQUIRED] Why does this metric exist? Who uses it?\n        What de",
+ "code_language": "yaml",
+ "takeaway": "Three metrics now have a single owned definition and a validator that rejects half-filled templates; the churn snapshot caveat is recorded where it will actually be read.",
+ "used_skill_scripts": [
+  ".claude/skills/semantic-model-builder/scripts/metric_template_generator.py",
+  ".claude/skills/semantic-model-builder/scripts/model_yaml_validator.py"
+ ],
+ "artifacts": [
+  "artifacts/semantic_model.yml"
+ ],
+ "generated_at": "2026-09-01T04:36:15"
+}

@@ -1,0 +1,131 @@
+{
+ "skill": "schema-mapper",
+ "source": "data-analytics-skills",
+ "category": "Data Quality & Validation",
+ "phase": 2,
+ "track": "T1",
+ "title": "Mapping the Kaggle extract onto the warehouse contract",
+ "prescribes": "Compare source and target schemas explicitly: direct matches, type mismatches, and columns that exist on only one side -- before writing the transformation.",
+ "applied": "Emitted a schema CSV for the Telco frame and for the intended warehouse table, then ran schema_compare.py to produce the mapping and its gaps.",
+ "narrative": [
+  "6 columns map straight through, 1 match by name but not by type, 2 target columns have no source, and 15 source columns have no home in the target.",
+  "The type mismatch on SeniorCitizen is the classic one: the Kaggle file stores it as 0/1 integers, the warehouse contract as a Y/N string. Loading without a cast produces a column that is present, populated and wrong -- the failure mode no null check catches.",
+  "The two unmapped target columns (region_code, acquisition_channel) are the honest limit of this dataset: they cannot be derived, so any model requiring them is out of scope until the warehouse join exists. Saying that in phase 2 is cheaper than discovering it in phase 4."
+ ],
+ "kpis": [
+  {
+   "label": "Direct matches",
+   "value": "6",
+   "caption": "name and type agree",
+   "tone": "good"
+  },
+  {
+   "label": "Type mismatches",
+   "value": "1",
+   "caption": "silent corruption risk",
+   "tone": "bad"
+  },
+  {
+   "label": "Target columns unmapped",
+   "value": "2",
+   "caption": "cannot be sourced",
+   "tone": "warn"
+  },
+  {
+   "label": "Source columns unused",
+   "value": "15",
+   "caption": "not in the contract",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "schema-map",
+   "kind": "bar",
+   "title": "Schema comparison outcome",
+   "data": [
+    {
+     "x": "Direct match",
+     "n": 6
+    },
+    {
+     "x": "Type mismatch",
+     "n": 1
+    },
+    {
+     "x": "Target only",
+     "n": 2
+    },
+    {
+     "x": "Source only",
+     "n": 15
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "Columns"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "mismatch",
+   "title": "Type mismatches (must be cast explicitly)",
+   "columns": [
+    "Column",
+    "Source type",
+    "Target type"
+   ],
+   "rows": [
+    [
+     "SeniorCitizen",
+     "int64",
+     "object"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "unmapped",
+   "title": "Target columns with no source",
+   "columns": [
+    "Column",
+    "Type",
+    "Note"
+   ],
+   "rows": [
+    [
+     "region_code",
+     "object",
+     "Warehouse-only: sales region, absent from the Kaggle extract"
+    ],
+    [
+     "acquisition_channel",
+     "object",
+     "Warehouse-only: how the customer was acquired"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Schema Comparison Report\n\n## Direct Matches (same name, same type) (6)\n\n| column | type |\n| --- | --- |\n| customerID | object |\n| tenure | int64 |\n| MonthlyCharges | float64 |\n| TotalCharges | float64 |\n| Contract | object |\n| Churn_flag | int64 |\n\n## Type Mismatches (same name, different type) (1)\n\n| column | source_type | target_type |\n| --- | --- | --- |\n| SeniorCitizen | int64 | object |\n\n## Unmapped Source Columns (in source, not in target) (15)\n\n| column | type | description |\n| --- | --- | --- |\n| gender | object | Telco CSV column gender |\n| Partner | object | Telco CSV column Partner |\n| Dependents | object | Telco CSV column Dependents |\n| PhoneService | object | Telco CSV column PhoneService |\n| MultipleLines | object | Telco CSV column MultipleLines |\n| InternetService | object | Telco CSV column InternetService |\n| OnlineSecurity | object | Telco CSV column OnlineSecurity |\n| OnlineBackup | object | Telco CSV column OnlineBackup |\n| DeviceProtection | object | Telco CSV column DeviceProtection |\n| TechSupport | object | Telco CSV column TechSupport |\n| StreamingTV | object | Telco CSV column StreamingTV |\n| StreamingMovies | object | Telco CSV column StreamingMovies |\n| PaperlessBilling | object | Telco CSV column PaperlessBilling |\n| PaymentMethod | object | Telco CSV column PaymentMethod |\n| Churn | object | Telco CSV column Churn |\n\n## Target Columns With No Source (need derivation or default) (2)\n\n| column | type | description |\n| --- | --- | --- |\n| region",
+ "code_language": "markdown",
+ "takeaway": "One column matches by name and lies about its type; two required columns simply do not exist in this dataset -- both are cheaper to know now than after the model is built.",
+ "used_skill_scripts": [
+  ".claude/skills/schema-mapper/schema-mapper/scripts/schema_compare.py"
+ ],
+ "artifacts": [
+  "data/interim/schema_source_telco.csv",
+  "data/interim/schema_target_warehouse.csv"
+ ],
+ "generated_at": "2026-09-01T04:36:46"
+}

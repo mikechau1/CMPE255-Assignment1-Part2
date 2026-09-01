@@ -1,0 +1,269 @@
+{
+ "skill": "impact-quantification",
+ "source": "data-analytics-skills",
+ "category": "Stakeholder Communication",
+ "phase": 5,
+ "track": "T1",
+ "title": "What the model is worth, with the range and the assumptions attached",
+ "prescribes": "Convert a model result into money through an explicit chain -- population, effect size, value per unit -- attach a confidence range, and name every assumption that moves the total.",
+ "applied": "Used the skill's revenue_impact.py, confidence_interval.py and cost_savings.py on the actual test-split confusion matrix at the value-maximising threshold.",
+ "narrative": [
+  "The chain is explicit: at threshold 0.20 the model flags 668 of 1409 test customers, of whom 333 genuinely churn. At a 30% save rate that is 100 customers retained, worth $1,732 of gross margin each at a 2.65% monthly churn rate -- $172,997 gross, $157,270 discounted at 10%.",
+  "Every one of those numbers is an assumption except the confusion matrix. That is why the estimate is published as a band -- $94,362 to $251,631 (Medium confidence (\u221240% / +60%)) -- rather than as the false precision of a single figure.",
+  "Campaign cost is the part people forget: 668 offers at $100 is $66,800, against $189,406 of lifetime margin protected. Net $122,606 on the test split alone, and roughly $612,855 scaled to the full 7,043-customer book.",
+  "The soft benefit is quantified separately and kept separate: replacing a manual retention review (12 months x 3 analysts x 6 hours) is $0 of freed time. It is real, it is smaller, and mixing it into the headline would make the headline unfalsifiable."
+ ],
+ "kpis": [
+  {
+   "label": "Net value (test split)",
+   "value": "$122,606",
+   "caption": "at threshold 0.20",
+   "tone": "good"
+  },
+  {
+   "label": "Scaled to full book",
+   "value": "$612,855",
+   "caption": "x5 the test split",
+   "tone": "neutral"
+  },
+  {
+   "label": "Estimate range",
+   "value": "$94,362 - $251,631",
+   "caption": "Medium confidence (\u221240% / +60%)",
+   "tone": "warn"
+  },
+  {
+   "label": "Campaign cost",
+   "value": "$66,800",
+   "caption": "668 offers at $100",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "threshold-value",
+   "kind": "line",
+   "title": "Expected campaign value by decision threshold",
+   "data": [
+    {
+     "x": 0.1,
+     "net": 113104,
+     "saved": 201304,
+     "cost": 88200
+    },
+    {
+     "x": 0.15,
+     "net": 120110,
+     "saved": 195710,
+     "cost": 75600
+    },
+    {
+     "x": 0.2,
+     "net": 122606,
+     "saved": 189406,
+     "cost": 66800
+    },
+    {
+     "x": 0.25,
+     "net": 117617,
+     "saved": 176817,
+     "cost": 59200
+    },
+    {
+     "x": 0.3,
+     "net": 111433,
+     "saved": 164633,
+     "cost": 53200
+    },
+    {
+     "x": 0.35,
+     "net": 103762,
+     "saved": 149062,
+     "cost": 45300
+    },
+    {
+     "x": 0.4,
+     "net": 99891,
+     "saved": 137991,
+     "cost": 38100
+    },
+    {
+     "x": 0.45,
+     "net": 93313,
+     "saved": 126013,
+     "cost": 32700
+    },
+    {
+     "x": 0.5,
+     "net": 81279,
+     "saved": 109779,
+     "cost": 28500
+    },
+    {
+     "x": 0.55,
+     "net": 71515,
+     "saved": 95415,
+     "cost": 23900
+    },
+    {
+     "x": 0.6,
+     "net": 61281,
+     "saved": 80981,
+     "cost": 19700
+    },
+    {
+     "x": 0.65,
+     "net": 48920,
+     "saved": 64220,
+     "cost": 15300
+    },
+    {
+     "x": 0.7,
+     "net": 37441,
+     "saved": 47541,
+     "cost": 10100
+    },
+    {
+     "x": 0.75,
+     "net": 23817,
+     "saved": 30317,
+     "cost": 6500
+    },
+    {
+     "x": 0.8,
+     "net": 12922,
+     "saved": 16322,
+     "cost": 3400
+    },
+    {
+     "x": 0.85,
+     "net": 342,
+     "saved": 542,
+     "cost": 200
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "saved",
+     "label": "Lifetime margin protected"
+    },
+    {
+     "key": "cost",
+     "label": "Campaign cost"
+    },
+    {
+     "key": "net",
+     "label": "Net value"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "score threshold",
+   "yLabel": "",
+   "note": "Net value peaks at 0.20; below it the false-positive offers cost more than they save.",
+   "valueFormat": "currency",
+   "domain": null
+  },
+  {
+   "id": "value-range",
+   "kind": "bar",
+   "title": "Estimate with its confidence band",
+   "data": [
+    {
+     "x": "Low",
+     "usd": 94361.8
+    },
+    {
+     "x": "Base",
+     "usd": 157269.67
+    },
+    {
+     "x": "High",
+     "usd": 251631.47
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "usd",
+     "label": "Discounted LTV impact"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "currency",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "chain",
+   "title": "The value chain, one row per assumption",
+   "columns": [
+    "Step",
+    "Value",
+    "Source"
+   ],
+   "rows": [
+    [
+     "Customers flagged at threshold",
+     "668",
+     "model, test split"
+    ],
+    [
+     "True positives",
+     "333",
+     "model, test split"
+    ],
+    [
+     "Save rate",
+     "30%",
+     "ASSUMPTION -- logged in phase 1"
+    ],
+    [
+     "Customers retained",
+     "100",
+     "derived"
+    ],
+    [
+     "Gross margin",
+     "65%",
+     "ASSUMPTION -- logged in phase 1"
+    ],
+    [
+     "Monthly churn rate",
+     "2.65%",
+     "ASSUMPTION -- logged in phase 1"
+    ],
+    [
+     "LTV per retained customer",
+     "$1,732",
+     "derived"
+    ],
+    [
+     "Offer cost",
+     "$100",
+     "ASSUMPTION -- finance sign-off required"
+    ],
+    [
+     "Net value (test split)",
+     "$122,606",
+     "derived"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "retention = retention_improvement(saved_customers=tp * SAVE_RATE,\n                                  avg_ltv=median_mrr * GROSS_MARGIN / MONTHLY_CHURN,\n                                  discount_rate=0.10)\nband = build_range(retention['discounted_ltv_impact'], confidence='medium')\n# published as a band, because four of the five inputs are assumptions",
+ "code_language": "python",
+ "takeaway": "The campaign is worth about $122,606 on the test split at threshold 0.20 -- but four of the five inputs are assumptions, so it ships as a range with those assumptions named.",
+ "used_skill_scripts": [
+  ".claude/skills/impact-quantification/scripts/revenue_impact.py",
+  ".claude/skills/impact-quantification/scripts/confidence_interval.py",
+  ".claude/skills/impact-quantification/scripts/cost_savings.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:30"
+}

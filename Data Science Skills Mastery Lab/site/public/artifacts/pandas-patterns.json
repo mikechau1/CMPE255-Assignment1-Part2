@@ -1,0 +1,147 @@
+{
+ "skill": "pandas-patterns",
+ "source": "agent-ml-skills",
+ "category": "Data Prep & Exploration",
+ "phase": 2,
+ "track": "T2",
+ "title": "Vectorisation and dtypes, measured on 542k retail rows",
+ "prescribes": "Write vectorised pandas: no row-wise apply, no manual group loops, categorical dtypes for low-cardinality strings, and downcast numerics when memory matters.",
+ "applied": "Timed the idiomatic and the naive version of the same two computations on the retail extract, and measured the memory saved by converting three object columns to category.",
+ "narrative": [
+  "Row-wise `apply` on 120k rows took 440 ms; the vectorised multiplication took 0.6 ms -- a 772x difference for an identical result (values match: True). The gap is the Python interpreter, and it grows linearly with rows.",
+  "Looping over groups cost 15 ms against 10.7 ms for `groupby().sum()` -- 1.4x, plus the aggregate version is a single expression that a reader can check.",
+  "Dtypes are the memory lever: three object columns converted to `category` and two numerics downcast take the frame from 144 MB to 46 MB, a 68% reduction with no information lost. On this dataset that is the difference between comfortable and swapping."
+ ],
+ "kpis": [
+  {
+   "label": "apply -> vectorised",
+   "value": "772x faster",
+   "caption": "identical output",
+   "tone": "good"
+  },
+  {
+   "label": "loop -> groupby",
+   "value": "1.4x faster",
+   "caption": "same aggregates",
+   "tone": "good"
+  },
+  {
+   "label": "Memory",
+   "value": "144 -> 46 MB",
+   "caption": "-68% via dtypes",
+   "tone": "good"
+  },
+  {
+   "label": "Rows",
+   "value": "541,909",
+   "caption": "raw retail extract",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "timings",
+   "kind": "hbar",
+   "title": "Wall-clock time for identical results (120k rows)",
+   "data": [
+    {
+     "x": "apply(axis=1)",
+     "ms": 439.68
+    },
+    {
+     "x": "vectorised",
+     "ms": 0.57
+    },
+    {
+     "x": "loop over groups",
+     "ms": 15.19
+    },
+    {
+     "x": "groupby.agg",
+     "ms": 10.69
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "ms",
+     "label": "milliseconds"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Lower is better; results verified equal.",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "memory",
+   "kind": "bar",
+   "title": "Frame memory before and after dtype tuning",
+   "data": [
+    {
+     "x": "object dtypes",
+     "mb": 144.2
+    },
+    {
+     "x": "category + downcast",
+     "mb": 46.3
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "mb",
+     "label": "MB (deep)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "patterns",
+   "title": "Pattern replacements applied",
+   "columns": [
+    "Anti-pattern",
+    "Idiomatic replacement",
+    "Measured effect"
+   ],
+   "rows": [
+    [
+     "df.apply(lambda r: ..., axis=1)",
+     "df.a * df.b",
+     "772x faster"
+    ],
+    [
+     "for k, g in df.groupby(...): acc[k] = ...",
+     "df.groupby(...)['rev'].sum()",
+     "1.4x faster"
+    ],
+    [
+     "object dtype for repeated strings",
+     "astype('category')",
+     "98 MB saved"
+    ],
+    [
+     "float64 / int64 by default",
+     "pd.to_numeric(..., downcast=...)",
+     "included in the saving above"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# anti-pattern\nrev = df.apply(lambda r: r['Quantity'] * r['UnitPrice'], axis=1)\n\n# idiomatic\nrev = df['Quantity'] * df['UnitPrice']\n\nfor c in ['Country', 'StockCode', 'Description']:\n    df[c] = df[c].astype('category')\ndf['UnitPrice'] = pd.to_numeric(df['UnitPrice'], downcast='float')",
+ "code_language": "python",
+ "takeaway": "Same answers, 772x less time and 68% less memory -- measured, not asserted.",
+ "used_skill_scripts": [],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:45"
+}

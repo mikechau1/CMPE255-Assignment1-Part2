@@ -1,0 +1,196 @@
+{
+ "skill": "data-quality-audit",
+ "source": "data-analytics-skills",
+ "category": "Data Quality & Validation",
+ "phase": 2,
+ "track": "T2",
+ "title": "Five automated quality checks against raw Online Retail",
+ "prescribes": "Audit a table on five axes -- completeness, uniqueness, freshness, referential integrity and value validity -- with thresholds agreed in advance so results are pass/fail, not vibes.",
+ "applied": "Ran all five bundled checkers against the 541,909-row raw retail extract, using a 48-hour freshness SLA and business rules (quantity >= 1, price > 0, known country list).",
+ "narrative": [
+  "5 of 5 checks fail, and every failure is real. 25% of order lines carry no CustomerID, which silently removes a quarter of revenue from any customer-level analysis -- the reason phase 3's cohort work states its population explicitly.",
+  "The freshness check fails by design: the newest invoice is from 2011, so against a 48-hour SLA the lag is enormous. On a historical Kaggle extract that is expected; wired to a live warehouse table the same check is the one that pages someone.",
+  "Referential integrity is the interesting one: 61.49% of 2011 order lines belong to customers with no 2010 history. Against a static dimension table that reads as an orphan; in reality it is new-customer acquisition, which is exactly why this check needs a human verdict.",
+  "Value validation catches the cancellations -- negative quantities encoded as C-prefixed invoices -- and the long tail of countries outside the top-ten list."
+ ],
+ "kpis": [
+  {
+   "label": "Checks run",
+   "value": "5",
+   "caption": "completeness, uniqueness, freshness, integrity, validity",
+   "tone": "neutral"
+  },
+  {
+   "label": "Failing",
+   "value": "5",
+   "caption": "each investigated below",
+   "tone": "bad"
+  },
+  {
+   "label": "Rows audited",
+   "value": "541,909",
+   "caption": "raw retail extract",
+   "tone": "neutral"
+  },
+  {
+   "label": "Missing CustomerID",
+   "value": "24.9%",
+   "caption": "135,080 rows",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "dq-status",
+   "kind": "bar",
+   "title": "Quality check outcomes",
+   "data": [
+    {
+     "x": "Nulls vs thresholds",
+     "fail": 1,
+     "pass": 0
+    },
+    {
+     "x": "Duplicate rows",
+     "fail": 1,
+     "pass": 0
+    },
+    {
+     "x": "Freshness (48h SLA)",
+     "fail": 1,
+     "pass": 0
+    },
+    {
+     "x": "Referential integrity",
+     "fail": 1,
+     "pass": 0
+    },
+    {
+     "x": "Value ranges",
+     "fail": 1,
+     "pass": 0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "pass",
+     "label": "Pass"
+    },
+    {
+     "key": "fail",
+     "label": "Fail"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "null-by-col",
+   "kind": "hbar",
+   "title": "Null percentage by column (raw retail)",
+   "data": [
+    {
+     "x": "CustomerID",
+     "pct": 24.93
+    },
+    {
+     "x": "Description",
+     "pct": 0.27
+    },
+    {
+     "x": "StockCode",
+     "pct": 0.0
+    },
+    {
+     "x": "InvoiceNo",
+     "pct": 0.0
+    },
+    {
+     "x": "Quantity",
+     "pct": 0.0
+    },
+    {
+     "x": "InvoiceDate",
+     "pct": 0.0
+    },
+    {
+     "x": "UnitPrice",
+     "pct": 0.0
+    },
+    {
+     "x": "Country",
+     "pct": 0.0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "pct",
+     "label": "% null"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "dq",
+   "title": "Audit results",
+   "columns": [
+    "Check",
+    "Status",
+    "Detail"
+   ],
+   "rows": [
+    [
+     "Nulls vs thresholds",
+     "FAIL",
+     "135,080 rows have no CustomerID (24.9%)"
+    ],
+    [
+     "Duplicate rows",
+     "FAIL",
+     "5,268 exact duplicate rows (0.97%)"
+    ],
+    [
+     "Freshness (48h SLA)",
+     "FAIL",
+     "Data is STALE \u2014 lag 129118.8h > 48h limit"
+    ],
+    [
+     "Referential integrity",
+     "FAIL",
+     "228,570 of 371,727 2011 order lines reference a customer not seen in 2010 (61.49%)"
+    ],
+    [
+     "Value ranges",
+     "FAIL",
+     "Quantity: 10624 values below min (1); UnitPrice: 2521 values below min (0.01); Country: 8430 unexpected values (sample: ['Norway', 'Poland', 'Italy'"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "nulls     = count_nulls(raw, thresholds={'CustomerID': 5.0, 'Description': 1.0})\ndupes     = find_duplicates(raw, key_cols=['InvoiceNo','StockCode','Quantity','UnitPrice'])\nfreshness = check_freshness(raw, 'InvoiceDate', max_lag_hours=48)\nintegrity = check_referential_integrity(fact_2011, dim_2010, 'CustomerID', 'CustomerID')\nranges    = validate_ranges(raw, {'Quantity': {'min': 1}, 'UnitPrice': {'min': 0.01},\n                                  'Country': {'allowed': TOP_10_COUNTRIES}})",
+ "code_language": "python",
+ "takeaway": "A quarter of retail order lines are anonymous, so every customer-level number in this lab is computed on an explicitly stated subpopulation rather than on 'the data'.",
+ "used_skill_scripts": [
+  ".claude/skills/data-quality-audit/scripts/null_counter.py",
+  ".claude/skills/data-quality-audit/scripts/duplicate_finder.py",
+  ".claude/skills/data-quality-audit/scripts/freshness_check.py",
+  ".claude/skills/data-quality-audit/scripts/referential_integrity.py",
+  ".claude/skills/data-quality-audit/scripts/value_range_validator.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:44"
+}

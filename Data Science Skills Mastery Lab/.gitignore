@@ -1,0 +1,20 @@
+# Downloaded/derived data (regenerate with pipeline/00_download_data.py)
+data/raw/*
+!data/raw/manifest.json
+data/interim/
+data/processed/
+
+# Trained models, tracking store, adapters (regenerate with the pipeline)
+artifacts/*.joblib
+artifacts/*.pt
+artifacts/*.onnx
+artifacts/*.parquet
+artifacts/mlflow.db
+artifacts/lora_churn_adapter/
+
+# Node
+site/node_modules/
+site/dist/
+
+__pycache__/
+*.pyc

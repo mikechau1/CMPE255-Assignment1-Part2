@@ -1,0 +1,167 @@
+# Context Bundle
+
+## TASK
+Score Telco customers for churn risk and recommend a retention offer threshold.
+
+## BUSINESS CONTEXT
+### semantic_model.yml
+entities:
+- name: customer
+  label: Customer
+  type: primary
+  expr: customerID
+  description: A telco subscriber account in the Kaggle churn snapshot.
+  meta:
+    owner: retention-analytics
+    source_table: data/raw/Telco-Customer-Churn.csv
+    grain: one row per customer account
+dimensions:
+- name: contract
+  label: Contract type
+  type: categorical
+  expr: Contract
+  description: 'Commitment length: month-to-month, one year or two year.'
+  meta:
+    owner: retention-analytics
+    possible_values:
+    - Month-to-month
+    - One year
+    - Two year
+- name: internet_service
+  label: Internet service
+  type: categorical
+  expr: InternetService
+  description: Fibre, DSL or none.
+  meta:
+    owner: retention-analytics
+    possible_values:
+    - DSL
+    - Fiber optic
+    - 'No'
+- name: tenure_band
+  label: Tenure band
+  type: categorical
+  expr: CASE WHEN tenure <= 6 THEN '0-6m' WHEN tenure <= 12 THEN '7-12m' WHEN tenure
+    <= 24 THEN '13-24m' WHEN tenure <= 48 THEN '25-48m' ELSE '49m+' END
+  description: Months since acquisition, bucketed for reporting.
+  meta:
+    owner: retention-analytics
+metrics:
+- name: mrr
+  label: Monthly Recurring Revenue
+  type: simple
+  description: Sum of MonthlyCharges across active accounts.
+  type_params:
+    measure:
+      name: MonthlyCharges
+      fill_nulls_with: 0
+  meta:
+    owner: finance-analytics
+    data_source: Telco-Customer-Churn.csv
+    grain: one row per customer per month
+- name: churn_rate
+  label: Logo churn rate
+  type: ratio
+  description: Churned accounts divided by total accounts in the period.
+  type_params:
+    numerator: churned_customers
+    denominator: total_customers
+  meta:
+    owner: retention-analytics
+    data_source: Telco-Customer-Churn.csv
+    grain: one row per period
+    calculation_notes: Churn is a snapshot label in this dataset, not an event date;
+      period-over-period churn cannot be derived from it.
+- name: revenue_at_risk
+  label: Revenue at risk
+  type: derived
+  description: MonthlyCharges summed over accounts the model scores above the campaign
+    threshold.
+  type_params:
+    expr: sum(MonthlyCharges) filtered by churn_score >= threshold
+  meta:
+    owner: retention-analytics
+    data_source: model scores
+    grain: one row per scoring run
+
+## CONSTRAINTS
+### assumptions_log.json
+{
+ "analysis_name": "Telco churn retention model",
+ "analyst": "CMPE255 lab",
+ "created": "2026-09-01",
+ "assumptions": [
+  {
+   "id": 1,
+   "category": "business_logic",
+   "assumption": "Gross margin is 65%",
+   "rationale": "Industry norm for telco service revenue; not present in the dataset.",
+   "confidence": "low",
+   "impact_if_wrong": "high",
+   "validation_plan": "Ask Finance for the actual blended margin before quoting LTV.",
+   "validated": false,
+   "validation_result": null,
+   "validation_notes": null
+  },
+  {
+   "id": 2,
+   "category": "business_logic",
+   "assumption": "Blended CAC is $300",
+   "rationale": "Placeholder so LTV:CAC and payback are computable.",
+   "confidence": "low",
+   "impact_if_wrong": "high",
+   "validation_plan": "Pull last four quarters of S&M spend / new logos.",
+   "validated": false,
+   "validation_result": null,
+   "validation_notes": null
+  },
+  {
+   "id": 3,
+   "category": "data",
+   "assumption": "The Churn flag refers to the month after the snapshot",
+   "rationale": "Kaggle card describes it as customers who left within the last month; there is no event date.",
+   "confidence": "medium",
+   "impact_if_wrong": "critical",
+   "validation_plan": "Confirm the extract window with the data owner.",
+   "validated": false,
+   "validation_result": null,
+   "validation_notes": null
+  },
+  {
+   "id": 4,
+   "category": "statistical",
+   "assumption": "Monthly churn is 2.65%",
+   "rationale": "26.5% snapshot churn spread over roughly ten months of exposure.",
+   "confidence": "low",
+   "impact_if_wrong": "medium",
+   "validation_plan": "Recompute from an event-level table when one exists.",
+   "validated": false,
+   "validation_result": null,
+   "validation_notes": null
+  },
+  {
+   "id": 5,
+   "category": "data",
+   "assumption": "TotalCharges blanks mean a brand-new account, not a missing value",
+   "rationale": "All 11 blanks have tenure = 0, so no charge has been billed yet.",
+   "confidence": "high",
+   "impact_if_wrong": "medium",
+   "validation_plan": "Verified in phase 2 against the tenure column.",
+   "validated": true,
+   "validation_result": "confirmed",
+   "validation_notes": "All 11 blank TotalCharges rows have tenure = 0 (phase 2 audit)."
+  },
+  {
+   "id": 6,
+   "category": "technical",
+   "assumption": "A monthly batch score is fast enough",
+   "rationale": "Campaign runs monthly; no real-time trigger exists.",
+   "confidence": "high",
+   "impact_if_wrong": "low",
+   "validation_plan": "Revisit if the offer moves into the call-centre flow.",
+   "validated": false,
+   "validation_result": null,
+   "validation_notes": null
+  }
+ ]
+}

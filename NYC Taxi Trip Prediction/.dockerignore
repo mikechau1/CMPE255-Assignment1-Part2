@@ -1,0 +1,17 @@
+.venv/
+.git/
+.github/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+data/raw/
+data/interim/
+data/processed/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+notebooks/
+docs/
+*.md

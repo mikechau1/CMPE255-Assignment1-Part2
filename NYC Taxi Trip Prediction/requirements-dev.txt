@@ -1,0 +1,8 @@
+# Notebook and local-development extras. NOT installed in the container --
+# requirements.txt alone is what the runtime image needs.
+-r requirements.txt
+
+jupyterlab==4.3.4
+ipykernel==6.29.5
+jinja2==3.1.5        # pandas DataFrame.style
+nbconvert==7.16.4

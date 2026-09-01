@@ -1,0 +1,131 @@
+{
+ "skill": "executive-summary-generator",
+ "source": "data-analytics-skills",
+ "category": "Data Storytelling & Visualization",
+ "phase": 6,
+ "track": "T1",
+ "title": "One page, recommendation first",
+ "prescribes": "Lead with the recommendation, then the supporting argument, then the detail -- the pyramid principle -- and end with the specific decisions being asked for.",
+ "applied": "Generated the summary from the numbers already serialised by phases 1-5, so no figure in it was retyped by hand, and structured it with the skill's pyramid-principle guide.",
+ "narrative": [
+  "The recommendation is the first sentence, not the conclusion. An executive summary that builds to its point makes the reader do the synthesis, and they will stop reading before you get there.",
+  "Every number in the page is pulled from an artifact key at generation time. That is a small engineering choice with a large editorial consequence: the summary cannot drift from the analysis, because it has no independent copy of the numbers.",
+  "The asks are specific and assigned -- confirm the window, sign off the economics, approve a holdout. 'Further investigation is recommended' is what a summary says when the analyst has not decided what they want.",
+  "The final paragraph is scope, not modesty. Naming what the work does not cover is what stops the retail cohort charts elsewhere in this lab from being read as statements about telco customers."
+ ],
+ "kpis": [
+  {
+   "label": "Length",
+   "value": "230 words",
+   "caption": "one page",
+   "tone": "good"
+  },
+  {
+   "label": "Numbers retyped by hand",
+   "value": "0",
+   "caption": "all pulled from artifacts",
+   "tone": "good"
+  },
+  {
+   "label": "Decisions requested",
+   "value": "3",
+   "caption": "each with an owner",
+   "tone": "neutral"
+  },
+  {
+   "label": "Blocking item",
+   "value": "1",
+   "caption": "churn window definition",
+   "tone": "bad"
+  }
+ ],
+ "charts": [
+  {
+   "id": "summary-structure",
+   "kind": "bar",
+   "title": "Where the words go",
+   "data": [
+    {
+     "x": "# Churn retention model -- e",
+     "words": 7
+    },
+    {
+     "x": "Recommendation: fund a month",
+     "words": 21
+    },
+    {
+     "x": " $139,131 of monthly recurri",
+     "words": 33
+    },
+    {
+     "x": " A gradient-boosted model sc",
+     "words": 32
+    },
+    {
+     "x": " At the value-maximising thr",
+     "words": 41
+    },
+    {
+     "x": "intro",
+     "words": 52
+    },
+    {
+     "x": " Win-back of already-churned",
+     "words": 25
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "words",
+     "label": "words"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Recommendation and value carry the page; scope and asks stay short.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "asks",
+   "title": "Decisions requested",
+   "columns": [
+    "Ask",
+    "Owner",
+    "Why it blocks or unblocks"
+   ],
+   "rows": [
+    [
+     "Confirm the churn observation window",
+     "Data owner",
+     "Blocking: the target definition depends on it"
+    ],
+    [
+     "Sign off $100 offer cost and 30% save rate",
+     "Finance",
+     "The entire value estimate rests on these two numbers"
+    ],
+    [
+     "Approve a 50/50 holdout on the first campaign",
+     "VP Retention",
+     "Turns the assumed save rate into a measured one"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Churn retention model -- executive summary\n\n**Recommendation: fund a monthly retention campaign on the model's top three deciles, and\nresolve one data question before the first send.**\n\n**Why now.** $139,131 of monthly recurring revenue sits with\ncustomers who churn, $1,669,570 annualised. Churn is\n26.5% of the base and 87% of the exposure is in\nmonth-to-month contracts, which are the easiest to convert.\n\n**What we built.** A gradient-boosted model scoring every customer monthly. It ranks at 0.8526 ROC-AUC;\nthe top decile churns at 2.8x the base rate. It is calibrated, so its probabilities can be multiplied by money.\n\n**What it is worth.** At the value-maximising threshold the campaign nets $122,606 on the held-out test split,\nabout $612,855 scaled to the full customer book -- published as a range of\n$94,362 - $251,631 because four of its five inputs are business assumptions,\nnot measurements.\n\n**What we need from you.**\n1. Confirm the churn observation window with the data owner (blocking -- the target definition depends on it).\n2. Sign off the offer economics: a $100 expected cost per offer and a 30% save rate.\n3. Approve a 50/50 holdout on the first campaign so the save rate stops being an assumption.\n\n**What this does not cover.** Win-back of already-churned customers, pricing strategy, and network quality.\nThe retail analyses in this lab use a different dataset and do not describe these customers.\n",
+ "code_language": "markdown",
+ "takeaway": "The recommendation is in the first line and every number behind it is generated, not transcribed -- so the page cannot quietly disagree with the analysis.",
+ "used_skill_scripts": [
+  ".claude/skills/executive-summary-generator/references/pyramid_principle_guide.md"
+ ],
+ "artifacts": [
+  "artifacts/executive_summary.md"
+ ],
+ "generated_at": "2026-09-01T04:44:34"
+}

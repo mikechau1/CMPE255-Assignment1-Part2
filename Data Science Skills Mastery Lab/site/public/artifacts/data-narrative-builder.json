@@ -1,0 +1,156 @@
+{
+ "skill": "data-narrative-builder",
+ "source": "data-analytics-skills",
+ "category": "Data Storytelling & Visualization",
+ "phase": 6,
+ "track": "T1",
+ "title": "The churn story as seven beats",
+ "prescribes": "Structure findings as a narrative -- setup, complication, question, answer, resolution -- so the audience follows the reasoning instead of receiving a list of charts.",
+ "applied": "Mapped this lab's findings onto the skill's setup/complication/resolution framework, with the supporting number for each beat taken from the artifact that produced it.",
+ "narrative": [
+  "The narrative and the analysis are not the same order. The analysis went data -> model -> money; the story goes stakes -> structure -> question -> answer -> catch -> resolution, because that is the order in which an audience can absorb it.",
+  "The second complication is the beat most analysts drop. Admitting that half the flagged customers were never going to leave, before someone else finds it, is what makes the resolution credible -- and it is why the economics section survives a hostile question.",
+  "Every beat carries exactly one number. A beat with three numbers is a table with ambitions; a beat with none is an opinion."
+ ],
+ "kpis": [
+  {
+   "label": "Beats",
+   "value": "7",
+   "caption": "setup to call-to-action",
+   "tone": "neutral"
+  },
+  {
+   "label": "Numbers per beat",
+   "value": "1",
+   "caption": "one supporting figure each",
+   "tone": "good"
+  },
+  {
+   "label": "Complications",
+   "value": "2",
+   "caption": "the second one is the honest part",
+   "tone": "neutral"
+  },
+  {
+   "label": "Ends with",
+   "value": "a decision",
+   "caption": "not a summary",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "narrative-arc",
+   "kind": "line",
+   "title": "Narrative tension across the seven beats",
+   "data": [
+    {
+     "x": "Setup",
+     "tension": 2
+    },
+    {
+     "x": "Complication",
+     "tension": 6
+    },
+    {
+     "x": "Question",
+     "tension": 7
+    },
+    {
+     "x": "Answer",
+     "tension": 4
+    },
+    {
+     "x": "Complication 2",
+     "tension": 8
+    },
+    {
+     "x": "Resolution",
+     "tension": 3
+    },
+    {
+     "x": "Call to action",
+     "tension": 2
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "tension",
+     "label": "audience tension (1-10)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Tension peaks at the second complication, not at the answer -- which is why the resolution lands.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "beats",
+   "title": "Story beats",
+   "columns": [
+    "Beat",
+    "Content",
+    "Function",
+    "Supporting number"
+   ],
+   "rows": [
+    [
+     "Setup",
+     "A telco with 7,043 customers and 26.5% churn",
+     "Establish the world and the stakes before any analysis appears.",
+     "$139k of monthly revenue walks out the door."
+    ],
+    [
+     "Complication",
+     "The churn is not spread evenly",
+     "The tension: an average hides the structure that makes action possible.",
+     "87% of the exposure is month-to-month; churn is concentrated in the first six months."
+    ],
+    [
+     "Question",
+     "Can we identify who will leave, early enough to act?",
+     "State the question the rest of the story answers.",
+     "A ranking problem, not an explanation problem."
+    ],
+    [
+     "Answer",
+     "Yes, well enough to rank -- 0.853 AUC, 2.8x top-decile lift",
+     "Deliver the finding plainly, with the number that supports it.",
+     "The top decile churns at 73% against a 26.5% base rate."
+    ],
+    [
+     "Complication 2",
+     "Being right is not the same as being worth it",
+     "The twist that keeps the story honest: half of the flagged customers were never leaving.",
+     "Precision 49.9% at the deployed threshold."
+    ],
+    [
+     "Resolution",
+     "It is still worth it, within a stated range",
+     "Resolve with the economics and the uncertainty attached.",
+     "Net value positive, published as a range because four inputs are assumptions."
+    ],
+    [
+     "Call to action",
+     "Fund the campaign; verify the target definition first",
+     "End with what the audience must do, not with a summary.",
+     "One blocking question, two sign-offs, one holdout."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Narrative Frameworks for Data Analysis\n\n## SCR (Situation, Complication, Resolution)\n\nThe most versatile framework for analytical communication.\n\n**Situation:** What is the current state? Establish shared context \u2014 the audience should nod along. Keep brief; this is not the point.\n\n**Complication:** What has changed or what is the problem? This is where you introduce tension. The complication is the reason the audience should care.\n\n**Resolution:** What do you recommend, and why? The answer to the complication. This is the primary content.\n\n**Example:**\n- Situation: Revenue grew 12% YoY in Q3, consistent with our 10\u201315% target.\n- Complication: However, the growth is entirely driven by price increases. New customer volume declined 8% YoY for the second consecutive quarter.\n- Resolution: We need to investigate acquisition funnel conversion, starting with the paid channel where the steepest volume decline appears.\n\n---\n\n## Pyramid Principle (Answer First)\n\nLead with the conclusion, then support it with evidence. Opposite of academic writing.\n\n**Structure:**\n1. Governing thought (the an",
+ "code_language": "markdown",
+ "takeaway": "The story peaks where the analysis is weakest -- half the flagged customers were never leaving -- because a narrative that hides its catch does not survive the first question.",
+ "used_skill_scripts": [
+  ".claude/skills/data-narrative-builder/references/narrative_frameworks.md"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:34"
+}

@@ -1,0 +1,156 @@
+{
+ "skill": "analysis-qa-checklist",
+ "source": "data-analytics-skills",
+ "category": "Stakeholder Communication",
+ "phase": 5,
+ "track": "T1",
+ "title": "11 QA checks before anything is published",
+ "prescribes": "Run a fixed checklist before delivery -- structural checks a script can do, plus the judgement checks it cannot -- and record the ones that are still open rather than quietly passing them.",
+ "applied": "Ran the skill's qa_runner.py over the scored test frame and answered the seven judgement questions this lab's design raises, keeping the unresolved one visible.",
+ "narrative": [
+  "The automated half checks what a script can see: row counts, fully-null columns, duplicates, column naming, infinities, suspicious rounding, future dates. 4 checks ran with 0 failures.",
+  "The manual half is where analyses actually go wrong. Six of the seven judgement questions pass with a specific artifact as evidence -- not 'yes' but 'yes, and here is the phase that proves it'.",
+  "One check stays OPEN: the churn window. It was logged as critical in phase 1, and it is still unvalidated because validating it needs the data owner, not more code. Publishing with a known open item stated is defensible; publishing with it silently closed is not."
+ ],
+ "kpis": [
+  {
+   "label": "Checks run",
+   "value": "11",
+   "caption": "4 automated, 7 judgement",
+   "tone": "neutral"
+  },
+  {
+   "label": "Failures",
+   "value": "0",
+   "caption": "blocking",
+   "tone": "good"
+  },
+  {
+   "label": "Warnings / open",
+   "value": "1",
+   "caption": "disclosed, not hidden",
+   "tone": "warn"
+  },
+  {
+   "label": "Sign-off",
+   "value": "conditional",
+   "caption": "on the churn-window assumption",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "qa-status",
+   "kind": "bar",
+   "title": "QA outcomes",
+   "data": [
+    {
+     "x": "PASS",
+     "n": 10
+    },
+    {
+     "x": "WARN",
+     "n": 0
+    },
+    {
+     "x": "OPEN",
+     "n": 1
+    },
+    {
+     "x": "FAIL",
+     "n": 0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "checks"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "qa",
+   "title": "QA checklist results",
+   "columns": [
+    "Check",
+    "Status",
+    "Detail"
+   ],
+   "rows": [
+    [
+     "row_count",
+     "PASS",
+     "1,409 rows"
+    ],
+    [
+     "fully_null_columns",
+     "PASS",
+     ""
+    ],
+    [
+     "duplicate_rows",
+     "PASS",
+     ""
+    ],
+    [
+     "column_names",
+     "PASS",
+     ""
+    ],
+    [
+     "Does the test split stay unseen?",
+     "PASS",
+     "Split made once in lib/data.churn_split with a fixed seed; no phase refits on it."
+    ],
+    [
+     "Are all preprocessing steps inside the estimator?",
+     "PASS",
+     "ColumnTransformer + Pipeline; verified against a pre-fitted variant in phase 4."
+    ],
+    [
+     "Is any feature unavailable at scoring time?",
+     "PASS",
+     "The injected retention_call_logged column was caught and dropped in ml-debugging."
+    ],
+    [
+     "Do the reported numbers match the artifacts?",
+     "PASS",
+     "Every figure on the site is serialised by the code that computed it."
+    ],
+    [
+     "Are business assumptions separated from measurements?",
+     "PASS",
+     "Six assumptions logged in phase 1; impact-quantification labels each derived row."
+    ],
+    [
+     "Is the target definition verified?",
+     "OPEN",
+     "The churn window is a snapshot flag with no event date -- flagged critical and still unvalidated."
+    ],
+    [
+     "Would a rerun reproduce these numbers?",
+     "PASS",
+     "Seeded; phases 3-5 rerun to identical metrics."
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "checks = run_qa(scored_frame)          # structural checks from the skill\n# then the questions a script cannot answer:\n#   does the test split stay unseen?\n#   is any feature unavailable at scoring time?\n#   are business assumptions separated from measurements?\n#   is the target definition verified?   <- still OPEN",
+ "code_language": "python",
+ "takeaway": "Nothing blocking, one open item -- and the open item is the target definition, which is exactly the one worth holding the sign-off for.",
+ "used_skill_scripts": [
+  ".claude/skills/analysis-qa-checklist/scripts/qa_runner.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:30"
+}

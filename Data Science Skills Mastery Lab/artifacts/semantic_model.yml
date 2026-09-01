@@ -1,0 +1,78 @@
+entities:
+- name: customer
+  label: Customer
+  type: primary
+  expr: customerID
+  description: A telco subscriber account in the Kaggle churn snapshot.
+  meta:
+    owner: retention-analytics
+    source_table: data/raw/Telco-Customer-Churn.csv
+    grain: one row per customer account
+dimensions:
+- name: contract
+  label: Contract type
+  type: categorical
+  expr: Contract
+  description: 'Commitment length: month-to-month, one year or two year.'
+  meta:
+    owner: retention-analytics
+    possible_values:
+    - Month-to-month
+    - One year
+    - Two year
+- name: internet_service
+  label: Internet service
+  type: categorical
+  expr: InternetService
+  description: Fibre, DSL or none.
+  meta:
+    owner: retention-analytics
+    possible_values:
+    - DSL
+    - Fiber optic
+    - 'No'
+- name: tenure_band
+  label: Tenure band
+  type: categorical
+  expr: CASE WHEN tenure <= 6 THEN '0-6m' WHEN tenure <= 12 THEN '7-12m' WHEN tenure
+    <= 24 THEN '13-24m' WHEN tenure <= 48 THEN '25-48m' ELSE '49m+' END
+  description: Months since acquisition, bucketed for reporting.
+  meta:
+    owner: retention-analytics
+metrics:
+- name: mrr
+  label: Monthly Recurring Revenue
+  type: simple
+  description: Sum of MonthlyCharges across active accounts.
+  type_params:
+    measure:
+      name: MonthlyCharges
+      fill_nulls_with: 0
+  meta:
+    owner: finance-analytics
+    data_source: Telco-Customer-Churn.csv
+    grain: one row per customer per month
+- name: churn_rate
+  label: Logo churn rate
+  type: ratio
+  description: Churned accounts divided by total accounts in the period.
+  type_params:
+    numerator: churned_customers
+    denominator: total_customers
+  meta:
+    owner: retention-analytics
+    data_source: Telco-Customer-Churn.csv
+    grain: one row per period
+    calculation_notes: Churn is a snapshot label in this dataset, not an event date;
+      period-over-period churn cannot be derived from it.
+- name: revenue_at_risk
+  label: Revenue at risk
+  type: derived
+  description: MonthlyCharges summed over accounts the model scores above the campaign
+    threshold.
+  type_params:
+    expr: sum(MonthlyCharges) filtered by churn_score >= threshold
+  meta:
+    owner: retention-analytics
+    data_source: model scores
+    grain: one row per scoring run

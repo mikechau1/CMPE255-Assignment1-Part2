@@ -1,0 +1,204 @@
+{
+ "skill": "model-serving",
+ "source": "agent-ml-skills",
+ "category": "MLOps & Reliability",
+ "phase": 6,
+ "track": "T1",
+ "title": "The model behind HTTP: 15 ms p50, 21 ms p95",
+ "prescribes": "Load the artifact once at startup, validate the request schema before scoring, expose a health endpoint, batch where the caller allows it, and verify that the served predictions match the offline ones.",
+ "applied": "Started uvicorn on port 8077 in a separate process, sent 60 real test-split customers through /predict and /predict/batch, checked four malformed-request cases, and reconciled the served scores against the offline artifact.",
+ "narrative": [
+  "The service came up in 2.9s and reported model SHA 8de6a81f38b2 over /health -- the endpoint exists so a load balancer can tell 'process running' from 'model loaded', which are not the same failure.",
+  "Per-request latency is 14.5 ms median and 21.0 ms at p95 over HTTP. The same 60 customers scored as one batch take 19 ms total, 0.3 ms per customer -- 52x cheaper, because almost all of the single-request cost is HTTP and DataFrame construction rather than the model.",
+  "The reconciliation check is the one that catches deployment bugs: the served probabilities differ from the offline artifact by at most 4.82e-07 -- which is the six-decimal rounding in the JSON response, not a scoring difference. A non-trivial difference here would mean the service is not running the model that was evaluated -- the single most common way a good model becomes a bad deployment.",
+  "Schema validation is enforced by Pydantic with `extra='forbid'`, so a missing field returns 422, an unexpected field 422, a wrong type 422 and a negative charge 422. None of them are scored. Silently coercing a bad request is worse than rejecting it, because the caller gets a number back and believes it.",
+  "ONNX export: not exported -- NotImplementedError: The converter is implemented when the missing values are string not <class 'float'>.. The joblib pipeline is what ships; ONNX would be the next step for a latency-sensitive deployment."
+ ],
+ "kpis": [
+  {
+   "label": "p50 latency",
+   "value": "14.5 ms",
+   "caption": "single request over HTTP",
+   "tone": "good"
+  },
+  {
+   "label": "p95 latency",
+   "value": "21.0 ms",
+   "caption": "60 requests",
+   "tone": "neutral"
+  },
+  {
+   "label": "Batch throughput",
+   "value": "0.3 ms/customer",
+   "caption": "60 in one call",
+   "tone": "good"
+  },
+  {
+   "label": "Served vs offline drift",
+   "value": "4.8e-07",
+   "caption": "max absolute difference",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "latency-hist",
+   "kind": "bar",
+   "title": "Single-request latency distribution",
+   "data": [
+    {
+     "x": "11-21 ms",
+     "n": 57
+    },
+    {
+     "x": "21-32 ms",
+     "n": 2
+    },
+    {
+     "x": "32-42 ms",
+     "n": 0
+    },
+    {
+     "x": "42-53 ms",
+     "n": 0
+    },
+    {
+     "x": "53-63 ms",
+     "n": 0
+    },
+    {
+     "x": "63-74 ms",
+     "n": 0
+    },
+    {
+     "x": "74-84 ms",
+     "n": 0
+    },
+    {
+     "x": "84-95 ms",
+     "n": 1
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "requests"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "latency-mode",
+   "kind": "bar",
+   "title": "Cost per customer: one-at-a-time vs batched",
+   "data": [
+    {
+     "x": "Single /predict",
+     "ms": 16.58
+    },
+    {
+     "x": "Batched /predict/batch",
+     "ms": 0.32
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "ms",
+     "label": "ms per customer"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "contract",
+   "title": "Request-contract checks against the live service",
+   "columns": [
+    "Case",
+    "HTTP status",
+    "Scored?"
+   ],
+   "rows": [
+    [
+     "Valid customer",
+     "200",
+     "yes"
+    ],
+    [
+     "Missing required fields",
+     "422",
+     "no"
+    ],
+    [
+     "Unexpected extra field",
+     "422",
+     "no"
+    ],
+    [
+     "Wrong type (tenure='five')",
+     "422",
+     "no"
+    ],
+    [
+     "Out-of-range (MonthlyCharges=-10)",
+     "422",
+     "no"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "endpoints",
+   "title": "Service surface",
+   "columns": [
+    "Endpoint",
+    "Method",
+    "Purpose"
+   ],
+   "rows": [
+    [
+     "/health",
+     "GET",
+     "liveness plus the loaded model SHA and threshold"
+    ],
+    [
+     "/predict",
+     "POST",
+     "one customer -> probability, decision, latency"
+    ],
+    [
+     "/predict/batch",
+     "POST",
+     "many customers in one call"
+    ],
+    [
+     "/docs",
+     "GET",
+     "OpenAPI schema generated from the Pydantic model"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "MODEL = joblib.load(MODEL_PATH)          # loaded once at import, not per request\nMODEL_SHA = hashlib.sha256(MODEL_PATH.read_bytes()).hexdigest()[:12]\n\nclass Customer(BaseModel):\n    model_config = {'extra': 'forbid'}   # unknown fields are rejected, not ignored\n    tenure: int = Field(ge=0)\n    MonthlyCharges: float = Field(ge=0)\n    ...\n\n@app.post('/predict', response_model=Prediction)\ndef predict(customer: Customer):\n    p = float(MODEL.predict_proba(pd.DataFrame([customer.model_dump()]))[:, 1][0])\n    return Prediction(churn_probability=p,\n                      decision='contact' if p >= THRESHOLD else 'hold',\n                      model_sha=MODEL_SHA, threshold=THRESHOLD, latency_ms=...)",
+ "code_language": "python",
+ "takeaway": "The deployed service reproduces the offline scores to 5e-07, rejects every malformed request, and costs 0.3 ms per customer when batched -- 52% of the sample would be contacted at the phase-5 threshold.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "pipeline/heavy/churn_service.py"
+ ],
+ "generated_at": "2026-09-01T04:44:43"
+}

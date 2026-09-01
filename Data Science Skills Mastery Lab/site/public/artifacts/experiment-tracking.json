@@ -1,0 +1,187 @@
+{
+ "skill": "experiment-tracking",
+ "source": "agent-ml-skills",
+ "category": "MLOps & Reliability",
+ "phase": 4,
+ "track": "T1",
+ "title": "Four candidate models logged to a local MLflow store",
+ "prescribes": "Log every run's parameters, metrics, data version and code state to a tracking server so runs are comparable and reproducible later, rather than comparing numbers in a notebook.",
+ "applied": "Ran four churn candidates through MLflow with a file-backed store at artifacts/mlruns, logging hyperparameters, CV and test metrics, fit time, the seed and the dataset SHA-256 on each run.",
+ "narrative": [
+  "Four runs, one experiment, one command to compare them: `mlflow ui --backend-store-uri sqlite:///artifacts/mlflow.db`. The winner on test ROC-AUC is `hgb_tuned` at 0.8526, but the interesting column is fit time -- the random forest costs 3.4s against 0.5s for logistic regression to gain +0.0011 AUC.",
+  "Each run records the dataset digest and the split seed alongside the hyperparameters. That is what makes a six-week-old run re-runnable: the parameters alone would reproduce the model but not the data it saw.",
+  "Tracking is also what keeps the comparison honest. All four candidates are scored with the same CV object on the same features, so the leaderboard reflects the models, not four different evaluation setups that happen to share a table."
+ ],
+ "kpis": [
+  {
+   "label": "Runs logged",
+   "value": "4",
+   "caption": "experiment: telco-churn",
+   "tone": "neutral"
+  },
+  {
+   "label": "Best test ROC-AUC",
+   "value": "0.8526",
+   "caption": "hgb_tuned",
+   "tone": "good"
+  },
+  {
+   "label": "Tracking store",
+   "value": "artifacts/mlflow.db",
+   "caption": "local SQLite backend",
+   "tone": "neutral"
+  },
+  {
+   "label": "Logged per run",
+   "value": "params + 4 metrics + 3 tags",
+   "caption": "incl. data SHA and seed",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "run-compare",
+   "kind": "bar",
+   "title": "Candidate comparison (CV vs test ROC-AUC)",
+   "data": [
+    {
+     "x": "logreg_balanced",
+     "cv": 0.8458,
+     "test": 0.849
+    },
+    {
+     "x": "random_forest",
+     "cv": 0.8416,
+     "test": 0.8501
+    },
+    {
+     "x": "hgb_default",
+     "cv": 0.8309,
+     "test": 0.8456
+    },
+    {
+     "x": "hgb_tuned",
+     "cv": 0.8424,
+     "test": 0.8526
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "cv",
+     "label": "CV ROC-AUC"
+    },
+    {
+     "key": "test",
+     "label": "Test ROC-AUC"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": [
+    0.78,
+    0.88
+   ]
+  },
+  {
+   "id": "cost-benefit",
+   "kind": "scatter",
+   "title": "Fit time vs test ROC-AUC",
+   "data": [
+    {
+     "x": 0.5,
+     "y": 0.849,
+     "series": "logreg_balanced"
+    },
+    {
+     "x": 3.42,
+     "y": 0.8501,
+     "series": "random_forest"
+    },
+    {
+     "x": 1.95,
+     "y": 0.8456,
+     "series": "hgb_default"
+    },
+    {
+     "x": 3.22,
+     "y": 0.8526,
+     "series": "hgb_tuned"
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "y",
+     "label": "Test ROC-AUC"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "fit + CV seconds",
+   "yLabel": "test ROC-AUC",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "runs",
+   "title": "MLflow run summary",
+   "columns": [
+    "Run",
+    "Run ID",
+    "CV ROC-AUC",
+    "Test ROC-AUC",
+    "Test PR-AUC",
+    "Seconds"
+   ],
+   "rows": [
+    [
+     "logreg_balanced",
+     "c63f3b31",
+     0.8458,
+     0.849,
+     0.6391,
+     0.5
+    ],
+    [
+     "random_forest",
+     "9be76766",
+     0.8416,
+     0.8501,
+     0.6489,
+     3.4
+    ],
+    [
+     "hgb_default",
+     "08a0d1bb",
+     0.8309,
+     0.8456,
+     0.6363,
+     2.0
+    ],
+    [
+     "hgb_tuned",
+     "a6dd3c8a",
+     0.8424,
+     0.8526,
+     0.6384,
+     3.2
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "mlflow.set_tracking_uri((ARTIFACTS / 'mlruns').as_uri())\nmlflow.set_experiment('telco-churn')\nwith mlflow.start_run(run_name=name):\n    mlflow.log_params({**clf_params, 'data_sha': manifest_sha[:12], 'seed': SEED})\n    mlflow.log_metrics({'cv_roc_auc': cv_auc, 'test_roc_auc': test_auc,\n                        'test_pr_auc': pr_auc, 'fit_seconds': fit_s})\n    mlflow.set_tags({'phase': '4-modeling', 'dataset': 'telco-churn'})",
+ "code_language": "python",
+ "takeaway": "The leaderboard says gradient boosting wins by a small margin at several times the fit cost -- a trade-off that is only visible because both were logged the same way.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "artifacts/mlflow.db"
+ ],
+ "generated_at": "2026-09-01T04:38:00"
+}

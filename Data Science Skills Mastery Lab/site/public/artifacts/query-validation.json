@@ -1,0 +1,158 @@
+{
+ "skill": "query-validation",
+ "source": "data-analytics-skills",
+ "category": "Data Quality & Validation",
+ "phase": 2,
+ "track": "T2",
+ "title": "Linting SQL, estimating fan-out, and cross-checking the answer",
+ "prescribes": "Before trusting a query: lint it for scan and fan-out hazards, estimate the join cardinality, and validate the result against an independent computation.",
+ "applied": "Linted a deliberately careless join and the real revenue query with sql_lint.py, estimated both joins with cardinality_estimator.py, and reconciled DuckDB's answer against pandas.",
+ "narrative": [
+  "The careless query earns 2 lint warnings -- SELECT * and no WHERE or LIMIT -- but the linter says nothing about the self-join, which is the actually dangerous part. That is the honest limit of static linting, and the reason the skill pairs it with a cardinality estimate: the join is put at 397,884 rows with MEDIUM fan-out risk on a 397,884-row table.",
+  "Joining the same fact table to a customer dimension (4,338 unique keys) is LOW risk and stays at 397,884 rows, because the right side is unique. Same data, different key discipline.",
+  "Linting is not validation, though. The revenue query was also executed in DuckDB and reconciled against an independent pandas aggregation: the top-10 country revenues match to the cent (True). That is the check that catches a wrong join, not a style warning."
+ ],
+ "kpis": [
+  {
+   "label": "Lint findings (careless query)",
+   "value": "2",
+   "caption": "SELECT * and no filter; the self-join went unflagged",
+   "tone": "bad"
+  },
+  {
+   "label": "Lint findings (final query)",
+   "value": "1",
+   "caption": "one INFO on COUNT(DISTINCT ...), reviewed and kept",
+   "tone": "good"
+  },
+  {
+   "label": "Fan-out estimate",
+   "value": "397,884",
+   "caption": "MEDIUM risk on the self-join",
+   "tone": "bad"
+  },
+  {
+   "label": "SQL vs pandas",
+   "value": "match",
+   "caption": "top-10 revenue to the cent",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "revenue-by-country",
+   "kind": "hbar",
+   "title": "Revenue by country, 2011 (DuckDB result, pandas-verified)",
+   "data": [
+    {
+     "x": "United Kingdom",
+     "revenue": 6809729.7
+    },
+    {
+     "x": "Netherlands",
+     "revenue": 276661.86
+    },
+    {
+     "x": "EIRE",
+     "revenue": 256732.02
+    },
+    {
+     "x": "Germany",
+     "revenue": 213626.0
+    },
+    {
+     "x": "France",
+     "revenue": 199407.74
+    },
+    {
+     "x": "Australia",
+     "revenue": 137488.46
+    },
+    {
+     "x": "Spain",
+     "revenue": 59733.38
+    },
+    {
+     "x": "Switzerland",
+     "revenue": 55139.03
+    },
+    {
+     "x": "Belgium",
+     "revenue": 39386.43
+    },
+    {
+     "x": "Sweden",
+     "revenue": 34544.03
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "revenue",
+     "label": "Revenue (GBP)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "currency",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "lint",
+   "title": "sql_lint.py findings on the careless query",
+   "columns": [
+    "Severity",
+    "Message"
+   ],
+   "rows": [
+    [
+     "WARN",
+     "SELECT * in use \u2014 enumerate columns explicitly for stability"
+    ],
+    [
+     "WARN",
+     "No WHERE or LIMIT clause \u2014 full table scan likely"
+    ]
+   ],
+   "note": ""
+  },
+  {
+   "id": "cardinality",
+   "title": "Join cardinality estimates",
+   "columns": [
+    "Join",
+    "Right side unique?",
+    "Estimated rows",
+    "Risk"
+   ],
+   "rows": [
+    [
+     "retail x retail on CustomerID",
+     "no",
+     "397,884",
+     "MEDIUM"
+    ],
+    [
+     "retail x dim_customer on CustomerID",
+     "yes",
+     "397,884",
+     "LOW"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "SELECT Country,\n               COUNT(DISTINCT InvoiceNo) AS orders,\n               ROUND(SUM(Quantity * UnitPrice), 2) AS revenue\n        FROM retail\n        WHERE InvoiceDate >= DATE '2011-01-01'\n        GROUP BY Country\n        ORDER BY revenue DESC\n        LIMIT 10",
+ "code_language": "sql",
+ "takeaway": "The linter caught the style and missed the fan-out, the estimator caught the fan-out, and only the pandas cross-check could confirm the number was right -- all three are needed.",
+ "used_skill_scripts": [
+  ".claude/skills/query-validation/scripts/sql_lint.py",
+  ".claude/skills/query-validation/scripts/cardinality_estimator.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:46"
+}

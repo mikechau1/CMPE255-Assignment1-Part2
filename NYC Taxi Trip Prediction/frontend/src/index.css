@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+/* Import MapLibre's stylesheet INTO A LAYER.
+   Unlayered CSS outranks every @layer regardless of specificity, so importing
+   this plainly lets `.maplibregl-map { position: relative }` beat Tailwind's
+   `absolute` utility -- which collapses the map container to zero height,
+   because `inset-0` only applies to positioned elements. Putting it in the
+   `components` layer keeps Tailwind utilities winning, which is what we want. */
+@import "maplibre-gl/dist/maplibre-gl.css" layer(components);
+
+/* Dark is the default: the app is mostly a map, and a dark basemap keeps the
+   route and markers as the brightest things on screen. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #f6f6f4;
+  --surface: rgba(255, 255, 255, 0.93);
+  --surface-solid: #ffffff;
+  --border: rgba(15, 18, 22, 0.1);
+  --text: #14171c;
+  --text-dim: #5c636e;
+  --text-faint: #8b929c;
+  --accent: #f0a500;
+  --accent-text: #7a5200;
+  --good: #128a5b;
+  --warn: #c2410c;
+  --shadow: 0 12px 40px -12px rgba(10, 14, 20, 0.28);
+}
+
+.dark {
+  --bg: #0a0c10;
+  --surface: rgba(20, 24, 31, 0.94);
+  --surface-solid: #141821;
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #eef1f5;
+  --text-dim: #98a1ae;
+  --text-faint: #6b7482;
+  --accent: #ffc72c; /* NYC taxi yellow */
+  --accent-text: #ffc72c;
+  --good: #34d399;
+  --warn: #fb923c;
+  --shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.7);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
+  --color-line: var(--border);
+  --color-ink: var(--text);
+  --color-dim: var(--text-dim);
+  --color-faint: var(--text-faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-text);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv02", "cv03", "cv04", "tnum";
+}
+
+/* Tabular figures everywhere a number updates in place, so the ETA does not
+   jitter horizontally as the digits change. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.glass {
+  /* The alpha alone must keep this readable: backdrop-filter is a progressive
+     enhancement and silently does nothing where GPU compositing is off. */
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* The map's own chrome, restyled to match the panels. */
+.maplibregl-ctrl-group {
+  background: var(--surface-solid) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+.maplibregl-ctrl-group button + button {
+  border-top: 1px solid var(--border) !important;
+}
+.maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: var(--ctrl-filter, none);
+}
+.dark .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(1) brightness(1.6);
+}
+.maplibregl-ctrl-attrib {
+  background: var(--surface) !important;
+  color: var(--text-dim) !important;
+  font-size: 10px !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--text-dim) !important;
+}
+.maplibregl-popup-content {
+  background: var(--surface-solid) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-radius: 10px !important;
+  box-shadow: var(--shadow) !important;
+  padding: 10px 12px !important;
+  font-size: 12px;
+}
+.maplibregl-popup-tip {
+  border-top-color: var(--surface-solid) !important;
+  border-bottom-color: var(--surface-solid) !important;
+}
+
+/* Scrollbars that do not punch a bright hole in a dark panel. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-faint) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 99px;
+  opacity: 0.4;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fade-up {
+  animation: fade-up 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.75;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,133 @@
+{
+ "skill": "sklearn-pipelines",
+ "source": "agent-ml-skills",
+ "category": "Modeling",
+ "phase": 4,
+ "track": "T1",
+ "title": "One Pipeline object so preprocessing cannot escape the fold",
+ "prescribes": "Put every fitted transformation inside a Pipeline / ColumnTransformer so cross-validation refits it per fold; never transform the full dataset before splitting.",
+ "applied": "Built a ColumnTransformer over 11 numeric and 16 categorical churn columns, cross-validated it correctly, and measured what the pre-fitted alternative reports instead.",
+ "narrative": [
+  "The pipeline expands 27 input columns into 50 model features (median imputation and scaling on the numeric block, most-frequent imputation and one-hot with a min-frequency floor on the categorical block), and all of it is refitted inside every CV fold.",
+  "Cross-validated correctly it scores 0.8458 +/- 0.0027 ROC-AUC. Fitting the same preprocessing on train and test first and then cross-validating reports 0.8459 -- a difference of +0.0001.",
+  "That gap is small precisely because this preprocessing is mild; scaling barely leaks. The reason to be strict anyway is that the same mistake with target encoding, imputation from group means, or feature selection produces a large gap, and the code looks identical. The Pipeline makes the correct version the easy version.",
+  "On the untouched test split the fitted pipeline scores 0.8490, consistent with the cross-validated estimate -- which is what a non-leaking setup should look like."
+ ],
+ "kpis": [
+  {
+   "label": "CV ROC-AUC (correct)",
+   "value": "0.8458",
+   "caption": "+/- 0.0027",
+   "tone": "good"
+  },
+  {
+   "label": "CV ROC-AUC (pre-fitted prep)",
+   "value": "0.8459",
+   "caption": "+0.0001 optimism",
+   "tone": "bad"
+  },
+  {
+   "label": "Test ROC-AUC",
+   "value": "0.8490",
+   "caption": "held-out split",
+   "tone": "neutral"
+  },
+  {
+   "label": "Model features",
+   "value": "50",
+   "caption": "from 27 columns",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "cv-folds",
+   "kind": "bar",
+   "title": "Per-fold ROC-AUC: correct pipeline vs pre-fitted preprocessing",
+   "data": [
+    {
+     "x": "fold 1",
+     "correct": 0.8466,
+     "prefitted": 0.8467
+    },
+    {
+     "x": "fold 2",
+     "correct": 0.8501,
+     "prefitted": 0.8505
+    },
+    {
+     "x": "fold 3",
+     "correct": 0.8431,
+     "prefitted": 0.8433
+    },
+    {
+     "x": "fold 4",
+     "correct": 0.8427,
+     "prefitted": 0.8427
+    },
+    {
+     "x": "fold 5",
+     "correct": 0.8465,
+     "prefitted": 0.8465
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "correct",
+     "label": "Pipeline inside CV"
+    },
+    {
+     "key": "prefitted",
+     "label": "Preprocessing fitted on all data"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": [
+    0.8,
+    0.88
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "steps",
+   "title": "Pipeline definition",
+   "columns": [
+    "Block",
+    "Columns",
+    "Steps"
+   ],
+   "rows": [
+    [
+     "num",
+     "11 numeric",
+     "SimpleImputer(median) -> StandardScaler"
+    ],
+    [
+     "cat",
+     "16 categorical",
+     "SimpleImputer(most_frequent) -> OneHotEncoder(handle_unknown='ignore', min_frequency=20)"
+    ],
+    [
+     "clf",
+     "-",
+     "LogisticRegression(class_weight='balanced', max_iter=2000)"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "pre = ColumnTransformer([\n    ('num', Pipeline([('impute', SimpleImputer(strategy='median')),\n                      ('scale', StandardScaler())]), NUM),\n    ('cat', Pipeline([('impute', SimpleImputer(strategy='most_frequent')),\n                      ('onehot', OneHotEncoder(handle_unknown='ignore', min_frequency=20))]), CAT),\n])\npipe = Pipeline([('prep', pre), ('clf', LogisticRegression(class_weight='balanced'))])\ncross_val_score(pipe, X_train, y_train, cv=StratifiedKFold(5, shuffle=True), scoring='roc_auc')",
+ "code_language": "python",
+ "takeaway": "Wrapping preprocessing in the estimator costs nothing and removes an entire class of silent optimism; with scaling and one-hot alone the optimism is only +0.0001 AUC, but the identical mistake with target encoding or group-mean imputation is worth far more.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "artifacts/churn_pipeline_logreg.joblib"
+ ],
+ "generated_at": "2026-09-01T04:36:58"
+}

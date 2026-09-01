@@ -1,0 +1,169 @@
+{
+ "skill": "analysis-assumptions-log",
+ "source": "data-analytics-skills",
+ "category": "Documentation & Knowledge",
+ "phase": 1,
+ "track": "T1",
+ "title": "Six assumptions, scored by risk, one already validated",
+ "prescribes": "Record every analytical assumption with its rationale, confidence, impact if wrong and a validation plan; surface the low-confidence high-impact ones as critical.",
+ "applied": "Built the log with the skill's assumptions_tracker.py, scored each entry with its risk matrix, and validated the TotalCharges assumption against the data in phase 2.",
+ "narrative": [
+  "The two dollar assumptions -- margin and CAC -- carry risk 8 and 8 out of 9. They do not affect the model at all, but they drive the LTV:CAC headline, so anyone quoting that number needs to see them.",
+  "2 assumptions are flagged critical (low confidence, high or critical impact). The churn-window assumption is the one that would actually invalidate the work: if the flag covers a different period than assumed, the target is mis-specified and nothing downstream survives.",
+  "Assumption #5 shows the loop closing -- phase 2's null profiling confirmed all eleven blank TotalCharges rows have tenure = 0, so it moved from open to validated rather than staying folklore."
+ ],
+ "kpis": [
+  {
+   "label": "Assumptions logged",
+   "value": "6",
+   "caption": "",
+   "tone": "neutral"
+  },
+  {
+   "label": "Critical & open",
+   "value": "2",
+   "caption": "low confidence + high impact",
+   "tone": "bad"
+  },
+  {
+   "label": "Validated",
+   "value": "1",
+   "caption": "against the data",
+   "tone": "good"
+  },
+  {
+   "label": "Max risk score",
+   "value": "8",
+   "caption": "out of 9",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "assumption-risk",
+   "kind": "hbar",
+   "title": "Assumption risk scores",
+   "data": [
+    {
+     "x": "#1 business_logic",
+     "risk": 8
+    },
+    {
+     "x": "#2 business_logic",
+     "risk": 8
+    },
+    {
+     "x": "#3 data",
+     "risk": 7
+    },
+    {
+     "x": "#4 statistical",
+     "risk": 5
+    },
+    {
+     "x": "#5 data",
+     "risk": 3
+    },
+    {
+     "x": "#6 technical",
+     "risk": 3
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "risk",
+     "label": "Risk score (1-9)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Risk = confidence x impact, from the skill's built-in matrix.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "assumptions",
+   "title": "Assumptions log",
+   "columns": [
+    "#",
+    "Category",
+    "Assumption",
+    "Confidence",
+    "Impact",
+    "Risk",
+    "Status"
+   ],
+   "rows": [
+    [
+     1,
+     "business_logic",
+     "Gross margin is 65%",
+     "low",
+     "high",
+     8,
+     "open"
+    ],
+    [
+     2,
+     "business_logic",
+     "Blended CAC is $300",
+     "low",
+     "high",
+     8,
+     "open"
+    ],
+    [
+     3,
+     "data",
+     "The Churn flag refers to the month after the snapshot",
+     "medium",
+     "critical",
+     7,
+     "open"
+    ],
+    [
+     4,
+     "statistical",
+     "Monthly churn is 2.65%",
+     "low",
+     "medium",
+     5,
+     "open"
+    ],
+    [
+     5,
+     "data",
+     "TotalCharges blanks mean a brand-new account, not a missing value",
+     "high",
+     "medium",
+     3,
+     "validated"
+    ],
+    [
+     6,
+     "technical",
+     "A monthly batch score is fast enough",
+     "high",
+     "low",
+     3,
+     "open"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "============================================================\nASSUMPTIONS LOG: Telco churn retention model\nAnalyst: CMPE255 lab  |  Created: 2026-09-01\n============================================================\nTotal assumptions: 6\nValidated: 1\nCRITICAL (unvalidated, low confidence, high impact): 2\n\n--- DATA ---\n  #3 [MEDIUM conf / CRITICAL impact | risk=7]\n    The Churn flag refers to the month after the snapshot\n    Rationale: Kaggle card describes it as customers who left within the last month; there is no event date.\n    Validation: \u2717 not validated\n  #5 [HIGH conf / MEDIUM impact | risk=3]\n    TotalCharges blanks mean a brand-new account, not a missing value\n    Rationale: All 11 blanks have tenure = 0, so no charge has been billed yet.\n    Validation: \u2713 confirmed\n\n--- BUSINESS LOGIC ---\n  #1 [LOW conf / HIGH impact | risk=8]\n    Gross margin is 65%\n    Rationale: Industry norm for telco service revenue; not present in the dataset.\n    Validation: \u2717 not validated\n  #2 [LOW conf / HIGH impact | risk=8]\n    Blended CAC is $300\n    Rationale: Placeholder so LTV:CAC and payback are computable.\n    Validation: \u2717 not validated\n\n--- STATISTICAL ---\n  #4 [LOW conf / MEDIUM impact | risk=5]\n    Monthly churn is 2.65%\n    Rationale: 26.5% snapshot churn spread over roughly ten months of exposure.\n    Validation: \u2717 not validated\n\n--- TECHNICAL ---\n  #6 [HIGH conf / LOW impact | risk=",
+ "code_language": "text",
+ "takeaway": "The riskiest thing in this project is not the model, it is the un-verified definition of the churn window -- and it is now written down where a reviewer will see it.",
+ "used_skill_scripts": [
+  ".claude/skills/analysis-assumptions-log/scripts/assumptions_tracker.py"
+ ],
+ "artifacts": [
+  "artifacts/assumptions_log.json"
+ ],
+ "generated_at": "2026-09-01T04:36:15"
+}

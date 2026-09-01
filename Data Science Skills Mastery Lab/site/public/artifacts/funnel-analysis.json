@@ -1,0 +1,197 @@
+{
+ "skill": "funnel-analysis",
+ "source": "data-analytics-skills",
+ "category": "Data Analysis & Investigation",
+ "phase": 6,
+ "track": "T2",
+ "title": "The repeat-purchase funnel, and where the customers actually leave",
+ "prescribes": "Define the steps as a strict sequence, measure step and overall conversion, and identify the single largest drop-off before proposing an intervention.",
+ "applied": "Built a five-step repeat-purchase funnel over the 4,338 identified retail customers and ran the skill's funnel_analyzer.py to compute conversions, drop-offs and the biggest opportunity.",
+ "narrative": [
+  "Of 4,338 customers who ever bought, 2,845 came back for a second order (65.58%), and 391 reached ten orders (9.01% of the top).",
+  "The largest drop-off is at 'Returned for a 2nd order', losing 1,493 customers (34.42%). That is where an intervention has the most people to act on -- which is not the same as where it has the most value.",
+  "Overlaying revenue makes that distinction concrete: customers who reach five or more orders are 26% of the base but 71% of revenue. Fixing the first-to-second-order step moves the most customers; keeping the deep repeaters protects the most money. A funnel chart alone would hide the second fact.",
+  "This is a purchase-count funnel, not a web funnel: the dataset has no sessions or page views, so the steps are the ones the transactions actually support rather than the ones a template suggests."
+ ],
+ "kpis": [
+  {
+   "label": "Customers entering",
+   "value": "4,338",
+   "caption": "at least one purchase",
+   "tone": "neutral"
+  },
+  {
+   "label": "Return for a 2nd order",
+   "value": "65.58%",
+   "caption": "2,845 customers",
+   "tone": "warn"
+  },
+  {
+   "label": "Reach 10 orders",
+   "value": "9.01%",
+   "caption": "391 customers",
+   "tone": "neutral"
+  },
+  {
+   "label": "Biggest drop-off",
+   "value": "Returned for a 2nd order",
+   "caption": "-1,493 customers",
+   "tone": "bad"
+  }
+ ],
+ "charts": [
+  {
+   "id": "funnel",
+   "kind": "funnel",
+   "title": "Repeat-purchase funnel",
+   "data": [
+    {
+     "x": "Made a first purchase",
+     "users": 4338,
+     "conversion": 1.0
+    },
+    {
+     "x": "Returned for a 2nd order",
+     "users": 2845,
+     "conversion": 0.655832
+    },
+    {
+     "x": "Reached 3 orders",
+     "users": 2010,
+     "conversion": 0.463347
+    },
+    {
+     "x": "Reached 5 orders",
+     "users": 1114,
+     "conversion": 0.2568
+    },
+    {
+     "x": "Reached 10 orders",
+     "users": 391,
+     "conversion": 0.090134
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "users",
+     "label": "customers"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "funnel-revenue",
+   "kind": "bar",
+   "title": "Share of customers vs share of revenue by depth",
+   "data": [
+    {
+     "x": "Made a first purchase",
+     "customers": 1.0,
+     "revenue": 1.0
+    },
+    {
+     "x": "Returned for a 2nd order",
+     "customers": 0.6558,
+     "revenue": 0.9308
+    },
+    {
+     "x": "Reached 3 orders",
+     "customers": 0.4633,
+     "revenue": 0.8478
+    },
+    {
+     "x": "Reached 5 orders",
+     "customers": 0.2568,
+     "revenue": 0.7121
+    },
+    {
+     "x": "Reached 10 orders",
+     "customers": 0.0901,
+     "revenue": 0.5126
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "customers",
+     "label": "% of customers"
+    },
+    {
+     "key": "revenue",
+     "label": "% of revenue"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "funnel",
+   "title": "Funnel analysis output",
+   "columns": [
+    "Step",
+    "Customers",
+    "Step conversion",
+    "Overall conversion",
+    "Drop-off"
+   ],
+   "rows": [
+    [
+     "Made a first purchase",
+     "4,338",
+     "100.0%",
+     "100.0%",
+     "0"
+    ],
+    [
+     "Returned for a 2nd order",
+     "2,845",
+     "65.58%",
+     "65.58%",
+     "1,493"
+    ],
+    [
+     "Reached 3 orders",
+     "2,010",
+     "70.65%",
+     "46.33%",
+     "835"
+    ],
+    [
+     "Reached 5 orders",
+     "1,114",
+     "55.42%",
+     "25.68%",
+     "896"
+    ],
+    [
+     "Reached 10 orders",
+     "391",
+     "35.1%",
+     "9.01%",
+     "723"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "=================================================================\n  RETAIL REPEAT-PURCHASE FUNNEL\n=================================================================\n  Step                      Users   Step Conv   Overall    Drop-off\n  -------------------------------------------------------------\n  Made a first purchase     4,338      100.0%    100.0%           \u2014\n  Returned for a 2nd order    2,845       65.6%     65.6%  -1,493 (34.4%)\n  Reached 3 orders          2,010       70.7%     46.3%  -835 (29.4%)\n  Reached 5 orders          1,114       55.4%     25.7%  -896 (44.6%)\n  Reached 10 orders           391       35.1%      9.0%  -723 (64.9%)\n  -------------------------------------------------------------\n  Overall funnel conversion: 9.0%\n\n  HIGHEST IMPACT DROP-OFF:\n  \u2192 Returned for a 2nd order: lost 1,493 users (34.4% of prior step)\n  This is the best place to focus optimisation effort.\n=================================================================",
+ "code_language": "text",
+ "takeaway": "The first-to-second order step loses the most customers, but the deep repeaters carry most of the revenue -- two different interventions, and the funnel only names one of them.",
+ "used_skill_scripts": [
+  ".claude/skills/funnel-analysis/scripts/funnel_analyzer.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:33"
+}

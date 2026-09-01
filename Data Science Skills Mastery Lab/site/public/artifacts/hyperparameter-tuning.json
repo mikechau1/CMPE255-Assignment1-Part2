@@ -1,0 +1,436 @@
+{
+ "skill": "hyperparameter-tuning",
+ "source": "agent-ml-skills",
+ "category": "Modeling",
+ "phase": 4,
+ "track": "T1",
+ "title": "30 trials each: random search vs Optuna, same CV, same budget",
+ "prescribes": "Fix the budget first, search inside a leakage-safe CV, prefer Bayesian search over grid for continuous spaces, and use early stopping so trials are not all equally expensive.",
+ "applied": "Tuned a HistGradientBoosting pipeline with RandomizedSearchCV and with an Optuna TPE study over the same 5-fold CV, both capped at 30 trials, with early stopping enabled in the Optuna arm.",
+ "narrative": [
+  "Untuned defaults score 0.8309 CV ROC-AUC. Random search reaches 0.8424 in 34s; Optuna's TPE sampler reaches 0.8424 in 14s. The gain over defaults is +0.0115 AUC -- real but modest, which is the honest result for a well-behaved tabular problem.",
+  "The searches do not separate on quality here: random search hit its best at trial 2 and Optuna at trial 30, and the two plateaus differ by -0.00004 AUC -- noise. That is the expected outcome for a five-parameter space on 5.6k rows, and reporting it as a win for Bayesian search would be dressing up a tie. Optuna's advantage here was wall-clock: early stopping made its trials cheaper (14s against 34s for the same 30 trials).",
+  "Every trial is scored by the same 5-fold CV over the same Pipeline, so preprocessing is refitted inside each fold of each trial. Tuning on a pre-transformed matrix would inherit the leak from the previous demo and then amplify it, because the search optimises directly against the leaked score.",
+  "The tuned model scores 0.8526 on the held-out test split -- the number phase 5 evaluates."
+ ],
+ "kpis": [
+  {
+   "label": "Default CV AUC",
+   "value": "0.8309",
+   "caption": "HistGradientBoosting out of the box",
+   "tone": "neutral"
+  },
+  {
+   "label": "Random search best",
+   "value": "0.8424",
+   "caption": "30 trials, 34s",
+   "tone": "neutral"
+  },
+  {
+   "label": "Optuna TPE best",
+   "value": "0.8424",
+   "caption": "30 trials, 14s",
+   "tone": "good"
+  },
+  {
+   "label": "Test AUC (tuned)",
+   "value": "0.8526",
+   "caption": "held-out split",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "running-best",
+   "kind": "line",
+   "title": "Running best CV score by trial",
+   "data": [
+    {
+     "x": 1,
+     "optuna": 0.84158,
+     "random": 0.82198
+    },
+    {
+     "x": 2,
+     "optuna": 0.84158,
+     "random": 0.8424
+    },
+    {
+     "x": 3,
+     "optuna": 0.84158,
+     "random": 0.8424
+    },
+    {
+     "x": 4,
+     "optuna": 0.84158,
+     "random": 0.8424
+    },
+    {
+     "x": 5,
+     "optuna": 0.84168,
+     "random": 0.8424
+    },
+    {
+     "x": 6,
+     "optuna": 0.84168,
+     "random": 0.8424
+    },
+    {
+     "x": 7,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 8,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 9,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 10,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 11,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 12,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 13,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 14,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 15,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 16,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 17,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 18,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 19,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 20,
+     "optuna": 0.84188,
+     "random": 0.8424
+    },
+    {
+     "x": 21,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 22,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 23,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 24,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 25,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 26,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 27,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 28,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 29,
+     "optuna": 0.84203,
+     "random": 0.8424
+    },
+    {
+     "x": 30,
+     "optuna": 0.84236,
+     "random": 0.8424
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "optuna",
+     "label": "Optuna (TPE)"
+    },
+    {
+     "key": "random",
+     "label": "RandomizedSearchCV"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "trial",
+   "yLabel": "best CV ROC-AUC so far",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  },
+  {
+   "id": "trial-scatter",
+   "kind": "scatter",
+   "title": "Learning rate vs CV score across Optuna trials",
+   "data": [
+    {
+     "x": 0.0239,
+     "y": 0.84158,
+     "series": "trial"
+    },
+    {
+     "x": 0.0169,
+     "y": 0.83998,
+     "series": "trial"
+    },
+    {
+     "x": 0.0235,
+     "y": 0.83739,
+     "series": "trial"
+    },
+    {
+     "x": 0.0253,
+     "y": 0.84073,
+     "series": "trial"
+    },
+    {
+     "x": 0.0242,
+     "y": 0.84168,
+     "series": "trial"
+    },
+    {
+     "x": 0.0539,
+     "y": 0.83276,
+     "series": "trial"
+    },
+    {
+     "x": 0.2046,
+     "y": 0.84188,
+     "series": "trial"
+    },
+    {
+     "x": 0.0226,
+     "y": 0.83685,
+     "series": "trial"
+    },
+    {
+     "x": 0.2278,
+     "y": 0.83582,
+     "series": "trial"
+    },
+    {
+     "x": 0.0141,
+     "y": 0.84007,
+     "series": "trial"
+    },
+    {
+     "x": 0.2752,
+     "y": 0.83652,
+     "series": "trial"
+    },
+    {
+     "x": 0.1198,
+     "y": 0.84126,
+     "series": "trial"
+    },
+    {
+     "x": 0.0679,
+     "y": 0.84069,
+     "series": "trial"
+    },
+    {
+     "x": 0.0517,
+     "y": 0.83948,
+     "series": "trial"
+    },
+    {
+     "x": 0.1276,
+     "y": 0.83853,
+     "series": "trial"
+    },
+    {
+     "x": 0.1485,
+     "y": 0.83754,
+     "series": "trial"
+    },
+    {
+     "x": 0.01,
+     "y": 0.84085,
+     "series": "trial"
+    },
+    {
+     "x": 0.0389,
+     "y": 0.84126,
+     "series": "trial"
+    },
+    {
+     "x": 0.0849,
+     "y": 0.83777,
+     "series": "trial"
+    },
+    {
+     "x": 0.0382,
+     "y": 0.84155,
+     "series": "trial"
+    },
+    {
+     "x": 0.088,
+     "y": 0.84203,
+     "series": "trial"
+    },
+    {
+     "x": 0.2155,
+     "y": 0.84015,
+     "series": "trial"
+    },
+    {
+     "x": 0.1689,
+     "y": 0.84064,
+     "series": "trial"
+    },
+    {
+     "x": 0.099,
+     "y": 0.84109,
+     "series": "trial"
+    },
+    {
+     "x": 0.0788,
+     "y": 0.84067,
+     "series": "trial"
+    },
+    {
+     "x": 0.0344,
+     "y": 0.84038,
+     "series": "trial"
+    },
+    {
+     "x": 0.0548,
+     "y": 0.84011,
+     "series": "trial"
+    },
+    {
+     "x": 0.2986,
+     "y": 0.83918,
+     "series": "trial"
+    },
+    {
+     "x": 0.1824,
+     "y": 0.83748,
+     "series": "trial"
+    },
+    {
+     "x": 0.01,
+     "y": 0.84236,
+     "series": "trial"
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "y",
+     "label": "CV ROC-AUC"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "learning rate (log-sampled)",
+   "yLabel": "CV ROC-AUC",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "best-params",
+   "title": "Best parameters found",
+   "columns": [
+    "Parameter",
+    "Optuna",
+    "Random search"
+   ],
+   "rows": [
+    [
+     "learning_rate",
+     "0.01",
+     "0.02"
+    ],
+    [
+     "max_leaf_nodes",
+     "7",
+     "7"
+    ],
+    [
+     "min_samples_leaf",
+     "70",
+     "80"
+    ],
+    [
+     "l2_regularization",
+     "3.3144",
+     "5.0"
+    ],
+    [
+     "max_iter",
+     "550",
+     "150"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "def objective(trial):\n    params = {'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3, log=True),\n              'max_leaf_nodes': trial.suggest_int('max_leaf_nodes', 4, 64, log=True), ...}\n    pipe = Pipeline([('prep', build_preprocessor()),\n                     ('clf', HistGradientBoostingClassifier(early_stopping=True, **params))])\n    return cross_val_score(pipe, X_train, y_train, cv=cv, scoring='roc_auc').mean()\n\nstudy = optuna.create_study(direction='maximize', sampler=TPESampler(seed=SEED))\nstudy.optimize(objective, n_trials=30)",
+ "code_language": "python",
+ "takeaway": "Thirty trials buy +0.0115 AUC over defaults and the two search strategies tie; the budget, the CV and early stopping mattered, the sampler did not.",
+ "used_skill_scripts": [],
+ "artifacts": [
+  "artifacts/churn_model.joblib",
+  "artifacts/churn_test_scores.parquet"
+ ],
+ "generated_at": "2026-09-01T04:37:48"
+}

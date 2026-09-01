@@ -1,0 +1,189 @@
+{
+ "skill": "business-metrics-calculator",
+ "source": "data-analytics-skills",
+ "category": "Data Analysis & Investigation",
+ "phase": 1,
+ "track": "T1",
+ "title": "MRR, churn, NRR and LTV:CAC computed from the Kaggle file",
+ "prescribes": "Compute subscription metrics with the standard definitions -- MRR components, logo vs revenue churn, NRR, LTV, CAC payback -- rather than inventing local variants.",
+ "applied": "Called the skill's own saas_metrics.py (mrr_components, churn_rates, net_revenue_retention, ltv_cac) with values aggregated from Telco-Customer-Churn.csv.",
+ "narrative": [
+  "Logo churn (26.54%) and revenue churn (30.5%) differ, and the direction matters: revenue churn is higher, so the accounts leaving are worth more than the average account. A model optimised on accounts alone would under-serve the money.",
+  "With no new or expansion revenue in the snapshot, NRR is 69.5% -- mechanically the complement of revenue churn. It is quoted here to make the ceiling explicit: retention alone cannot push NRR above 100%.",
+  "LTV:CAC lands at 5.29:1 with a 7.1-month payback, using a 65% margin and a $300 CAC. Both are assumptions, both are logged, and both are what the retention offer budget will later be argued from."
+ ],
+ "kpis": [
+  {
+   "label": "MRR",
+   "value": "$456,117",
+   "caption": "sum of monthly charges",
+   "tone": "neutral"
+  },
+  {
+   "label": "ARR",
+   "value": "$3,803,829",
+   "caption": "ending MRR x 12",
+   "tone": "neutral"
+  },
+  {
+   "label": "Revenue churn",
+   "value": "30.5%",
+   "caption": "logo churn 26.54%",
+   "tone": "bad"
+  },
+  {
+   "label": "LTV:CAC",
+   "value": "5.29:1",
+   "caption": "payback 7.1 months",
+   "tone": "good"
+  }
+ ],
+ "charts": [
+  {
+   "id": "mrr-components",
+   "kind": "bar",
+   "title": "MRR bridge for the snapshot period",
+   "data": [
+    {
+     "x": "Starting MRR",
+     "usd": 456117
+    },
+    {
+     "x": "Churned MRR",
+     "usd": -139131
+    },
+    {
+     "x": "Ending MRR",
+     "usd": 316986
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "usd",
+     "label": "USD / month"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "currency",
+   "domain": null
+  },
+  {
+   "id": "churn-by-tenure",
+   "kind": "line",
+   "title": "Churn rate and ARPU by tenure band",
+   "data": [
+    {
+     "x": "0-6m",
+     "churn_rate": 0.5294,
+     "arpu": 54.74
+    },
+    {
+     "x": "7-12m",
+     "churn_rate": 0.3589,
+     "arpu": 58.95
+    },
+    {
+     "x": "13-24m",
+     "churn_rate": 0.2871,
+     "arpu": 61.36
+    },
+    {
+     "x": "25-48m",
+     "churn_rate": 0.2039,
+     "arpu": 65.93
+    },
+    {
+     "x": "49m+",
+     "churn_rate": 0.0951,
+     "arpu": 73.95
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "churn_rate",
+     "label": "Churn rate"
+    },
+    {
+     "key": "arpu",
+     "label": "ARPU ($)"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Churn is concentrated in the first six months -- the classic onboarding cliff.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "metrics",
+   "title": "Metric outputs from saas_metrics.py",
+   "columns": [
+    "Metric",
+    "Value"
+   ],
+   "rows": [
+    [
+     "Starting MRR",
+     "$456,117"
+    ],
+    [
+     "Churned MRR",
+     "$139,131"
+    ],
+    [
+     "Ending MRR",
+     "$316,986"
+    ],
+    [
+     "ARR",
+     "$3,803,829"
+    ],
+    [
+     "Logo churn rate",
+     "26.54%"
+    ],
+    [
+     "Revenue churn rate",
+     "30.5%"
+    ],
+    [
+     "NRR",
+     "69.5%"
+    ],
+    [
+     "LTV",
+     "$1,588"
+    ],
+    [
+     "CAC (assumed)",
+     "$300"
+    ],
+    [
+     "LTV:CAC",
+     "5.29:1"
+    ],
+    [
+     "CAC payback",
+     "7.1 months"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "from saas_metrics import mrr_components, churn_rates, net_revenue_retention, ltv_cac\n\nmrr   = mrr_components(starting_mrr=df.MonthlyCharges.sum(), new_mrr=0, expansion_mrr=0,\n                       contraction_mrr=0, churned_mrr=churned.MonthlyCharges.sum())\nchurn = churn_rates(churned_customers=1869, starting_customers=7043,\n                    churned_mrr=churned.MonthlyCharges.sum(), starting_mrr=mrr['starting_mrr'])\nlc    = ltv_cac(arpu=df.MonthlyCharges.mean(), gross_margin=0.65,\n                monthly_churn=0.0265, cac=300)",
+ "code_language": "python",
+ "takeaway": "Revenue churn exceeds logo churn, so the model must be judged on revenue caught, not accounts caught -- a decision made in phase 1 that phase 5 then enforces.",
+ "used_skill_scripts": [
+  ".claude/skills/business-metrics-calculator/scripts/saas_metrics.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:15"
+}

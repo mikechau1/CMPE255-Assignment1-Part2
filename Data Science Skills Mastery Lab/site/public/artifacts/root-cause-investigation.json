@@ -1,0 +1,247 @@
+{
+ "skill": "root-cause-investigation",
+ "source": "data-analytics-skills",
+ "category": "Data Analysis & Investigation",
+ "phase": 5,
+ "track": "T2",
+ "title": "Retail revenue fell 21% in April 2011 -- decomposing why",
+ "prescribes": "Decompose a metric movement by dimension and by driver until the contributions add up, separating a mix shift from a real change, before proposing an explanation.",
+ "applied": "Ran the skill's drilldown_analyzer.py over March and April 2011 across geography, line size and country, then decomposed the movement into customers x orders x order value.",
+ "narrative": [
+  "Revenue went from GBP 595,501 to GBP 469,200, a -21.2% fall. The drilldown attributes 46% of the decline to the UK, which is unsurprising given it is the dominant market -- contribution share must always be read against baseline share, or every finding is just 'the biggest segment is biggest'.",
+  "The driver decomposition answers the question multiplicatively: active customers went 974 -> 856 (-12.1%), orders 1,321 -> 1,149 (-13.0%), and average order value GBP 451 -> GBP 408 (-9.4%). Orders x order value reproduces the revenue fall exactly (-21.2% against the actual -21.2%), so nothing is unaccounted for.",
+  "Both drivers moved, and the split matters: order count contributes roughly 59% of the decline and order value the rest. Fewer orders points at demand or seasonality; smaller orders points at mix or pricing. This is a giftware wholesaler in April, so the seasonal reading is the plausible one -- but the data can only rule things out; proving the cause needs a promotional calendar and a merchandising conversation."
+ ],
+ "kpis": [
+  {
+   "label": "Revenue change",
+   "value": "-21.2%",
+   "caption": "2011-03 -> 2011-04",
+   "tone": "bad"
+  },
+  {
+   "label": "Active customers",
+   "value": "-12.1%",
+   "caption": "974 -> 856",
+   "tone": "warn"
+  },
+  {
+   "label": "Orders",
+   "value": "-13.0%",
+   "caption": "1,321 -> 1,149",
+   "tone": "bad"
+  },
+  {
+   "label": "Average order value",
+   "value": "-9.4%",
+   "caption": "the smaller of the two drivers",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "drivers",
+   "kind": "bar",
+   "title": "Which driver moved (March to April 2011)",
+   "data": [
+    {
+     "x": "Active customers",
+     "change": -0.1211
+    },
+    {
+     "x": "Orders",
+     "change": -0.1302
+    },
+    {
+     "x": "Avg order value",
+     "change": -0.0941
+    },
+    {
+     "x": "Revenue",
+     "change": -0.2121
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "change",
+     "label": "% change"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  },
+  {
+   "id": "country-contrib",
+   "kind": "hbar",
+   "title": "Revenue change by country (top movers)",
+   "data": [
+    {
+     "x": "United Kingdom",
+     "change": -57639.45
+    },
+    {
+     "x": "Netherlands",
+     "change": -19439.93
+    },
+    {
+     "x": "Australia",
+     "change": -16452.39
+    },
+    {
+     "x": "EIRE",
+     "change": -14103.86
+    },
+    {
+     "x": "France",
+     "change": -9059.94
+    },
+    {
+     "x": "Singapore",
+     "change": 8209.58
+    },
+    {
+     "x": "Japan",
+     "change": 6499.6
+    },
+    {
+     "x": "Finland",
+     "change": -4247.9
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "change",
+     "label": "GBP change"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "currency",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "drill",
+   "title": "Drilldown output (largest absolute movers)",
+   "columns": [
+    "Dimension",
+    "Segment",
+    "March",
+    "April",
+    "Change",
+    "% change",
+    "Contribution"
+   ],
+   "rows": [
+    [
+     "basket_size",
+     "Large line (>=20)",
+     383770.76,
+     297903.16,
+     -85867.6,
+     -22.37,
+     "67.99%"
+    ],
+    [
+     "is_uk",
+     "Rest of world",
+     128302.17,
+     59641.22,
+     -68660.95,
+     -53.52,
+     "54.36%"
+    ],
+    [
+     "is_uk",
+     "United Kingdom",
+     467198.59,
+     409559.14,
+     -57639.45,
+     -12.34,
+     "45.64%"
+    ],
+    [
+     "Country",
+     "United Kingdom",
+     467198.59,
+     409559.14,
+     -57639.45,
+     -12.34,
+     "45.64%"
+    ],
+    [
+     "basket_size",
+     "Small line (<20)",
+     211730.0,
+     171297.2,
+     -40432.8,
+     -19.1,
+     "32.01%"
+    ],
+    [
+     "Country",
+     "Netherlands",
+     22416.49,
+     2976.56,
+     -19439.93,
+     -86.72,
+     "15.39%"
+    ],
+    [
+     "Country",
+     "Australia",
+     17223.99,
+     771.6,
+     -16452.39,
+     -95.52,
+     "13.03%"
+    ],
+    [
+     "Country",
+     "EIRE",
+     21674.36,
+     7570.5,
+     -14103.86,
+     -65.07,
+     "11.17%"
+    ],
+    [
+     "Country",
+     "France",
+     14589.55,
+     5529.61,
+     -9059.94,
+     -62.1,
+     "7.17%"
+    ],
+    [
+     "Country",
+     "Singapore",
+     0.0,
+     8209.58,
+     8209.58,
+     null,
+     "-6.5%"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "======================================================================\n  ROOT CAUSE DRILL-DOWN: REVENUE\n  Period A: 2011-03  \u2192  Period B: 2011-04\n======================================================================\n\n  DIMENSION: BASKET_SIZE\n  Segment                              A             B        Change   Contribution\n  ------------------------------------------------------------------\n  Large line (>=20)              383,771       297,903       -85,868 [-22.4%]        +68.0%\n\n  DIMENSION: IS_UK\n  Segment                              A             B        Change   Contribution\n  ------------------------------------------------------------------\n  Rest of world                  128,302        59,641       -68,661 [-53.5%]        +54.4%\n  United Kingdom                 467,199       409,559       -57,639 [-12.3%]        +45.6%\n\n  DIMENSION: COUNTRY\n  Segment                              A             B        Change   Contribution\n  ------------------------------------------------------------------\n  United Kingdom                 467,199       409,559       -57,639 [-12.3%]        +45.6%\n\n  DIMENSION: BASKET_SIZE\n  Segment                              A             B        Change   Contribution\n  ------------------------------------------------------------------\n  Small l",
+ "code_language": "text",
+ "takeaway": "Order count and order value both fell, count roughly twice as much -- so the investigation belongs with demand and seasonality first, pricing second.",
+ "used_skill_scripts": [
+  ".claude/skills/root-cause-investigation/scripts/drilldown_analyzer.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:30"
+}

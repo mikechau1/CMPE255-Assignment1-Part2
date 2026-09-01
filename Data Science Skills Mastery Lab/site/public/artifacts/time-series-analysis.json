@@ -1,0 +1,249 @@
+{
+ "skill": "time-series-analysis",
+ "source": "data-analytics-skills",
+ "category": "Data Analysis & Investigation",
+ "phase": 2,
+ "track": "T2",
+ "title": "Monthly retail revenue: trend, growth, anomalies and a truncated month",
+ "prescribes": "Decompose a series into level, trend and period-over-period growth; flag anomalies by z-score; and check the series' edges before reading anything into them.",
+ "applied": "Aggregated 13 months of cleaned retail revenue and ran ts_analyzer.py's trend, growth, anomaly and rolling-average functions over it.",
+ "narrative": [
+  "The trend is upward at 5.1% of the mean per month across 13 months, with revenue peaking in the pre-Christmas ramp -- November is the largest month, which is what a giftware wholesaler should look like.",
+  "The final point (2011-12, GBP 518,193) is the trap. It is not a collapse in demand; the extract simply stops on 9 December, so the month is partial. The z-score screen returned 1 anomalies at |z| >= 2.0 and this truncation is why an analyst still has to look at the edges of a series before publishing the slope.",
+  "The three-month rolling average is included precisely because it absorbs the seasonal spike; the raw line and the smoothed line tell different stories and both belong on the chart."
+ ],
+ "kpis": [
+  {
+   "label": "Months",
+   "value": "13",
+   "caption": "Dec 2010 - Dec 2011",
+   "tone": "neutral"
+  },
+  {
+   "label": "Total revenue",
+   "value": "GBP 8,911,408",
+   "caption": "cleaned transactions",
+   "tone": "neutral"
+  },
+  {
+   "label": "Trend",
+   "value": "+5.1%/mo",
+   "caption": "upward",
+   "tone": "good"
+  },
+  {
+   "label": "Peak month",
+   "value": "2011-11",
+   "caption": "GBP 1,161,817",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "monthly-revenue",
+   "kind": "line",
+   "title": "Monthly revenue with 3-month rolling average",
+   "data": [
+    {
+     "x": "2010-12",
+     "revenue": 572713.89,
+     "rolling": 572713.89
+    },
+    {
+     "x": "2011-01",
+     "revenue": 569445.04,
+     "rolling": 571079.47
+    },
+    {
+     "x": "2011-02",
+     "revenue": 447137.35,
+     "rolling": 529765.43
+    },
+    {
+     "x": "2011-03",
+     "revenue": 595500.76,
+     "rolling": 537361.05
+    },
+    {
+     "x": "2011-04",
+     "revenue": 469200.36,
+     "rolling": 503946.16
+    },
+    {
+     "x": "2011-05",
+     "revenue": 678594.56,
+     "rolling": 581098.56
+    },
+    {
+     "x": "2011-06",
+     "revenue": 661213.69,
+     "rolling": 603002.87
+    },
+    {
+     "x": "2011-07",
+     "revenue": 600091.01,
+     "rolling": 646633.09
+    },
+    {
+     "x": "2011-08",
+     "revenue": 645343.9,
+     "rolling": 635549.53
+    },
+    {
+     "x": "2011-09",
+     "revenue": 952838.38,
+     "rolling": 732757.76
+    },
+    {
+     "x": "2011-10",
+     "revenue": 1039318.79,
+     "rolling": 879167.02
+    },
+    {
+     "x": "2011-11",
+     "revenue": 1161817.38,
+     "rolling": 1051324.85
+    },
+    {
+     "x": "2011-12",
+     "revenue": 518192.79,
+     "rolling": 906442.99
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "revenue",
+     "label": "Revenue"
+    },
+    {
+     "key": "rolling",
+     "label": "3-mo rolling avg"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "December 2011 is truncated on the 9th -- the dip is the extract, not the business.",
+   "valueFormat": "currency",
+   "domain": null
+  },
+  {
+   "id": "mom-growth",
+   "kind": "bar",
+   "title": "Month-over-month growth",
+   "data": [
+    {
+     "x": "2011-01",
+     "growth": -0.0057
+    },
+    {
+     "x": "2011-02",
+     "growth": -0.2148
+    },
+    {
+     "x": "2011-03",
+     "growth": 0.3318
+    },
+    {
+     "x": "2011-04",
+     "growth": -0.2121
+    },
+    {
+     "x": "2011-05",
+     "growth": 0.4463
+    },
+    {
+     "x": "2011-06",
+     "growth": -0.0256
+    },
+    {
+     "x": "2011-07",
+     "growth": -0.0924
+    },
+    {
+     "x": "2011-08",
+     "growth": 0.0754
+    },
+    {
+     "x": "2011-09",
+     "growth": 0.4765
+    },
+    {
+     "x": "2011-10",
+     "growth": 0.0908
+    },
+    {
+     "x": "2011-11",
+     "growth": 0.1179
+    },
+    {
+     "x": "2011-12",
+     "growth": -0.554
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "growth",
+     "label": "MoM growth"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "percent",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "stats",
+   "title": "Series summary",
+   "columns": [
+    "Statistic",
+    "Value"
+   ],
+   "rows": [
+    [
+     "n",
+     13
+    ],
+    [
+     "mean",
+     "685,492.92"
+    ],
+    [
+     "median",
+     "600,091.01"
+    ],
+    [
+     "min",
+     "447,137.35"
+    ],
+    [
+     "max",
+     "1,161,817.38"
+    ],
+    [
+     "std",
+     "223,413.63"
+    ],
+    [
+     "total",
+     "8,911,407.90"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "=================================================================\n  TIME SERIES ANALYSIS: REVENUE  (monthly)\n=================================================================\n\n--- Summary Statistics ---\n  Periods:  13\n  Mean:     685,492.92\n  Median:   600,091.01\n  Min:      447,137.35\n  Max:      1,161,817.38\n  Std dev:  223,413.63\n  Total:    8,911,407.90\n\n--- Trend ---\n  Direction: UPWARD\n  Slope: +34,886.0289 per period (+5.09%/period)\n\n--- Recent Periods ---\n  Date                    Value      Growth   Rolling Avg\n  ------------------------------------------------------\n  2011-05            678,594.56           \u2014  \n  2011-06            661,213.69           \u2014  \n  2011-07            600,091.01           \u2014  \n  2011-08            645,343.90           \u2014  \n  2011-09            952,838.38           \u2014  \n  2011-10          1,039,318.79           \u2014  \n  2011-11          1,161,817.38           \u2014  \n  2011-12            518,192.79           \u2014  \n\n--- Anomalies Detected (|z| \u2265 2.5) ---\n  2011-11: 1,161,817.38  [SPIKE, z=2.13]\n=================================================================",
+ "code_language": "text",
+ "takeaway": "Revenue trends up and peaks in November; the apparent December collapse is a truncated extract, which is the kind of edge effect that turns into a wrong forecast if unchecked.",
+ "used_skill_scripts": [
+  ".claude/skills/time-series-analysis/scripts/ts_analyzer.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:36:46"
+}

@@ -1,0 +1,142 @@
+{
+ "skill": "analysis-documentation",
+ "source": "data-analytics-skills",
+ "category": "Documentation & Knowledge",
+ "phase": 6,
+ "track": "meta",
+ "title": "The documentation that lets someone else rerun all of this",
+ "prescribes": "Document purpose, data, method, reproduction steps and limitations -- enough that a competent stranger can rerun the work and know what not to trust.",
+ "applied": "Generated the lab's analysis document from the live registry, the data manifest and the emitted artifacts, using the skill's analysis_doc_template.md structure.",
+ "narrative": [
+  "The document is generated, not written: dataset digests come from `data/raw/manifest.json`, the skill counts from the registry, and the artifact count (47) from the directory itself. A hand-maintained version of this page would be wrong within a week.",
+  "45 bundled skill scripts were executed across the lab rather than reimplemented, and each artifact lists the ones it used. That list is what makes the claim 'these skills work' checkable rather than rhetorical.",
+  "The limitations section is placed where it will be read and states the blocking issue first. Documentation that buries its caveats is how a caveated result becomes an uncaveated slide."
+ ],
+ "kpis": [
+  {
+   "label": "Skills documented",
+   "value": "46",
+   "caption": "two collections",
+   "tone": "neutral"
+  },
+  {
+   "label": "Artifacts generated",
+   "value": "47",
+   "caption": "one JSON per skill",
+   "tone": "neutral"
+  },
+  {
+   "label": "Bundled scripts executed",
+   "value": "45",
+   "caption": "not reimplemented",
+   "tone": "good"
+  },
+  {
+   "label": "Limitations stated",
+   "value": "4",
+   "caption": "blocking one first",
+   "tone": "warn"
+  }
+ ],
+ "charts": [
+  {
+   "id": "skills-per-phase",
+   "kind": "bar",
+   "title": "Skills demonstrated per CRISP-DM phase",
+   "data": [
+    {
+     "x": "Business Understanding",
+     "n": 7
+    },
+    {
+     "x": "Data Understanding",
+     "n": 10
+    },
+    {
+     "x": "Data Preparation",
+     "n": 5
+    },
+    {
+     "x": "Modeling",
+     "n": 7
+    },
+    {
+     "x": "Evaluation",
+     "n": 7
+    },
+    {
+     "x": "Deployment",
+     "n": 10
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "n",
+     "label": "skills"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "structure",
+   "title": "Repository structure",
+   "columns": [
+    "Path",
+    "Contents"
+   ],
+   "rows": [
+    [
+     ".claude/skills/",
+     "the 46 installed skills, unmodified"
+    ],
+    [
+     "pipeline/lib/",
+     "paths, seeds, data loaders, the artifact serialiser"
+    ],
+    [
+     "pipeline/crisp0*.py",
+     "one module per CRISP-DM phase"
+    ],
+    [
+     "pipeline/heavy/",
+     "CNN, LoRA, RAG and the FastAPI service"
+    ],
+    [
+     "pipeline/skills_registry.py",
+     "skill -> phase mapping and the coverage gate"
+    ],
+    [
+     "data/",
+     "raw downloads, the manifest with digests, processed parquet"
+    ],
+    [
+     "artifacts/",
+     "models, MLflow store, LoRA adapter, generated documents"
+    ],
+    [
+     "site/",
+     "React front end reading site/public/artifacts/*.json"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "# Data Science Skills Mastery Lab -- analysis documentation\n\n## Purpose\nDemonstrate all 46 skills from two public Claude Code skill collections\n(15 from param087/agent-ml-skills, 31\nfrom nimrodfisher/data-analytics-skills) on popular Kaggle datasets, organised by the six CRISP-DM phases.\n\n## Data\n- telco_churn (blastchar/telco-customer-churn) sha256=16320c9c1ec7\n- titanic (c/titanic) sha256=4a437fde05fe\n- online_retail (vijayuv/onlineretail) sha256=f5385cbb54bb\n- fashion_mnist_train_images (zalando-research/fashionmnist) sha256=3aede38d6186\n- fashion_mnist_train_labels (zalando-research/fashionmnist) sha256=a04f17134ac0\n- fashion_mnist_test_images (zalando-research/fashionmnist) sha256=346e55b948d9\n- fashion_mnist_test_labels (zalando-research/fashionmnist) sha256=67da17c76eaf\n- online_retail_csv (vijayuv/onlineretail) sha256=c820e928a9cb\n- creditcard (mlg-ulb/creditcardfraud) sha256=5ac0db239c79\n\n## Method\nOne Python pipeline (`pipeline/`), one module per CRISP-DM phase, plus `pipeline/heavy/` for the\ndeep-learning, LLM, retrieval and serving demos. Every demo returns a `SkillResult` and is serialised\nto `site/public/artifacts/<skill>.json`; the React site renders those files and never runs Python.\n\n## Reproduction\n```\npython pipeline/00_download_data.py\npython pipeline/crisp01_business_understanding.py   # ... through crisp06\npython pipeline/heavy/pytorch_fashion.py            # and the other heavy scripts\npython pipeline/skills_registry.py --check          # fails unless all 46 artifacts exist\n```\nSeed 20255255; environment fingerprint recorded by the `reproducible-ml` artifact.\n\n## Limitations\n- The churn observation window is assumed, not confirmed (blocking; see the peer review).\n- Offer economics (save rate, offer cost) are assumptions, not measurements.\n- The five dataset tracks are unrelated to one another; findings do not transfer between them.\n- Fashion-MNIST and the LoRA/RAG tracks demonstrate technique, not a business outcome.\n",
+ "code_language": "markdown",
+ "takeaway": "Someone can clone this, run six commands, and get the same numbers -- and the limitations section tells them which of those numbers to argue with.",
+ "used_skill_scripts": [
+  ".claude/skills/analysis-documentation/references/analysis_doc_template.md"
+ ],
+ "artifacts": [
+  "artifacts/analysis_documentation.md"
+ ],
+ "generated_at": "2026-09-01T04:44:34"
+}

@@ -1,0 +1,129 @@
+{
+ "skill": "technical-to-business-translator",
+ "source": "data-analytics-skills",
+ "category": "Stakeholder Communication",
+ "phase": 6,
+ "track": "T1",
+ "title": "Same result, 13.8 -> 8.4 reading grade",
+ "prescribes": "Replace jargon with the thing it means, shorten sentences, and lead with the consequence for the reader -- then measure the result instead of trusting your ear.",
+ "applied": "Ran the skill's jargon_detector.py and readability_scorer.py over the technical description of the churn model and over its business translation.",
+ "narrative": [
+  "The technical paragraph triggers 6 jargon findings and scores 13.8 on Flesch-Kincaid (Dense (technical audience)), with 11.8 words per sentence. The translation triggers 0 and scores 8.4 (Accessible (executive-ready)).",
+  "The translation is not a simplification of the words -- it is a change of subject. The technical version's subject is the model; the business version's subject is the customers and what happens to them. 'Top decile lift of 2.8x' becomes 'of the 10% it scores highest, about three in four do leave', which is the same fact addressed to someone who has to act on it.",
+  "Nothing true was dropped. Calibration survives as 'a score of 60% means roughly six in ten'; the leakage check survives as 'not secretly using information that would not exist'. Translation that removes the caveats is not translation, it is marketing.",
+  "Measuring is the part people skip. Both scores come from the skill's own scorer, so 'this reads more clearly' is a number rather than an opinion."
+ ],
+ "kpis": [
+  {
+   "label": "Reading grade",
+   "value": "13.8 -> 8.4",
+   "caption": "Flesch-Kincaid",
+   "tone": "good"
+  },
+  {
+   "label": "Reading ease",
+   "value": "17.3 -> 67.5",
+   "caption": "higher is easier",
+   "tone": "good"
+  },
+  {
+   "label": "Jargon terms",
+   "value": "6 -> 0",
+   "caption": "detected by the skill's dictionary",
+   "tone": "neutral"
+  },
+  {
+   "label": "Words per sentence",
+   "value": "11.8 -> 18.2",
+   "caption": "shorter sentences carry more",
+   "tone": "neutral"
+  }
+ ],
+ "charts": [
+  {
+   "id": "readability",
+   "kind": "bar",
+   "title": "Readability before and after translation",
+   "data": [
+    {
+     "x": "Flesch-Kincaid grade",
+     "technical": 13.8,
+     "business": 8.4
+    },
+    {
+     "x": "Words / sentence",
+     "technical": 11.8,
+     "business": 18.2
+    },
+    {
+     "x": "Jargon terms",
+     "technical": 6,
+     "business": 0
+    }
+   ],
+   "x": "x",
+   "series": [
+    {
+     "key": "technical",
+     "label": "Technical"
+    },
+    {
+     "key": "business",
+     "label": "Business"
+    }
+   ],
+   "subtitle": "",
+   "xLabel": "",
+   "yLabel": "",
+   "note": "Lower is better on all three.",
+   "valueFormat": "number",
+   "domain": null
+  }
+ ],
+ "tables": [
+  {
+   "id": "jargon",
+   "title": "Jargon flagged in the technical version",
+   "columns": [
+    "Term",
+    "Suggested replacement"
+   ],
+   "rows": [
+    [
+     "cross-validation",
+     "robustness check across multiple data splits"
+    ],
+    [
+     "ROC",
+     "model performance curve"
+    ],
+    [
+     "AUC",
+     "model accuracy score"
+    ],
+    [
+     "precision",
+     "share of predicted positives that are correct"
+    ],
+    [
+     "cardinality",
+     "number of unique values"
+    ],
+    [
+     "AUC",
+     "model accuracy score"
+    ]
+   ],
+   "note": ""
+  }
+ ],
+ "code_excerpt": "TECHNICAL:\nWe trained a HistGradientBoostingClassifier inside a scikit-learn Pipeline with a ColumnTransformer handling median imputation and one-hot encoding, tuned over 30 Optuna trials against stratified 5-fold cross-validation. The model achieves 0.853 ROC-AUC and 0.638 average precision on the held-out split, with a Brier score of 0.134 indicating the posterior probabilities are well calibrated. Out-of-fold target encoding was used for the high-cardinality segment key to avoid leakage, which was validated by comparing train and test AUC deltas.\n\nBUSINESS:\nWe built a model that scores every customer each month on how likely they are to leave. We tested it on customers it had never seen. Of the 10% it scores highest, about three in four do leave -- nearly three times the rate of the customer base as a whole. The scores can be read as real chances, so a score of 60% means roughly six in ten of those customers leave. We checked carefully that the model was not secretly using information that would not exist when a real decision is made.",
+ "code_language": "text",
+ "takeaway": "The translation drops 5.4 reading grades while keeping the calibration and leakage caveats -- measured, not assumed.",
+ "used_skill_scripts": [
+  ".claude/skills/technical-to-business-translator/scripts/jargon_detector.py",
+  ".claude/skills/technical-to-business-translator/scripts/readability_scorer.py"
+ ],
+ "artifacts": [],
+ "generated_at": "2026-09-01T04:44:34"
+}
