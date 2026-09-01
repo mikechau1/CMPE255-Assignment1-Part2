@@ -14,6 +14,10 @@ with the results published as a React website.
 Nothing here is illustrative. 21 of the 46 skills ship their own Python; that code was imported and
 run on the Kaggle data rather than reimplemented, and each skill page lists the files it executed.
 
+![Coverage matrix and headline results](docs/screenshots/overview.png)
+
+Per-phase pages, the all-skills index, and the dataset tracks: `docs/screenshots/`.
+
 ## Quick start
 
 ```powershell

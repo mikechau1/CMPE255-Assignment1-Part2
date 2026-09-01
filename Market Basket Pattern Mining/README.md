@@ -2,6 +2,11 @@
 
 BasketLab is a reproducible market-basket research application for the Kaggle Groceries benchmark (9,835 transactions, 169 items). It combines a Python mining engine, metric-aware hill-climbing autoresearch, FastAPI, and a Vite/React analyst dashboard.
 
+![Basket intelligence overview](docs/screenshots/overview.png)
+
+Association rules, an interactive basket with next-best-item recommendations, and the
+hill-climbing autoresearch trajectory: `docs/screenshots/`.
+
 ## Quick start
 
 ```powershell
